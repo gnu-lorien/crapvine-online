@@ -1,0 +1,21 @@
+{% extends "site_base.html" %}
+{% comment %}
+This template is copied from the base templates to provide the friends
+photos link which is specific to social_project.
+
+NOTE: we don't extend that since it would extend itself and Django will
+crash.
+{% endcomment %}
+
+{% load i18n %}
+{% load group_tags %}
+
+{% block body_class %}characters{% endblock %}
+
+{% block subnav %}
+    {% if user.is_authenticated %}
+        My characters page! Woo!!!
+    {% else %}
+        &nbsp;
+    {% endif %}
+{% endblock %}

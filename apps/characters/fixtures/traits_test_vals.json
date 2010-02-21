@@ -1,0 +1,14 @@
+[
+{"pk": 1, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 1, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 2, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 2, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 3, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 3, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 4, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 4, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 5, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 5, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 6, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 6, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 6, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 7, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 7, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 8, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 8, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 9, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 9, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 10, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 10, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 11, "dot_character": "O", "name": "Example", "value": 5}},
+{"pk": 11, "model": "characters.trait", "fields": {"note": "Carlsbad", "display_preference": 0, "dot_character": "O", "name": "Example", "value": 5}}
+]
