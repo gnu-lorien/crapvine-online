@@ -1,3 +1,4 @@
+# coding=utf-8
 from datetime import datetime
 
 from django.db import models
@@ -113,6 +114,7 @@ class Trait(models.Model):
             nstr = (" (%s)" % (self.note)) if show_note else ''
             return "%s%s%s" % (self.name, vstr, nstr)
         elif self.display_preference == 2:
+            vstr = ''
             if show_val:
                 vstr = (" x%s" % (self.value))
             if tally_val:
@@ -120,8 +122,7 @@ class Trait(models.Model):
             nstr = (" (%s)" % (self.note)) if show_note else ''
             return "%s%s%s" % (self.name, vstr, nstr)
         elif self.display_preference == 3:
-            if tally_val:
-                vstr = " %s" % (self.tally_str())
+            vstr = " %s" % (self.tally_str()) if tally_val else ''
             nstr = (" (%s)" % (self.note)) if show_note else ''
             return "%s%s%s" % (self.name, vstr, nstr)
         elif self.display_preference == 4:
@@ -147,7 +148,8 @@ class Trait(models.Model):
             paren_str = (" (%s)" % (self.note)) if show_note else ''
             dstr = "%s%s" % (self.name, paren_str)
             its = []
-            for i in range(self.value):
+            itrange = self.value if self.value >= 1 else 1
+            for i in range(itrange):
                 its.append(dstr)
             return self.dot_character.join(its)
         elif self.display_preference == 8:
@@ -165,20 +167,38 @@ class Trait(models.Model):
 
         return 'NOCING'
 
-class Expendable(Trait):
+class Expendable(models.Model):
+    name = models.CharField(max_length=128)
+    value = models.IntegerField(default=1)
     modifier = models.IntegerField(default=0)
+    dot_character = models.CharField(max_length=8, default='O')
+    modifier_character = models.CharField(max_length=8, default='Õ')
 
 class Sheet(models.Model):
     name = models.CharField(max_length=128)
     traits = models.ManyToManyField(Trait, through='TraitList')
+    player = models.ForeignKey(User, related_name='personal_characters')
+    slug = models.SlugField()
+    home_chronicle = models.CharField(max_length=128) # Make this refer to a real thing from another app
+
+    start_date = models.DateTimeField(default=datetime.now)
+    last_modified = models.DateTimeField(default=datetime.now)
+
+    npc = models.BooleanField(default=False)
+
+    notes = models.TextField(default='', blank=True)
+    biography = models.TextField(default='', blank=True)
 
     def __unicode__(self):
         return self.name
 
+    def _get_slug(self):
+        return " ".join([self.player.username, self.name])
+
 class TraitList(models.Model):
     sheet = models.ForeignKey(Sheet)
     trait = models.ForeignKey(Trait)
-    name = models.SmallIntegerField(choices=((1, 'Physical'), (2, 'Social')))
+    name = models.PositiveSmallIntegerField(choices=((1, 'Physical'), (2, 'Social')))
     display_order = models.IntegerField()
     sorted = models.BooleanField(default=True)
     atomic = models.BooleanField(default=False)
