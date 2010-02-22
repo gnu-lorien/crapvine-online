@@ -1,0 +1,72 @@
+[
+    {
+        "pk": 1, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical Negative"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental Negative"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social Negative"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Merits"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Flaws"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Influences"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Health Levels"
+        }
+    }
+]

@@ -195,10 +195,35 @@ class Sheet(models.Model):
     def _get_slug(self):
         return " ".join([self.player.username, self.name])
 
+    def get_traitlist(self, name):
+        return self.traits.filter(traitlist__name__name=name).order_by('traitlist__display_order')
+
+    def add_trait(self, traitlist_name, trait):
+        trait.save()
+        traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
+        traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj).order_by('display_order')
+        TraitList.objects.create(sheet=self, trait=trait, display_order=len(traitlist), name=traitlist_name_obj).save()
+
+    def insert_trait(self, traitlist_name, trait, display_order):
+        trait.save()
+        traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
+        traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj, display_order__gte=display_order).order_by('display_order')
+        for traitlist_obj in traitlist:
+            traitlist_obj.display_order += 1
+            traitlist_obj.save()
+        TraitList.objects.create(sheet=self, trait=trait, display_order=display_order, name=traitlist_name_obj).save()
+
+
+class TraitListName(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
 class TraitList(models.Model):
     sheet = models.ForeignKey(Sheet)
     trait = models.ForeignKey(Trait)
-    name = models.PositiveSmallIntegerField(choices=((1, 'Physical'), (2, 'Social')))
+    name = models.ForeignKey(TraitListName)
     display_order = models.IntegerField()
     sorted = models.BooleanField(default=True)
     atomic = models.BooleanField(default=False)
