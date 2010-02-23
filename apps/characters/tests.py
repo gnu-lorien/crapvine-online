@@ -1,5 +1,5 @@
 from django.test import TestCase
-from characters.models import Trait, TraitList, Sheet, TraitListName
+from characters.models import Trait, TraitList, Sheet, TraitListName, VampireSheet
 from django.contrib.auth.models import User
 
 from pprint import pprint
@@ -95,6 +95,13 @@ class SheetTestCase(CharactersTestCase):
         except ValidationError:
             return
         raise AssertionError
+
+class VampireSheetTestCase(SheetTestCase):
+    def setUp(self):
+        SheetTestCase.setUp(self)
+        self.vampire = VampireSheet.objects.create(
+            name='BloodNess',
+            player=self.andrew_player)
 
 class TraitTestCase(CharactersTestCase):
     def __myAssertEqual(self, given, expected, extra):

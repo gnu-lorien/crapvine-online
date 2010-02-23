@@ -213,6 +213,9 @@ class Sheet(models.Model):
             traitlist_obj.save()
         TraitList.objects.create(sheet=self, trait=trait, display_order=display_order, name=traitlist_name_obj).save()
 
+class VampireSheet(Sheet):
+    nature = models.CharField(max_length=128)
+    demeanor = models.CharField(max_length=128)
 
 class TraitListName(models.Model):
     name = models.CharField(max_length=128, unique=True)
