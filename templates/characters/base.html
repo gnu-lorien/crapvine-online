@@ -14,7 +14,10 @@ crash.
 
 {% block subnav %}
     {% if user.is_authenticated %}
-        My characters page! Woo!!!
+        <ul>
+            <li><a href="{% url sheet_upload %}">{% trans "Upload Sheet" %}</a></li>
+            <li><a href="{% url sheets_list %}">{% trans "List Sheets" %}</a></li>
+        </ul>
     {% else %}
         &nbsp;
     {% endif %}
