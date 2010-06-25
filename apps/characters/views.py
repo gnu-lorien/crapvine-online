@@ -11,12 +11,14 @@ from django.contrib.auth.decorators import login_required
 
 from characters.forms import SheetUploadForm
 
+from xml_uploader import handle_sheet_upload
+
 @login_required
 def upload_sheet(request):
     if request.method == 'POST':
         form = SheetUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
+            handle_sheet_upload(request.FILES['file'])
             return HttpResponseRedirect('/success/url')
     else:
         form = SheetUploadForm()
