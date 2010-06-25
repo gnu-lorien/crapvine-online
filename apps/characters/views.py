@@ -18,7 +18,7 @@ def upload_sheet(request):
     if request.method == 'POST':
         form = SheetUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_sheet_upload(request.FILES['file'])
+            handle_sheet_upload(request.FILES['file'], request.user)
             return HttpResponseRedirect('/success/url')
     else:
         form = SheetUploadForm()

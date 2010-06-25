@@ -47,6 +47,10 @@ class SheetTestCase(CharactersTestCase):
         self._assertNamedTraitInList('aoeu', 'Social')
         self._assertNamedTraitInList('nothing', 'Social')
 
+    def testStrangeTraitValues(self):
+        t = Trait.objects.create(name='Weird ness', value='1 or 2')
+        t = Trait.objects.create(name='Weird ness', value='1-2')
+
     def testAddingTraits(self):
         #self.sheet.add_trait('Mental', 'Determined')
         #self.sheet.add_trait('Mental', 'Insidious', value=2)

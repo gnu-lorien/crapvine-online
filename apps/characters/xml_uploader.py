@@ -12,7 +12,9 @@ from minimock import Mock
 from characters.models import Trait, TraitList, Sheet, VampireSheet
 
 class VampireLoader(ContentHandler):
-    def __init__(self):
+    def __init__(self, user):
+        self.__user = user
+
         self.vampires = {}
         self.current_vampire = None
 
@@ -35,8 +37,29 @@ class VampireLoader(ContentHandler):
         if name == 'vampire':
             if not attrs.has_key('name'):
                 return
+            vampire_key_remap = {
+                'startdate'    : 'start_date',
+                'lastmodified' : 'last_modified',
+                'id'           : 'id_text',
+            }
             my_attrs = dict(attrs)
-            v = VampireSheet.objects.create(**dict(attrs))
+            for key, remap in vampire_key_remap.iteritems():
+                if key in my_attrs:
+                    my_attrs[remap] = my_attrs.pop(key)
+
+            date_fields = ('start_date', 'last_modified')
+            for key in my_attrs.iterkeys():
+                if key in date_fields:
+                    try:
+                        dt = datetime.strptime(my_attrs[key], "%m/%d/%Y %H:%M:%S %p")
+                    except ValueError:
+                        dt = datetime.strptime(my_attrs[key], "%m/%d/%Y")
+                    except ValueError:
+                        dt = datetime.now()
+                    my_attrs[key] = dt
+
+            my_attrs['player'] = self.__user
+            v = VampireSheet.objects.create(**my_attrs)
             #v.read_attributes(attrs)
             self.current_vampire = v
 
@@ -75,7 +98,20 @@ class VampireLoader(ContentHandler):
         elif name == 'trait':
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
-            t = Trait.objects.create(**attrs)
+            remap = { 'val' : 'value' }
+            my_attrs = dict(attrs)
+            for key, value in remap.iteritems():
+                if key in my_attrs:
+                    my_attrs[value] = my_attrs.pop(key)
+            if 'value' in my_attrs:
+                try:
+                    # TODO Remember this when handling the menu items
+                    # Some things have strange values like "2 or 4" and you need
+                    # to pick them before setting them in a sheet
+                    int(my_attrs['value'])
+                except ValueError:
+                    my_attrs['value'] = 999999
+            t = Trait.objects.create(**my_attrs)
             self.current_vampire.add_trait(self.current_traitlist['name'], t)
 
     def endElement(self, name):
@@ -141,7 +177,9 @@ class VampireLoader(ContentHandler):
 
 class ChronicleLoader(ContentHandler):
     creatures_elements = ['vampire']
-    def __init__(self):
+    def __init__(self, user):
+        self.__user = user
+
         self.chronicle = None
         self.in_cdata = False
 
@@ -153,7 +191,7 @@ class ChronicleLoader(ContentHandler):
 
         self.creatures = {}
         self.reading_creature = ''
-        self.creatures['vampire'] = VampireLoader()
+        self.creatures['vampire'] = VampireLoader(self.__user)
 
     @property
     def vampires(self):
@@ -259,8 +297,8 @@ class ChronicleLoader(ContentHandler):
 
 #from crapvine.xml.chronicle_loader import ChronicleLoader
 
-def handle_sheet_upload(uploaded_file):
-    chronicle_loader = ChronicleLoader()
+def handle_sheet_upload(uploaded_file, user):
+    chronicle_loader = ChronicleLoader(user)
 
     parser = make_parser()
     parser.setFeature(feature_namespaces, 0)

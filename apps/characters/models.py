@@ -174,10 +174,19 @@ class Expendable(models.Model):
     dot_character = models.CharField(max_length=8, default='O')
     modifier_character = models.CharField(max_length=8, default='Õ')
 
+class TraitListName(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
 class Sheet(models.Model):
     name = models.CharField(max_length=128)
     traits = models.ManyToManyField(Trait, through='TraitList')
     player = models.ForeignKey(User, related_name='personal_characters')
+    #narrator = models.ForeignKey(User, related_name='narrated_characters')
+    # TODO Change this to support narrators in and outside of the database?
+    narrator = models.CharField(max_length=128)
     slug = models.SlugField()
     home_chronicle = models.CharField(max_length=128) # Make this refer to a real thing from another app
 
@@ -188,6 +197,8 @@ class Sheet(models.Model):
 
     notes = models.TextField(default='', blank=True)
     biography = models.TextField(default='', blank=True)
+
+    status = models.CharField(max_length=128)
 
     def __unicode__(self):
         return self.name
@@ -200,7 +211,10 @@ class Sheet(models.Model):
 
     def add_trait(self, traitlist_name, trait):
         trait.save()
-        traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
+        try:
+            traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
+        except TraitListName.DoesNotExist:
+            traitlist_name_obj = TraitListName.objects.create(name=traitlist_name)
         traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj).order_by('display_order')
         TraitList.objects.create(sheet=self, trait=trait, display_order=len(traitlist), name=traitlist_name_obj).save()
 
@@ -216,12 +230,29 @@ class Sheet(models.Model):
 class VampireSheet(Sheet):
     nature = models.CharField(max_length=128)
     demeanor = models.CharField(max_length=128)
+    blood = models.PositiveSmallIntegerField()
+    clan = models.CharField(max_length=128)
+    conscience = models.PositiveSmallIntegerField()
+    courage = models.PositiveSmallIntegerField()
+    generation = models.PositiveSmallIntegerField()
+    path = models.CharField(max_length=128)
+    pathtraits = models.PositiveSmallIntegerField()
+    physicalmax = models.PositiveSmallIntegerField()
+    sect = models.CharField(max_length=128)
+    selfcontrol = models.PositiveSmallIntegerField()
+    willpower = models.PositiveSmallIntegerField()
+    title = models.CharField(max_length=128)
 
-class TraitListName(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    aura = models.SmallIntegerField()
+    coterie = models.CharField(max_length=128)
+    id_text = models.CharField(max_length=128)
+    sire = models.CharField(max_length=128)
 
-    def __unicode__(self):
-        return self.name
+    tempcourage = models.PositiveSmallIntegerField()
+    tempselfcontrol = models.PositiveSmallIntegerField()
+    tempwillpower = models.PositiveSmallIntegerField()
+    tempblood = models.PositiveSmallIntegerField()
+
 
 class TraitList(models.Model):
     sheet = models.ForeignKey(Sheet)
@@ -233,5 +264,5 @@ class TraitList(models.Model):
     negative = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return "->".join([self.sheet.name, self.get_name_display(), self.trait.name])
+        return "->".join([self.sheet.name, self.name.name, self.trait.name])
 
