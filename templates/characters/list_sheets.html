@@ -1,0 +1,14 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+
+{% block head_title %}{% blocktrans %}Upload Character Sheet{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <ul>
+    {% for sheet in sheets %}
+        <li><a href="/characters/list_sheet/{{sheet.id}}">{{ sheet.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

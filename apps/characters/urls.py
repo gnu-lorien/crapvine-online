@@ -5,6 +5,7 @@ from blog.forms import *
 
 
 urlpatterns = patterns('',
-    # upload sheets
-    url(r'^upload_sheet/$', 'characters.views.upload_sheet', name='sheet_upload')
+    url(r'^upload_sheet/$', 'characters.views.upload_sheet', name='sheet_upload'),
+    url(r'^list_sheets/$', 'characters.views.list_sheets', name='sheets_list'),
+    url(r'^list_sheet/(?P<sheet_id>\d+)/$', 'characters.views.list_sheet', name='sheet_list'),
 )

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from characters.forms import SheetUploadForm
+from characters.models import Sheet
 
 from xml_uploader import handle_sheet_upload
 
@@ -26,3 +27,20 @@ def upload_sheet(request):
         'characters/upload_sheet.html',
         {'form':form},
         context_instance=RequestContext(request))
+
+@login_required
+def list_sheets(request):
+    sheets = Sheet.objects.filter(player__exact=request.user)
+    return render_to_response(
+        'characters/list_sheets.html',
+        {'sheets':sheets},
+        context_instance=RequestContext(request))
+
+@login_required
+def list_sheet(request, sheet_id):
+    sheet = Sheet.objects.get(id=sheet_id, player=request.user)
+    return render_to_response(
+        'characters/list_sheet.html',
+        {'sheet':sheet},
+        context_instance=RequestContext(request))
+

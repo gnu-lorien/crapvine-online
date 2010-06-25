@@ -1,0 +1,43 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+
+{% block head_title %}{% blocktrans %}Upload Character Sheet{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    {{ sheet.name }}<br/>
+    {{ sheet.player.username }}<br/>
+<TABLE width="675" width="" border=0 bgcolor=white><TBODY>
+<TR>
+<TD colspan=3 width="675"><FONT color=black size=2>
+<CENTER><H3>One World By Night</H3></CENTER></FONT></TD>
+</TR>
+<TR>
+<TD width="240"><FONT color=black size=2>
+<B>Name:</B> {{ sheet.name }}</FONT></TD>
+<td width="235"><span class="top_info">
+<b>Player:</b> {{ sheet.player }}</span></td>
+<TD width="200"><FONT color=black size=2>
+<B>Clan:</B> {{sheet.vampiresheet.clan}}</FONT></TD>
+</TR>
+<TR>
+<TD width="275" valign=top><FONT color=black size=2>
+<TABLE><TBODY>
+<TR>
+<TD><FONT color=black size=1>
+<B>Generation:</B> {{sheet.vampiresheet.generation}}<BR><B>Blood:</B> {{sheet.vampiresheet.blood}}<BR><B>Will:</B> {{sheet.vampiresheet.willpower}}<BR><B>XP:</B>NOCING</FONT></TD>
+</TR>
+</TBODY></TABLE>
+</FONT></TD>
+<TD width="200" valign=top><FONT color=black size=2>
+<TABLE><TBODY>
+<TR>
+<TD><FONT color=black size=1>
+<B>Nature:</B> {{ sheet.vampiresheet.nature }}<BR><B>Demeanor:</B> {{ sheet.vampiresheet.demeanor }}<br/><b>Title:</b> {{ sheet.vampiresheet.title }}</FONT></TD>
+</TR>
+</TBODY></TABLE>
+</FONT></TD>
+</tbody>
+</table>
+{% endblock %}
