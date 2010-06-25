@@ -9,6 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 from tagging.models import Tag
 
+from django.template.defaultfilters import slugify
+
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
 else:
@@ -242,20 +244,23 @@ class VampireSheet(Sheet):
     path = models.CharField(max_length=128)
     pathtraits = models.PositiveSmallIntegerField()
     physicalmax = models.PositiveSmallIntegerField()
-    sect = models.CharField(max_length=128)
+    sect = models.CharField(max_length=128, default='')
     selfcontrol = models.PositiveSmallIntegerField()
     willpower = models.PositiveSmallIntegerField()
     title = models.CharField(max_length=128)
 
-    aura = models.SmallIntegerField()
-    coterie = models.CharField(max_length=128)
-    id_text = models.CharField(max_length=128)
-    sire = models.CharField(max_length=128)
+    aura = models.SmallIntegerField(default=0)
+    coterie = models.CharField(max_length=128, default='')
+    id_text = models.CharField(max_length=128, default='')
+    sire = models.CharField(max_length=128, default='')
 
-    tempcourage = models.PositiveSmallIntegerField()
-    tempselfcontrol = models.PositiveSmallIntegerField()
-    tempwillpower = models.PositiveSmallIntegerField()
-    tempblood = models.PositiveSmallIntegerField()
+    # These need to actually default to whatever value was just set for their permanents
+    # Or... better yet... get turned into something that doesn't blow since we have this
+    # great uploading framework now!!!
+    tempcourage = models.PositiveSmallIntegerField(default=0)
+    tempselfcontrol = models.PositiveSmallIntegerField(default=0)
+    tempwillpower = models.PositiveSmallIntegerField(default=0)
+    tempblood = models.PositiveSmallIntegerField(default=0)
 
 
 class TraitList(models.Model):
