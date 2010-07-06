@@ -8,7 +8,7 @@
 {% block body %}
     <ul>
     {% for sheet in sheets %}
-        <li><a href="/characters/list_sheet/{{sheet.id}}">{{ sheet.name }}</a></li>
+        <li><a href="{% url sheet_list sheet.id %}">{{ sheet.name }}</a></li>
     {% endfor %}
     </ul>
 {% endblock %}
