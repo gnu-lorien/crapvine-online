@@ -2,7 +2,7 @@ from xml.sax.saxutils import quoteattr, unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
 from dateutil.parser import parse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from xml.sax import ContentHandler
 from xml.sax.saxutils import unescape, escape
@@ -10,6 +10,26 @@ from xml.sax.saxutils import unescape, escape
 from minimock import Mock
 
 from characters.models import Trait, TraitList, Sheet, VampireSheet
+
+def grapevine_date_to_datetime(grapevine_date):
+    try:
+        dt = datetime.strptime(grapevine_date, "%m/%d/%Y %H:%M:%S %p")
+    except ValueError:
+        dt = datetime.strptime(grapevine_date, "%m/%d/%Y")
+    except ValueError:
+        dt = datetime.now()
+
+    return dt
+
+def map_attributes(attributes_map, attrs):
+    for key, remap in attributes_map.iteritems():
+        if key in attrs:
+            attrs[remap] = attrs.pop(key)
+
+def map_dates(dates, attrs):
+    for key in attrs.iterkeys():
+        if key in dates:
+            attrs[key] = grapevine_date_to_datetime(attrs[key])
 
 class VampireLoader(ContentHandler):
     def __init__(self, user):
@@ -29,8 +49,11 @@ class VampireLoader(ContentHandler):
         self.current_notes = ''
 
         self.current_experience = None
+        self.last_entry = None
 
     def add_vampire(self, vamp):
+        vamp.update_experience_total()
+        vamp.save()
         self.vampires[vamp.name] = vamp
 
     def startElement(self, name, attrs):
@@ -43,20 +66,10 @@ class VampireLoader(ContentHandler):
                 'id'           : 'id_text',
             }
             my_attrs = dict(attrs)
-            for key, remap in vampire_key_remap.iteritems():
-                if key in my_attrs:
-                    my_attrs[remap] = my_attrs.pop(key)
+            map_attributes(vampire_key_remap, my_attrs)
 
             date_fields = ('start_date', 'last_modified')
-            for key in my_attrs.iterkeys():
-                if key in date_fields:
-                    try:
-                        dt = datetime.strptime(my_attrs[key], "%m/%d/%Y %H:%M:%S %p")
-                    except ValueError:
-                        dt = datetime.strptime(my_attrs[key], "%m/%d/%Y")
-                    except ValueError:
-                        dt = datetime.now()
-                    my_attrs[key] = dt
+            map_dates(date_fields, my_attrs)
 
             my_attrs['player'] = self.__user
             v = VampireSheet.objects.create(**my_attrs)
@@ -75,12 +88,17 @@ class VampireLoader(ContentHandler):
         elif name == 'entry':
             if not self.current_experience:
                 raise IOError('Entry without bounding Experience')
-            ent = Mock('ExperienceEntry')#ExperienceEntry()
-            ent.read_attributes(attrs)
-            self.current_experience.add_entry(ent, False)
-
-        elif name == 'entry':
-            pass
+            from pprint import pprint
+            my_attrs = dict(attrs)
+            map_attributes({'type':'change_type'}, my_attrs)
+            map_dates(('date'), my_attrs)
+            if self.last_entry is not None:
+                #print self.last_entry.date
+                if self.last_entry.date >= my_attrs['date']:
+                    #print my_attrs['date']
+                    my_attrs['date'] = self.last_entry.date + timedelta(seconds=1)
+            exp = self.current_vampire.experience_entries.create(**my_attrs)
+            self.last_entry = exp
 
         elif name == 'biography':
             self.reading_biography = True
@@ -100,9 +118,7 @@ class VampireLoader(ContentHandler):
                 raise IOError('Trait without bounding traitlist')
             remap = { 'val' : 'value' }
             my_attrs = dict(attrs)
-            for key, value in remap.iteritems():
-                if key in my_attrs:
-                    my_attrs[value] = my_attrs.pop(key)
+            map_attributes(remap, my_attrs)
             if 'value' in my_attrs:
                 try:
                     # TODO Remember this when handling the menu items
@@ -133,7 +149,7 @@ class VampireLoader(ContentHandler):
             self.reading_biography = False
             if self.current_vampire:
                 self.current_vampire.biography = unescape(self.current_biography)
-                print self.current_biography
+                #print self.current_biography
             self.current_biography = ''
 
         elif name == 'notes':
@@ -141,7 +157,7 @@ class VampireLoader(ContentHandler):
             self.reading_notes = False
             if self.current_vampire:
                 self.current_vampire.notes = unescape(self.current_notes)
-                print self.current_notes
+                #print self.current_notes
             self.current_notes = ''
 
     def characters(self, ch):

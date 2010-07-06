@@ -1,5 +1,5 @@
 # coding=utf-8
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db import models
 from django.conf import settings
@@ -10,6 +10,8 @@ from tagging.fields import TagField
 from tagging.models import Tag
 
 from django.template.defaultfilters import slugify
+
+import collections
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
@@ -69,6 +71,24 @@ def new_comment(sender, instance, **kwargs):
             notification.send([sheet.author], "characters_sheet_comment",
                 {"user": instance.user, "sheet": sheet, "comment": instance})
 models.signals.post_save.connect(new_comment, sender=ThreadedComment)
+
+EXPERIENCE_ENTRY_CHANGE_TYPES = [
+    (0, "Earn"),
+    (1, "Lose"),
+    (2, "Set Earned To"),
+    (3, "Spend"),
+    (4, "Unspend"),
+    (5, "Set Unspent To"),
+    (6, "Comment"),
+]
+
+class ExperienceEntry(models.Model):
+    reason = models.CharField(max_length=128)
+    change = models.FloatField()
+    change_type = models.PositiveSmallIntegerField(default=0, choices=EXPERIENCE_ENTRY_CHANGE_TYPES)
+    earned = models.FloatField()
+    unspent = models.FloatField()
+    date = models.DateTimeField(default=datetime.now)
 
 DISPLAY_PREFERENCES = [
     (0, "name"),
@@ -202,6 +222,12 @@ class Sheet(models.Model):
 
     status = models.CharField(max_length=128)
 
+    last_saved = models.DateTimeField(auto_now=True)
+
+    experience_unspent = models.FloatField(default=0)
+    experience_earned = models.FloatField(default=0)
+    experience_entries = models.ManyToManyField(ExperienceEntry)
+
     def __unicode__(self):
         return self.name
 
@@ -228,6 +254,48 @@ class Sheet(models.Model):
             traitlist_obj.display_order += 1
             traitlist_obj.save()
         TraitList.objects.create(sheet=self, trait=trait, display_order=display_order, name=traitlist_name_obj).save()
+
+    def add_experience_entry(self, entry):
+        try:
+            last_experience_entry = self.experience_entries.all().order_by('-date')[0]
+        except IndexError:
+            last_experience_entry = None
+        self._calculate_earned_unspent_from_last(entry, last_experience_entry)
+        if last_experience_entry is not None:
+            if last_experience_entry.date >= entry.date:
+                entry.date = last_experience_entry.date + timedelta(seconds=1)
+        entry.save()
+        #print "(", entry.unspent, ",", entry.earned, ") ->", entry.change_type
+        self.experience_entries.add(entry)
+        self.experience_unspent = entry.unspent
+        self.experience_earned = entry.earned
+
+    def _calculate_earned_unspent_from_last(self, entry, previous_entry):
+        if previous_entry is None:
+            FauxEntry = collections.namedtuple('FauxEntry', 'unspent earned')
+            previous_entry = FauxEntry(0, 0)
+        entry.unspent = previous_entry.unspent
+        entry.earned = previous_entry.earned
+        if 3 == entry.change_type:
+            entry.unspent = previous_entry.unspent - entry.change
+        elif 0 == entry.change_type:
+            entry.unspent = previous_entry.unspent + entry.change
+            entry.earned = previous_entry.earned + entry.change
+        elif 4 == entry.change_type:
+            entry.unspent = previous_entry.unspent + entry.change
+        elif 1 == entry.change_type:
+            entry.earned = previous_entry.earned - entry.earned
+        elif 2 == entry.change_type:
+            entry.earned = entry.change
+        elif 5 == entry.change_type:
+            entry.unspent = entry.change
+        elif 6:
+            pass
+
+    def update_experience_total(self):
+        entries = self.experience_entries.all().order_by('-date')
+        self.experience_unspent = entries[0].unspent
+        self.experience_earned = entries[0].earned
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())

@@ -1,8 +1,93 @@
 from django.test import TestCase
-from characters.models import Trait, TraitList, Sheet, TraitListName, VampireSheet
+from characters.models import Trait, TraitList, Sheet, TraitListName, VampireSheet, ExperienceEntry
 from django.contrib.auth.models import User
 
 from pprint import pprint
+
+import os
+
+from django.db.models import get_apps
+from xml_uploader import handle_sheet_upload
+
+from crapvine.xml.experience import ExperienceEntry
+from copy import deepcopy
+
+# TODO: Test that ExperienceEntry import order is maintained properly
+
+class ImportTestCase(TestCase):
+    fixtures = ['players']
+
+    def setUp(self):
+        loadfn = 'mcmillan.gex'
+        self.user = User.objects.get(username__exact='Andre')
+
+        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
+        for app_fixture in app_fixtures:
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'r') as fp:
+                    handle_sheet_upload(fp, self.user)
+
+    def testMcMillan(self):
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        entries = self.sheet.experience_entries.all().order_by('date')
+        #for ee in entries:
+        #    #grapevine_ee = ExperienceEntry(reason=ee.reason,
+        #    #                              change=ee.change,
+        #    #                              type=ee.change_type,
+        #    #                              earned=ee.earned,
+        #    #                              unspent=ee.unspent,
+        #    #                              date=ee.date)
+        #    grapevine_ee = ExperienceEntry()
+        #    grapevine_ee.read_attributes(dict((k, str(v)) for k,v in ee.__dict__.iteritems()))
+        #    print grapevine_ee
+        self.assertEquals(entries[1].change, 2)
+        self.assertEquals(entries[2].change, 0.5)
+        self.assertEquals(entries[1].reason, "Attendance")
+        self.assertEquals(entries[2].reason, "Workshop")
+
+        self.assertEquals(self.sheet.experience_unspent, 29)
+        self.assertEquals(self.sheet.experience_earned, 390)
+
+    def testExperienceOrdering(self):
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
+        err = [e.reason for e in self.sheet.experience_entries.all().order_by('-date')]
+        for i, reasons in enumerate(zip(erf, reversed(err))):
+            self.assertEquals(reasons[0], reasons[1])
+        self.assertEquals(erf, list(reversed(err)))
+
+    def testExperienceAdd(self):
+        self.imported_sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.sheet = Sheet.objects.create(
+            name='Michele',
+            player=self.user)
+        for entry in self.imported_sheet.experience_entries.all().order_by('date'):
+            copied_entry = deepcopy(entry)
+            copied_entry.id = None
+            copied_entry.earned = 0
+            copied_entry.unspent = 0
+            #print "(", entry.unspent, ",", entry.earned, ") ->", entry.change_type
+            #print "(", copied_entry.unspent, ",", copied_entry.earned, ") ->", entry.change_type
+            self.sheet.add_experience_entry(copied_entry)
+            #for ee in self.sheet.experience_entries.all().order_by('date'):
+            #    grapevine_ee = ExperienceEntry()
+            #    grapevine_ee.read_attributes(dict((k, str(v)) for k,v in ee.__dict__.iteritems()))
+            #    print grapevine_ee
+            #grapevine_ee = ExperienceEntry()
+            #grapevine_ee.read_attributes(dict((k, str(v)) for k,v in entry.__dict__.iteritems()))
+            #print grapevine_ee
+
+            #print "(", that_entry.unspent, ",", that_entry.earned, ") ->", entry.change_type
+            that_entry = self.sheet.experience_entries.all().order_by('-date')[0]
+            self.assertEquals(entry.unspent, that_entry.unspent)
+            self.assertEquals(entry.earned, that_entry.earned)
+
+        erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
+        err = [e.reason for e in self.sheet.experience_entries.all().order_by('-date')]
+        self.assertEquals(erf, list(reversed(err)), "Reversal of the experience entries is not identical")
+
+        self.assertEquals(self.sheet.experience_unspent, 29)
+        self.assertEquals(self.sheet.experience_earned, 390)
 
 class CharactersTestCase(TestCase):
     def _build_trait(self, name, value, note):
@@ -99,6 +184,17 @@ class SheetTestCase(CharactersTestCase):
         except ValidationError:
             return
         raise AssertionError
+
+    def testAddExperienceEntry(self):
+        entry = ExperienceEntry.objects.create(reason="Test reason",
+                                               change=3.4,
+                                               change_type=0,
+                                               earned=3.4,
+                                               unspent=0)
+        self.sheet.add_experience_entry(entry)
+        retEntry = self.sheet.experience_entries.all()
+        self.assertEquals(entry, retEntry[0])
+        self.assertEquals(entry.change, retEntry[0].change)
 
 class VampireSheetTestCase(SheetTestCase):
     def setUp(self):
