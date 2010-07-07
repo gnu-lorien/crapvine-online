@@ -39,8 +39,10 @@ def list_sheets(request):
 @login_required
 def list_sheet(request, sheet_id):
     sheet = Sheet.objects.get(id=sheet_id, player=request.user)
+    ee = sheet.experience_entries.all().order_by('date')
     return render_to_response(
         'characters/list_sheet.html',
-        {'sheet':sheet},
+        {'sheet':sheet,
+         'experience_entries':ee},
         context_instance=RequestContext(request))
 

@@ -284,5 +284,10 @@
 </tr>
 </tbody>
 </table>
+<table border="0">
+{% for entry in experience_entries %}
+<tr><td>{{entry.change}}</td><td>{{entry.get_change_type_display}}</td><td>{{entry.date}}</td><td>{{entry.reason}}</td></tr>
+{% endfor %}
+</table>
 <p>{{ sheet.note }}</p>
 {% endblock %}
