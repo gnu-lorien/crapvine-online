@@ -46,3 +46,6 @@ def list_sheet(request, sheet_id):
          'experience_entries':ee},
         context_instance=RequestContext(request))
 
+@login_required
+def download_sheet(request, sheet_id):
+    sheet = Sheet.objects.get(id=sheet_id, player=request.user)

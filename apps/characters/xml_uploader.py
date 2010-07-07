@@ -10,16 +10,27 @@ from xml.sax.saxutils import unescape, escape
 from minimock import Mock
 
 from characters.models import Trait, TraitList, Sheet, VampireSheet
+from pprint import pprint
 
-def grapevine_date_to_datetime(grapevine_date):
-    try:
-        dt = datetime.strptime(grapevine_date, "%m/%d/%Y %H:%M:%S %p")
-    except ValueError:
-        dt = datetime.strptime(grapevine_date, "%m/%d/%Y")
-    except ValueError:
-        dt = datetime.now()
+from django.db import IntegrityError
 
-    return dt
+def translate_date(date):
+    if isinstance(date, basestring):
+        try:
+            dt = datetime.strptime(date, "%m/%d/%Y %H:%M:%S %p")
+        except ValueError:
+            dt = datetime.strptime(date, "%m/%d/%Y")
+        except ValueError:
+            dt = datetime.now()
+
+        return dt
+    else:
+        if date.hour == date.minute == date.second == 0:
+            return date.strftime("%m/%d/%Y")
+        else:
+            return date.strftime("%m/%d/%Y %H:%M:%S %p")
+
+    raise TypeError("Expected either a string or datetime.datetime")
 
 def map_attributes(attributes_map, attrs):
     for key, remap in attributes_map.iteritems():
@@ -29,7 +40,81 @@ def map_attributes(attributes_map, attrs):
 def map_dates(dates, attrs):
     for key in attrs.iterkeys():
         if key in dates:
-            attrs[key] = grapevine_date_to_datetime(attrs[key])
+            attrs[key] = translate_date(attrs[key])
+
+VAMPIRE_TAG_RENAMES = {
+    'startdate'    : 'start_date',
+    'lastmodified' : 'last_modified',
+    'id'           : 'id_text',
+}
+VAMPIRE_TAG_DATES = ('start_date', 'last_modified')
+
+ENTRY_TAG_RENAMES = {'type':'change_type'}
+ENTRY_TAG_DATES = ['date']
+
+TRAIT_TAG_RENAMES = { 'val' : 'value' }
+
+from crapvine.types.vampire import Vampire as CrapvineVampire
+from crapvine.xml.trait import TraitList as CrapvineTraitList
+from crapvine.xml.trait import Trait as CrapvineTrait
+from crapvine.xml.experience import Experience as CrapvineExperience
+from crapvine.xml.experience import ExperienceEntry as CrapvineExperienceEntry
+
+class VampireExporter():
+    def __init__(self, vampire_sheet):
+        self.sheet = vampire_sheet
+
+        vamp_attrs = dict((k, str(v)) for k,v in self.sheet.__dict__.iteritems())
+        vamp_attrs['player'] = self.sheet.player.username
+        vamp_attrs['npc'] = 'yes' if self.sheet.npc else 'no'
+        for date_attribute in VAMPIRE_TAG_DATES:
+            vamp_attrs[date_attribute] = translate_date(getattr(self.sheet, date_attribute))
+        reversed_map = dict((v, k) for k, v in VAMPIRE_TAG_RENAMES.iteritems())
+        map_attributes(reversed_map, vamp_attrs)
+        pprint(vamp_attrs)
+        self.vampire = CrapvineVampire()
+        self.vampire.read_attributes(vamp_attrs)
+        pprint(self.vampire.startdate)
+        pprint(self.vampire.npc)
+
+        for tln in self.sheet.get_traitlist_names():
+            tl = TraitList.objects.filter(name__exact=tln).filter(sheet__id__exact=self.sheet.id)[0]
+            tl_attrs = dict((k, str(v)) for k,v in tl.__dict__.iteritems())
+            tl_attrs['name'] = tl.name.name
+            #pprint(tl_attrs)
+            ctl = CrapvineTraitList()
+            ctl.read_attributes(tl_attrs)
+
+            for t in self.sheet.get_traitlist(tl.name.name):
+                t_attrs = dict((k, str(v)) for k,v in t.__dict__.iteritems())
+                map_attributes(dict((v, k) for k, v in TRAIT_TAG_RENAMES.iteritems()), t_attrs)
+                ct = CrapvineTrait()
+                ct.read_attributes(t_attrs)
+                ctl.add_trait(ct)
+
+            self.vampire.add_traitlist(ctl)
+
+        e = CrapvineExperience()
+        e.read_attributes({
+            'unspent':str(self.sheet.experience_unspent),
+            'earned':str(self.sheet.experience_earned)})
+
+        for ee in self.sheet.experience_entries.all():
+            ee_attrs = dict((k, str(v)) for k,v in ee.__dict__.iteritems())
+            for date_attribute in ENTRY_TAG_DATES:
+                ee_attrs[date_attribute] = translate_date(getattr(ee, date_attribute))
+            map_attributes(dict((v, k) for k, v in ENTRY_TAG_RENAMES.iteritems()), ee_attrs)
+            cee = CrapvineExperienceEntry()
+            cee.read_attributes(ee_attrs)
+            e.add_entry(cee)
+
+        self.vampire.add_experience(e)
+
+    def __unicode__(self):
+        return self.vampire.get_xml()
+
+    def __str__(self):
+        return self.vampire.get_xml()
 
 class VampireLoader(ContentHandler):
     def __init__(self, user):
@@ -60,16 +145,9 @@ class VampireLoader(ContentHandler):
         if name == 'vampire':
             if not attrs.has_key('name'):
                 return
-            vampire_key_remap = {
-                'startdate'    : 'start_date',
-                'lastmodified' : 'last_modified',
-                'id'           : 'id_text',
-            }
             my_attrs = dict(attrs)
-            map_attributes(vampire_key_remap, my_attrs)
-
-            date_fields = ('start_date', 'last_modified')
-            map_dates(date_fields, my_attrs)
+            map_attributes(VAMPIRE_TAG_RENAMES, my_attrs)
+            map_dates(VAMPIRE_TAG_DATES, my_attrs)
 
             my_attrs['player'] = self.__user
             v = VampireSheet.objects.create(**my_attrs)
@@ -90,14 +168,19 @@ class VampireLoader(ContentHandler):
                 raise IOError('Entry without bounding Experience')
             from pprint import pprint
             my_attrs = dict(attrs)
-            map_attributes({'type':'change_type'}, my_attrs)
-            map_dates(('date'), my_attrs)
+            map_attributes(ENTRY_TAG_RENAMES, my_attrs)
+            map_dates(ENTRY_TAG_DATES, my_attrs)
             if self.last_entry is not None:
                 #print self.last_entry.date
                 if self.last_entry.date >= my_attrs['date']:
                     #print my_attrs['date']
                     my_attrs['date'] = self.last_entry.date + timedelta(seconds=1)
-            exp = self.current_vampire.experience_entries.create(**my_attrs)
+            try:
+                exp = self.current_vampire.experience_entries.create(**my_attrs)
+            except IntegrityError, e:
+                pprint({'name':name, 'attrs':attrs, 'my_attrs':my_attrs})
+                raise e
+
             self.last_entry = exp
 
         elif name == 'biography':
@@ -116,9 +199,8 @@ class VampireLoader(ContentHandler):
         elif name == 'trait':
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
-            remap = { 'val' : 'value' }
             my_attrs = dict(attrs)
-            map_attributes(remap, my_attrs)
+            map_attributes(TRAIT_TAG_RENAMES, my_attrs)
             if 'value' in my_attrs:
                 try:
                     # TODO Remember this when handling the menu items

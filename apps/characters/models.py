@@ -245,6 +245,12 @@ class Sheet(models.Model):
     def get_traitlist(self, name):
         return self.traits.filter(traitlist__name__name=name).order_by('traitlist__display_order')
 
+    def get_traitlist_names(self):
+        return TraitListName.objects.filter(traitlist__sheet__id__exact=self.id).distinct()
+
+    def get_traitlists(self):
+        return TraitList.objects.filter(sheet__id__exact=self.id).distinct()
+
     def add_trait(self, traitlist_name, trait):
         trait.save()
         try:
@@ -304,9 +310,12 @@ class Sheet(models.Model):
             pass
 
     def update_experience_total(self):
-        entries = self.experience_entries.all().order_by('-date')
-        self.experience_unspent = entries[0].unspent
-        self.experience_earned = entries[0].earned
+        try:
+            entries = self.experience_entries.all().order_by('-date')
+            self.experience_unspent = entries[0].unspent
+            self.experience_earned = entries[0].earned
+        except IndexError:
+            self.experience_unspent = self.experience_earned = 0
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())
@@ -340,6 +349,8 @@ class VampireSheet(Sheet):
     tempselfcontrol = models.PositiveSmallIntegerField(default=0)
     tempwillpower = models.PositiveSmallIntegerField(default=0)
     tempblood = models.PositiveSmallIntegerField(default=0)
+    tempconscience = models.PositiveSmallIntegerField(default=0)
+    temppathtraits = models.PositiveSmallIntegerField(default=0)
 
 
 class TraitList(models.Model):
