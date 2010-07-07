@@ -90,6 +90,14 @@ class ExperienceEntry(models.Model):
     unspent = models.FloatField()
     date = models.DateTimeField(default=datetime.now)
 
+    class Meta:
+        get_latest_by = "date"
+        ordering = ["date"]
+        verbose_name_plural = "experience entries"
+
+    def __unicode__(self):
+        return "<entry %s/>" % " ".join("%s=\"%s\"" % (fn, getattr(self, fn, '')) for fn in ExperienceEntry._meta.get_all_field_names() if fn not in ('id', 'sheet'))
+
 DISPLAY_PREFERENCES = [
     (0, "name"),
     (1, "name xvalue (note)"),
@@ -257,7 +265,7 @@ class Sheet(models.Model):
 
     def add_experience_entry(self, entry):
         try:
-            last_experience_entry = self.experience_entries.all().order_by('-date')[0]
+            last_experience_entry = self.experience_entries.reverse()[0]
         except IndexError:
             last_experience_entry = None
         self._calculate_earned_unspent_from_last(entry, last_experience_entry)
@@ -274,8 +282,11 @@ class Sheet(models.Model):
         if previous_entry is None:
             FauxEntry = collections.namedtuple('FauxEntry', 'unspent earned')
             previous_entry = FauxEntry(0, 0)
+            print "No last entry"
         entry.unspent = previous_entry.unspent
         entry.earned = previous_entry.earned
+        print entry.change_type, "->", entry.get_change_type_display()
+        print "previous_entry:", previous_entry
         if 3 == entry.change_type:
             entry.unspent = previous_entry.unspent - entry.change
         elif 0 == entry.change_type:

@@ -48,13 +48,21 @@ class ImportTestCase(TestCase):
         self.assertEquals(self.sheet.experience_unspent, 29)
         self.assertEquals(self.sheet.experience_earned, 390)
 
-    def testExperienceOrdering(self):
+    def testExperienceReversing(self):
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
         erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
         err = [e.reason for e in self.sheet.experience_entries.all().order_by('-date')]
         for i, reasons in enumerate(zip(erf, reversed(err))):
             self.assertEquals(reasons[0], reasons[1])
         self.assertEquals(erf, list(reversed(err)))
+
+    def testExperienceOrdering(self):
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
+        err = [e.reason for e in self.sheet.experience_entries.all()]
+        for i, reasons in enumerate(zip(erf, err)):
+            self.assertEquals(reasons[0], reasons[1])
+        self.assertEquals(erf, err)
 
     def testExperienceAdd(self):
         self.imported_sheet = Sheet.objects.get(name__exact='Charles McMillan')
