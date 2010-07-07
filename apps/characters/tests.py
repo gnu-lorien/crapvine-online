@@ -9,7 +9,7 @@ import os
 from django.db.models import get_apps
 from xml_uploader import handle_sheet_upload
 
-from crapvine.xml.experience import ExperienceEntry
+from crapvine.xml.experience import ExperienceEntry as CrapvineExperienceEntry
 from copy import deepcopy
 
 # TODO: Test that ExperienceEntry import order is maintained properly
@@ -31,13 +31,13 @@ class ImportTestCase(TestCase):
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
         entries = self.sheet.experience_entries.all().order_by('date')
         #for ee in entries:
-        #    #grapevine_ee = ExperienceEntry(reason=ee.reason,
+        #    #grapevine_ee = CrapvineExperienceEntry(reason=ee.reason,
         #    #                              change=ee.change,
         #    #                              type=ee.change_type,
         #    #                              earned=ee.earned,
         #    #                              unspent=ee.unspent,
         #    #                              date=ee.date)
-        #    grapevine_ee = ExperienceEntry()
+        #    grapevine_ee = CrapvineExperienceEntry()
         #    grapevine_ee.read_attributes(dict((k, str(v)) for k,v in ee.__dict__.iteritems()))
         #    print grapevine_ee
         self.assertEquals(entries[1].change, 2)
@@ -70,10 +70,10 @@ class ImportTestCase(TestCase):
             #print "(", copied_entry.unspent, ",", copied_entry.earned, ") ->", entry.change_type
             self.sheet.add_experience_entry(copied_entry)
             #for ee in self.sheet.experience_entries.all().order_by('date'):
-            #    grapevine_ee = ExperienceEntry()
+            #    grapevine_ee = CrapvineExperienceEntry()
             #    grapevine_ee.read_attributes(dict((k, str(v)) for k,v in ee.__dict__.iteritems()))
             #    print grapevine_ee
-            #grapevine_ee = ExperienceEntry()
+            #grapevine_ee = CrapvineExperienceEntry()
             #grapevine_ee.read_attributes(dict((k, str(v)) for k,v in entry.__dict__.iteritems()))
             #print grapevine_ee
 
@@ -201,7 +201,15 @@ class VampireSheetTestCase(SheetTestCase):
         SheetTestCase.setUp(self)
         self.vampire = VampireSheet.objects.create(
             name='BloodNess',
-            player=self.andrew_player)
+            player=self.andrew_player,
+            blood=10,
+            conscience=4,
+            courage=2,
+            selfcontrol=3,
+            generation=12,
+            pathtraits=3,
+            physicalmax=10,
+            willpower=3)
 
 class TraitTestCase(CharactersTestCase):
     def __myAssertEqual(self, given, expected, extra):
