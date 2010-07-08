@@ -8,11 +8,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from characters.forms import SheetUploadForm
-from characters.models import Sheet
+from characters.models import Sheet, VampireSheet
 
-from xml_uploader import handle_sheet_upload
+from xml_uploader import handle_sheet_upload, VampireExporter
 
 @login_required
 def upload_sheet(request):
@@ -48,4 +49,9 @@ def list_sheet(request, sheet_id):
 
 @login_required
 def download_sheet(request, sheet_id):
-    sheet = Sheet.objects.get(id=sheet_id, player=request.user)
+    sheet = VampireSheet.objects.get(id=sheet_id, player=request.user)
+    response = HttpResponse(mimetype="application/gex")
+    response['Content-Disposition'] = 'attachment; filename=Exchange.gex'
+    ve = VampireExporter(sheet)
+    response.write(ve)
+    return response
