@@ -35,8 +35,8 @@
 {{ sheet.vampiresheet.generation }}<br>
 <b>Blood:</b> {{ sheet.vampiresheet.blood }}<br>
 <b>Will:</b> {{ sheet.vampiresheet.willpower }}<br>
-<b>XP:</b> <%= @character.unspent_experience %>
-(<%= @character.earned_experience %>)</font></td>
+<b>XP:</b> {{ sheet.experience_unspent }}
+({{ sheet.experience_earned }})</font></td>
 </tr>
 </tbody>
 </table>
@@ -77,55 +77,14 @@
 <tbody>
 <tr>
 <td>
-{% with sheet|get_traitlist:"Physical" as traits %}
 <font color="black" size="2">
 <u><b>Physical Traits</b></u>
-({{traits|length}})</font></td>
+({{sheet|get_traitlist:"Physical"|length}})</font></td>
 </tr>
 <tr>
 <td><font color="black" size="1">
-<table>
-{% for trait in traits %}
-<tr><td>{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
-<table>
-{% with sheet|get_traitlist:"Negative Physical" as traits %}
-{% for trait in traits %}
-<tr><td>-{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
-</tr>
-</tbody>
-</table>
-</td>
-<td width="200" valign="top">
-<table valign="top" align="left">
-<tbody>
-<tr>
-<td>
-{% with sheet|get_traitlist:"Social" as traits %}
-<font color="black" size="2">
-<u><b>Social Traits</b></u>
-({{traits|length}})</font></td>
-</tr>
-<tr>
-<td><font color="black" size="1">
-<table>
-{% for trait in traits %}
-<tr><td>{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
-<table>
-{% with sheet|get_traitlist:"Negative Social" as traits %}
-{% for trait in traits %}
-<tr><td>-{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
+{% show_traitlist "Physical" %}
+{% show_traitlist "Negative Physical" "-" %}
 </font></td>
 </tr>
 </tbody>
@@ -137,25 +96,32 @@
 <tr>
 <td>
 <font color="black" size="2">
-{% with sheet|get_traitlist:"Mental" as traits %}
-<u><b>Mental Traits</b></u>
+<u><b>Social Traits</b></u>
 ({{traits|length}})</font></td>
+({{sheet|get_traitlist:"Social"|length}})</font></td>
 </tr>
 <tr>
 <td><font color="black" size="1">
-<table>
-{% for trait in traits %}
-<tr><td>{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
+{% show_traitlist "Social" %}
+{% show_traitlist "Negative Social" "-" %}
+</font></td>
+</tr>
+</tbody>
 </table>
-<table>
-{% with sheet|get_traitlist:"Negative Mental" as traits %}
-{% for trait in traits %}
-<tr><td>-{{ trait }}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
+</td>
+<td width="200" valign="top">
+<table valign="top" align="left">
+<tbody>
+<tr>
+<td>
+<font color="black" size="2">
+<u><b>Mental Traits</b></u>
+({{sheet|get_traitlist:"Mental"|length}})</font></td>
+</tr>
+<tr>
+<td><font color="black" size="1">
+{% show_traitlist "Mental" %}
+{% show_traitlist "Negative Mental" "-" %}
 </font></td>
 </tr>
 </tbody>
@@ -171,18 +137,12 @@
 {% with sheet|get_traitlist:"Abilities" as traits %}
 <u><b>Abilities</b></u>
 ({{traits|length}})</font></td>
+{% endwith %}
 </tr>
 <tr>
-<td>
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tbody>
-{% for trait in traits %}
-<tr><td><font color="black" size="1">{{trait}}</font></tr></td>
-{% endfor %}
-{% endwith %}
-</tbody>
-</table>
-</td>
+<td><font color="black" size="1">
+{% show_traitlist "Abilities" %}
+</font></td>
 </tr>
 </tbody>
 </table>
@@ -196,9 +156,7 @@
 </tr>
 <tr>
 <td><font color="black" size="1">
-{% with sheet|get_traitlist:"Backgrounds" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Backgrounds" %}
 </font></td>
 </tr>
 </tbody>
@@ -213,9 +171,7 @@
 </tr>
 <tr>
 <td><font color="black" size="1">
-{% with sheet|get_traitlist:"Influences" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Influences" %}
 </font></td>
 </tr>
 </tbody>
@@ -232,9 +188,7 @@
 </tr>
 <tr>
 <td><font color="black" size="1">
-{% with sheet|get_traitlist:"Disciplines" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Disciplines" %}
 </font></td>
 </tr>
 </tbody>
@@ -249,17 +203,11 @@
 <tr>
 <td><font color="black" size=
 "1"><i><u>Merits</u></i><br>
-{% with sheet|get_traitlist:"Merits" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Merits" %}
 <i><u>Flaws</u></i><br>
-{% with sheet|get_traitlist:"Flaws" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Flaws" %}
 <i><u>Derangements</u></i><br>
-{% with sheet|get_traitlist:"Derangements" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Derangements" %}
 </tr>
 </tbody>
 </table>
@@ -273,9 +221,7 @@
 </tr>
 <tr>
 <td><font color="black" size="1">
-{% with sheet|get_traitlist:"Status" as traits %}
-{% include "characters/_trait_category.html" %}
-{% endwith %}
+{% show_traitlist "Status" %}
 </font></td>
 </tr>
 </tbody>

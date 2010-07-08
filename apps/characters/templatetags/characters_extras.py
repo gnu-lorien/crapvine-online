@@ -19,3 +19,7 @@ def format_traitlist(traitlist, prepend='', autoescape=None):
     result = '<strong>%s</strong>%s' % (esc(first), esc(other))
     return mark_safe(result)
 format_traitlist.needs_autoescape = True
+
+@register.inclusion_tag("characters/_trait_category.html", takes_context=True)
+def show_traitlist(context, traitlist_name, prepend=""):
+    return {'traits': context['sheet'].get_traitlist(traitlist_name), 'prepend':prepend}
