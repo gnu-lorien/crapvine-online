@@ -1,0 +1,25 @@
+{% extends "chronicles/base.html" %}
+
+{% load i18n %}
+{% load pagination_tags %}
+{% load chronicles_tags %}
+
+{% block head_title %}{% trans "Your Chronicles" %}{% endblock %}
+
+{% block body %}
+    
+    <h1>{% trans "Your Chronicles" %}</h1>
+    
+    <p>{% trans "These are the chronicles you participate in." %}</p>
+        
+    {% autopaginate chronicles %}
+    
+    <dl>
+        {% for chronicle in chronicles %}
+            {% show_chronicle chronicle %}
+        {% endfor %}
+    </dl>
+    
+    {% paginate %}
+    
+{% endblock %}

@@ -403,3 +403,5 @@ def handle_sheet_upload(uploaded_file, user):
     parser.setContentHandler(chronicle_loader)
     parser.setProperty(property_lexical_handler, chronicle_loader)
     parser.parse(uploaded_file)
+
+    return chronicle_loader

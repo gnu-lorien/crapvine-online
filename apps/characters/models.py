@@ -9,6 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 from tagging.models import Tag
 
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+
 from django.template.defaultfilters import slugify
 
 import collections
@@ -235,6 +238,10 @@ class Sheet(models.Model):
     experience_unspent = models.FloatField(default=0)
     experience_earned = models.FloatField(default=0)
     experience_entries = models.ManyToManyField(ExperienceEntry)
+
+    object_id = models.IntegerField(null=True)
+    content_type = models.ForeignKey(ContentType, null=True)
+    group = generic.GenericForeignKey("object_id", "content_type")
 
     def __unicode__(self):
         return self.name

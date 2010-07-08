@@ -15,8 +15,8 @@ crash.
 {% block subnav %}
     {% if user.is_authenticated %}
         <ul>
-            <li><a href="{% url sheet_upload %}">{% trans "Upload Sheet" %}</a></li>
-            <li><a href="{% url sheets_list %}">{% trans "List Sheets" %}</a></li>
+            <li><a href="{% groupurl sheet_upload group %}">{% trans "Upload Sheet" %}</a></li>
+            <li><a href="{% groupurl sheets_list group %}">{% trans "List Sheets" %}</a></li>
         </ul>
     {% else %}
         &nbsp;

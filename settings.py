@@ -181,7 +181,7 @@ INSTALLED_APPS = (
     'profiles',
     'account',
     'signup_codes',
-    'tribes',
+    'chronicles',
     'photos',
     'tag_app',
     'topics',
