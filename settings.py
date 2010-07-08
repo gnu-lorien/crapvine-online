@@ -189,6 +189,7 @@ INSTALLED_APPS = (
 
     # Hate! (for now)
     'characters',
+    'authority',
 
     'django.contrib.admin',
 

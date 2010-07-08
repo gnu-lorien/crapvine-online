@@ -5,6 +5,9 @@ from django.views.generic.simple import direct_to_template
 from django.contrib import admin
 admin.autodiscover()
 
+import authority
+authority.autodiscover()
+
 from account.openid_consumer import PinaxConsumer
 from blog.feeds import BlogFeedAll, BlogFeedUser
 from bookmarks.feeds import BookmarkFeed
@@ -68,6 +71,7 @@ urlpatterns = patterns('',
     (r'^feeds/posts/(.*)/$', 'django.contrib.syndication.views.feed', blogs_feed_dict),
     (r'^feeds/bookmarks/(.*)/?$', 'django.contrib.syndication.views.feed', bookmarks_feed_dict),
     (r'^characters/', include('characters.urls')),
+    (r'^authority/', include('authority.urls')),
 )
 
 ## @@@ for now, we'll use friends_app to glue this stuff together
