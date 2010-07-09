@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test.client import Client
 from characters.models import Trait, TraitList, Sheet, TraitListName, VampireSheet, ExperienceEntry
 from django.contrib.auth.models import User
 
@@ -13,6 +14,8 @@ from crapvine.xml.experience import ExperienceEntry as CrapvineExperienceEntry
 from copy import deepcopy
 
 import django.db.models.fields
+
+from characters.permissions import SheetPermission
 
 import StringIO
 
@@ -37,6 +40,26 @@ class PageViewPermissionsTestCase(TestCase):
         logged_in = self.client.login(username='perpet', password='lorien')
         response = self.client.get("/characters/list_sheet/2/")
         self.assertEqual(response.status_code, 403)
+
+    def testNewSheetView(self):
+        loadfn = 'adamstcharles.gex'
+        c = Client()
+        self.assertTrue(c.login(username='perpet', password='lorien'))
+        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
+        for app_fixture in app_fixtures:
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'r') as f:
+                    c.post("/characters/upload_sheet/",
+                           {'title': 'whocares',
+                            'file': f,
+                            'action': 'upload'})
+        response = c.get("/characters/list_sheet/3/")
+        self.assertEqual(response.status_code, 200, "perpet should be able to access his sheets")
+
+        self.assertTrue(self.client.login(username='lorien', password='lorien'))
+        response = self.client.get("/characters/list_sheet/3/")
+        self.assertEqual(response.status_code, 403, "lorien should not be able to access perpet's sheets")
+
 
 class ExportTestCase(TestCase):
     fixtures = ['players']

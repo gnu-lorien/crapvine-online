@@ -10,6 +10,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
+from authority.decorators import permission_required_or_403
+from authority.views import permission_denied
+from characters.permissions import SheetPermission
+
 from characters.forms import SheetUploadForm
 from characters.models import Sheet, VampireSheet
 
@@ -29,6 +33,10 @@ def upload_sheet(request, group_slug=None, bridge=None):
         form = SheetUploadForm(request.POST, request.FILES)
         if form.is_valid():
             cl = handle_sheet_upload(request.FILES['file'], request.user)
+            sheet_permission = SheetPermission(request.user)
+            for name, vs in cl.vampires.iteritems():
+                s = Sheet.objects.get(id=vs.id)
+                sheet_permission.assign(check=('fullview_sheet'), content_object=s)
             if group:
                 for name, vs in cl.vampires.iteritems():
                     group.associate(vs)
@@ -75,7 +83,11 @@ def list_sheet(request, sheet_id, group_slug=None, bridge=None):
     else:
         group = None
 
-    sheet = Sheet.objects.get(id=sheet_id, player=request.user)
+    sheet = get_object_or_404(Sheet, id=sheet_id)
+    check = SheetPermission(request.user)
+    if not check.has_perm('sheet_permission.fullview_sheet', sheet, approved=True):
+        return permission_denied(request)
+
     ee = sheet.experience_entries.all().order_by('date')
     return render_to_response(
         'characters/list_sheet.html',
