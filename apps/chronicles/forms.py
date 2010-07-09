@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from chronicles.models import Chronicle
+from chronicles.models import Chronicle, ChronicleMember
 
 # @@@ we should have auto slugs, even if suggested and overrideable
 
@@ -41,3 +41,8 @@ class ChronicleUpdateForm(forms.ModelForm):
     class Meta:
         model = Chronicle
         fields = ('name', 'description')
+
+class ChronicleMemberForm(forms.ModelForm):
+    class Meta:
+        model = ChronicleMember
+        fields = ('membership_role', 'membership_role_other')

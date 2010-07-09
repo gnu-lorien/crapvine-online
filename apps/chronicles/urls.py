@@ -15,6 +15,7 @@ urlpatterns = patterns('chronicles.views',
     # chronicle-specific
     url(r'^chronicle/(?P<group_slug>[-\w]+)/$', 'chronicle', name="chronicle_detail"),
     url(r'^chronicle/(?P<group_slug>[-\w]+)/delete/$', 'delete', name="chronicle_delete"),
+    url(r'^chronicle/(?P<group_slug>[-\w]+)/edit_membership/(?P<username>[\w\._-]+)/$', 'edit_membership', name='chronicle_edit_membership'),
 )
 
 urlpatterns += bridge.include_urls('topics.urls', r'^chronicle/(?P<group_slug>[-\w]+)/topics/')

@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
+from authority.views import permission_denied
 
 from django.conf import settings
 
@@ -16,7 +17,7 @@ else:
     notification = None
 
 from chronicles.models import Chronicle, ChronicleMember
-from chronicles.forms import ChronicleForm, ChronicleUpdateForm
+from chronicles.forms import ChronicleForm, ChronicleUpdateForm, ChronicleMemberForm
 
 TOPIC_COUNT_SQL = """
 SELECT COUNT(*)
@@ -39,7 +40,7 @@ def create(request, form_class=ChronicleForm, template_name="chronicles/create.h
         chronicle = chronicle_form.save(commit=False)
         chronicle.creator = request.user
         chronicle.save()
-        chronicle_member = ChronicleMember(chronicle=chronicle, user=request.user)
+        chronicle_member = ChronicleMember(chronicle=chronicle, user=request.user, membership_role=0)
         chronicle.members.add(chronicle_member)
         chronicle_member.save()
         if notification:
@@ -74,7 +75,7 @@ def chronicles(request, template_name="chronicles/chronicles.html"):
         'search_terms': search_terms,
     }, context_instance=RequestContext(request))
 
-
+@login_required
 def delete(request, group_slug=None, redirect_url=None):
     chronicle = get_object_or_404(Chronicle, slug=group_slug)
     if not redirect_url:
@@ -89,6 +90,27 @@ def delete(request, group_slug=None, redirect_url=None):
     
     return HttpResponseRedirect(redirect_url)
 
+@login_required
+def edit_membership(request, group_slug=None, username=None,
+                    form_class=ChronicleMemberForm, template_name="chronicles/edit_membership.html"):
+    chronicle = get_object_or_404(Chronicle, slug=group_slug)
+    if not chronicle.user_is_member(request.user):
+        return permission_denied(request)
+    if 0 != ChronicleMember.objects.filter(user=request.user, chronicle=chronicle)[0].membership_role:
+        return permission_denied(request)
+
+    user = get_object_or_404(User, username=username)
+    if not chronicle.user_is_member(user):
+        return "trying to edit a user that's not a member??? what now?"
+
+    chronicle_membership = ChronicleMember.objects.filter(user=user, chronicle=chronicle)[0]
+    chronicle_membership_form = form_class(request.POST or None, instance=chronicle_membership)
+    if chronicle_membership_form.is_valid():
+        pass
+    return render_to_response(template_name, {
+        "chronicle_membership_form": chronicle_membership_form,
+        "changing_username": user.username,
+    }, context_instance=RequestContext(request))
 
 @login_required
 def your_chronicles(request, template_name="chronicles/your_chronicles.html"):
