@@ -19,6 +19,25 @@ import StringIO
 # TODO: Test that ExperienceEntry import order is maintained properly
 # TODO: Test for escape/unescape/quoteattr side-effects
 
+class PageViewPermissionsTestCase(TestCase):
+    fixtures = ['double_upload']
+
+    def testProperView(self):
+        logged_in = self.client.login(username='lorien', password='lorien')
+        self.assertTrue(logged_in)
+        response = self.client.get("/characters/list_sheet/2/")
+        self.assertEqual(response.status_code, 200)
+
+    def testNoLoginView(self):
+        response = self.client.get("/characters/list_sheet/1/")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["location"], "http://testserver/account/login/?next=/characters/list_sheet/1/")
+
+    def testUnauthorizedView(self):
+        logged_in = self.client.login(username='perpet', password='lorien')
+        response = self.client.get("/characters/list_sheet/2/")
+        self.assertEqual(response.status_code, 403)
+
 class ExportTestCase(TestCase):
     fixtures = ['players']
 
