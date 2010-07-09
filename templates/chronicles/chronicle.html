@@ -22,7 +22,7 @@
             <div class="members">
                 <h2>{% trans "Members" %}</h2>
                 <table width="100%">
-                    {% for member in chronicle.members.all %}
+                    {% for member in chronicle.member_users.all %}
                         {% if forloop.counter0|divisibleby:"3" %}<tr>{% endif %}
                         <td>
                             <div class="avatar">{% avatar member 40 %}</div>
@@ -30,7 +30,7 @@
                         </td>
                         {% if forloop.counter0|add:"1"|divisibleby:"3" %}</tr>{% endif %}
                     {% endfor %}
-                    {% if chronicle.members.all|length|divisibleby:"3" %}{% else %}</tr>{% endif %}
+                    {% if chronicle.member_users.all|length|divisibleby:"3" %}{% else %}</tr>{% endif %}
                 </table>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </form>
             </div>
             
-            {% ifequal chronicle.members.all.count 1 %}
+            {% ifequal chronicle.member_users.all.count 1 %}
                 <p>{% silk "delete" %} <a href="#" onclick="$('#delete_chronicle_form').toggle(); return false;">{% trans "Delete chronicle" %}</a><p>
                  <form class="delete_form" id="delete_chronicle_form" action="{% url chronicle_delete chronicle.slug %}" method="POST" style="display: none;">
                      <input type="submit" value="{% trans "Delete Chronicle" %}" /> (all content will be removed)

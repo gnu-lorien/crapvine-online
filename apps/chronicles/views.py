@@ -15,7 +15,7 @@ if "notification" in settings.INSTALLED_APPS:
 else:
     notification = None
 
-from chronicles.models import Chronicle
+from chronicles.models import Chronicle, ChronicleMember
 from chronicles.forms import ChronicleForm, ChronicleUpdateForm
 
 TOPIC_COUNT_SQL = """
@@ -27,8 +27,8 @@ WHERE
 """
 MEMBER_COUNT_SQL = """
 SELECT COUNT(*)
-FROM chronicles_chronicle_members
-WHERE chronicles_chronicle_members.chronicle_id = chronicles_chronicle.id
+FROM chronicles_chroniclemember
+WHERE chronicles_chroniclemember.chronicle_id = chronicles_chronicle.id
 """
 
 @login_required
@@ -39,8 +39,9 @@ def create(request, form_class=ChronicleForm, template_name="chronicles/create.h
         chronicle = chronicle_form.save(commit=False)
         chronicle.creator = request.user
         chronicle.save()
-        chronicle.members.add(request.user)
-        chronicle.save()
+        chronicle_member = ChronicleMember(chronicle=chronicle, user=request.user)
+        chronicle.members.add(chronicle_member)
+        chronicle_member.save()
         if notification:
             # @@@ might be worth having a shortcut for sending to all users
             notification.send(User.objects.all(), "chronicles_new_chronicle",
@@ -92,7 +93,7 @@ def delete(request, group_slug=None, redirect_url=None):
 @login_required
 def your_chronicles(request, template_name="chronicles/your_chronicles.html"):
     return render_to_response(template_name, {
-        "chronicles": Chronicle.objects.filter(members=request.user).order_by("name"),
+        "chronicles": Chronicle.objects.filter(member_users=request.user).order_by("name"),
     }, context_instance=RequestContext(request))
 
 
@@ -112,18 +113,20 @@ def chronicle(request, group_slug=None, form_class=ChronicleUpdateForm,
         chronicle = chronicle_form.save()
     elif action == 'join':
         if not is_member:
-            chronicle.members.add(request.user)
+            chronicle_member = ChronicleMember(chronicle=chronicle, user=request.user)
+            chronicle.members.add(chronicle_member)
+            chronicle_member.save()
             request.user.message_set.create(
                 message=_("You have joined the chronicle %(chronicle_name)s") % {"chronicle_name": chronicle.name})
             is_member = True
             if notification:
                 notification.send([chronicle.creator], "chronicles_created_new_member", {"user": request.user, "chronicle": chronicle})
-                notification.send(chronicle.members.all(), "chronicles_new_member", {"user": request.user, "chronicle": chronicle})
+                notification.send(chronicle.member_users.all(), "chronicles_new_member", {"user": request.user, "chronicle": chronicle})
         else:
             request.user.message_set.create(
                 message=_("You have already joined chronicle %(chronicle_name)s") % {"chronicle_name": chronicle.name})
     elif action == 'leave':
-        chronicle.members.remove(request.user)
+        ChronicleMember.objects.filter(chronicle=chronicle, user=request.user)[0].delete()
         request.user.message_set.create(message="You have left the chronicle %(chronicle_name)s" % {"chronicle_name": chronicle.name})
         is_member = False
         if notification:

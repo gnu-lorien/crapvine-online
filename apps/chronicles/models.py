@@ -8,10 +8,26 @@ from characters.models import Sheet
 
 class Chronicle(Group):
     
-    members = models.ManyToManyField(User, related_name='chronicles', verbose_name=_('members'))
+    member_users = models.ManyToManyField(User, through='ChronicleMember', verbose_name=_('members'))
+
+    private = models.BooleanField(_('private'), default=False)
     
     def get_absolute_url(self):
         return reverse('chronicle_detail', kwargs={'group_slug': self.slug})
-    
+
+    def member_queryset(self):
+        return self.member_users.all()
+
+    def user_is_member(self, user):
+        return ChronicleMember.objects.filter(chronicle=self, user=user).count() > 0
+
     def get_url_kwargs(self):
         return {'group_slug': self.slug}
+
+class ChronicleMember(models.Model):
+    chronicle = models.ForeignKey(Chronicle, related_name="members", verbose_name=_('chronicle'))
+    user = models.ForeignKey(User, related_name='chronicles', verbose_name=_('user'))
+
+    CHOICES = zip(range(5), ('storyteller', 'narrator', 'player', 'travelling_player', 'other'))
+    membership_role = models.PositiveSmallIntegerField(choices=CHOICES, default=2)
+    membership_role_other = models.CharField(default='', max_length=128)
