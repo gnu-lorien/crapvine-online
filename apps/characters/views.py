@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-from authority.decorators import permission_required_or_403
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
