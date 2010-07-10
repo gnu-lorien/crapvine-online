@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load uni_form %}
 
-<form class="uniForm" id="chronicle_form" method="POST" action="">
+<form class="uniForm" id="chronicle_form" method="POST" action="{% url sheet_vampire_edit_attributes sheet.id %}">
     <fieldset class="inlineLabels">
         {{ form|as_uni_form }}
         <div class="form_block">
