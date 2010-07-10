@@ -211,6 +211,7 @@ class Expendable(models.Model):
 
 class TraitListName(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    slug = models.SlugField()
 
     def __unicode__(self):
         return self.name
@@ -265,7 +266,7 @@ class Sheet(models.Model):
         try:
             traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         except TraitListName.DoesNotExist:
-            traitlist_name_obj = TraitListName.objects.create(name=traitlist_name)
+            traitlist_name_obj = TraitListName.objects.create(name=traitlist_name, slug=slugify(traitlist_name))
         traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj).order_by('display_order')
         TraitList.objects.create(sheet=self, trait=trait, display_order=len(traitlist), name=traitlist_name_obj).save()
 

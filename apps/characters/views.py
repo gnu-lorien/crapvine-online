@@ -14,7 +14,8 @@ from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
 from characters.forms import SheetUploadForm, VampireSheetAttributesForm, VampireSheetTraitListForm
-from characters.models import Sheet, VampireSheet
+from django.forms.models import modelformset_factory
+from characters.models import Sheet, VampireSheet, TraitListName, Trait
 
 from xml_uploader import handle_sheet_upload, VampireExporter
 
@@ -127,7 +128,7 @@ def edit_vampire_sheet_attributes(request, sheet_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def edit_vampire_sheet_traitlist(request, sheet_id,
+def edit_vampire_sheet_traitlist(request, sheet_id, traitlistname_slug,
                                   form_closs=VampireSheetTraitListForm, **kwargs):
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_traitlist.html")
 
@@ -137,13 +138,21 @@ def edit_vampire_sheet_traitlist(request, sheet_id,
             "characters/vampires/edit_vampire_sheet_traitlist_facebox.html",
         )
 
-    vampire_sheet = VampireSheet.objects.get(id=sheet_id)
-    form = VampireSheetTraitListForm(request.POST or None, instance=vampire_sheet)
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+    vampire_sheet = get_object_or_404(VampireSheet, id=sheet_id)
+    tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    tl = vampire_sheet.get_traitlist(tln.name)
+    TraitFormSet = modelformset_factory(Trait, extra=0, exclude=('approved'))
+    if request.method == "POST":
+        formset = TraitFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+    else:
+        formset = TraitFormSet(queryset=tl)
 
     return render_to_response(template_name, {
         'sheet': vampire_sheet,
-        'form': form,
+        'traitlistname': tln,
+        'traitlist': tl,
+        'formset': formset,
     }, context_instance=RequestContext(request))

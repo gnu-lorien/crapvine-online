@@ -2,7 +2,7 @@ from datetime import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from characters.models import Sheet, VampireSheet, TraitList
+from characters.models import Sheet, VampireSheet, TraitList, Trait
 
 class SheetUploadForm(forms.Form):
     title = forms.CharField(max_length=128)
@@ -16,3 +16,7 @@ class VampireSheetAttributesForm(forms.ModelForm):
 class VampireSheetTraitListForm(forms.ModelForm):
     class Meta:
         model = TraitList
+
+class TraitForm(forms.ModelForm):
+    class Meta:
+        model = Trait

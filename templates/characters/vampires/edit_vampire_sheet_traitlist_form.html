@@ -3,7 +3,11 @@
 
 <form class="uniForm" id="chronicle_form" method="POST" action="">
     <fieldset class="inlineLabels">
-        {{ form|as_uni_form }}
+        {{ formset.management_form }}
+        {% for form in formset.forms %}
+            {{ form|as_uni_form}}
+            <hr>
+        {% endfor %}
         <div class="form_block">
             <input type="hidden" name="action" value="update_traitlist" />
             <input type="submit" value="{% trans 'update' %}"/>
