@@ -1,0 +1,37 @@
+{% extends "chronicles/base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+{% load wiki_tags %}
+{% load avatar_tags %}
+{% load threadedcommentstags %}
+{% load pagination_tags %}
+{% load extra_tagging_tags %}
+{% load chronicles_tags %}
+{% load group_tags %}
+{% load topics_tags %}
+{% load photo_tags %}
+{% load theme_tags %}
+
+{% block head_title %}{{ chronicle.name }}{% endblock %}
+
+{% block body %}
+    <div style="width: 550px;">
+        <h1>{% trans "Chronicle Members" %} {{ chronicle.name }}</h1>
+        <div class="members">
+            <h2>{% trans "Members" %}</h2>
+            <table width="100%">
+                {% for member in chronicle.member_users.all %}
+                    {% if forloop.counter0|divisibleby:"3" %}<tr>{% endif %}
+                    <td>
+                        <div class="avatar">{% avatar member 40 %}</div>
+                        <div class="details"><a href="{% url profile_detail member.username %}" title="{{ member.username }}">{{ member.username }}</a> <a href="{% url chronicle_edit_membership chronicle.slug member.username %}" rel="facebox">Edit Membership</a></div>
+                    </td>
+                    {% if forloop.counter0|add:"1"|divisibleby:"3" %}</tr>{% endif %}
+                {% endfor %}
+                {% if chronicle.member_users.all|length|divisibleby:"3" %}{% else %}</tr>{% endif %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

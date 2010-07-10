@@ -1,58 +1,51 @@
 from django.test import TestCase
+from django.db.models import get_apps
+import os
+from characters.xml_uploader import handle_sheet_upload
 
-from tribes.models import Tribe
+from django.contrib.auth.models import User
 
-class TribesTest(TestCase):
-    fixtures = ["tribes_auth.json"]
-    
-    def test_unauth_create_get(self):
-        """can an unauth'd user get to page?"""
-        
-        response = self.client.get("/tribes/create/")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["location"], "http://testserver/account/login?next=/tribes/create/")
-    
-    def test_auth_create_get(self):
-        """can an auth'd user get to page?"""
-        
-        logged_in = self.client.login(username="tester", password="tester")
-        self.assertTrue(logged_in)
-        response = self.client.get("/tribes/create/")
-        self.assertEqual(response.status_code, 200)
-    
-    def test_unauth_create_post(self):
-        """can an unauth'd user post to create a new tribe?"""
-        
-        response = self.client.post("/tribes/create/")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["location"], "http://testserver/account/login?next=/tribes/create/")
-    
-    def test_auth_create_post(self):
-        """can an auth'd user post to create a new tribe?"""
-        
-        logged_in = self.client.login(username="tester", password="tester")
-        self.assertTrue(logged_in)
-        response = self.client.post("/tribes/create/", {
-            "slug": "test",
-            "name": "Test Tribe",
-            "description": "A test tribe.",
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["location"], "http://testserver/tribes/tribe/test/")
-        self.assertEqual(Tribe.objects.get(slug="test").creator.username, "tester")
-        self.assertEqual(Tribe.objects.get(slug="test").members.all()[0].username, "tester")
-    
-    def test_auth_creator_membership(self):
-        """is membership for creator correct?"""
-        
-        logged_in = self.client.login(username="tester", password="tester")
-        self.assertTrue(logged_in)
-        response = self.client.post("/tribes/create/", {
-            "slug": "test",
-            "name": "Test Tribe",
-            "description": "A test tribe.",
-        })
-        response = self.client.get("/tribes/tribe/test/")
-        self.assertEqual(Tribe.objects.get(slug="test").creator.username, "tester")
-        self.assertEqual(Tribe.objects.get(slug="test").members.all()[0].username, "tester")
-        self.assertEqual(response.context[0]["is_member"], True)
+from chronicles.models import Chronicle
+
+from pprint import pprint
+
+class ChronicleCharacterListTest(TestCase):
+    fixtures = ['woa_hst_nar_pla_no_characters']
+    def _load_sheet(self, loadfn, user):
+        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
+        for app_fixture in app_fixtures:
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'r') as fp:
+                    return handle_sheet_upload(fp, user)
+
+    def setUp(self):
+        self.chronicle = Chronicle.objects.get(slug='woa')
+        self.hst = User.objects.get(username='hst')
+        self.nar = User.objects.get(username='nar')
+        self.play = User.objects.get(username='play')
+
+        self.hstnpccl = self._load_sheet('npc.gex', self.hst)
+        self.hstpc2cl = self._load_sheet('pc2.gex', self.hst)
+        self.playpc1cl = self._load_sheet('pc1.gex', self.play)
+
+        for name, vs in self.hstnpccl.vampires.iteritems():
+            self.chronicle.associate(vs)
+        for name, vs in self.playpc1cl.vampires.iteritems():
+            self.chronicle.associate(vs)
+
+    def testHST(self):
+        sheets = self.chronicle.get_sheets_for_user(self.hst)
+        self.assertEqual(2, len(sheets))
+        names = [s.name for s in sheets]
+        self.assertTrue('Charles McMillan' in names)
+        self.assertTrue('Adam St. Charles' in names)
+
+    def testNar(self):
+        sheets = self.chronicle.get_sheets_for_user(self.nar)
+        self.assertEqual(0, len(sheets))
+
+    def testPlay(self):
+        sheets = self.chronicle.get_sheets_for_user(self.play)
+        self.assertEqual(1, len(sheets))
+        names = [s.name for s in sheets]
+        self.assertTrue('Charles McMillan' in names)

@@ -1,12 +1,6 @@
 {% extends "chronicles/base.html" %}
 
 {% load i18n %}
-{% load uni_form %}
-{% load humanize %}
-{% load pagination_tags %}
-{% load order_by %}
-{% load extra_tagging_tags %}
-{% load chronicles_tags %}
 
 {% block head_title %}{% blocktrans %}Edit Chronicle Membership{% endblocktrans %}{% endblock %}
 
@@ -14,20 +8,9 @@
     <h1>{% trans "Edit Chronicle Membership" %}</h1>
     
     <p>{% trans "A <b>chronicle</b> is a group of people with some common interest." %}</p>
-    {% if user.is_authenticated %}
-        <h2>{% trans "Editing" %} {{changing_username}}</h2>
-        <form class="uniForm" id="chronicle_form" method="POST" action="">
-            <fieldset class="inlineLabels">
-                {{ chronicle_membership_form|as_uni_form }}
-                <div class="form_block">
-                    <input type="submit" value="{% trans 'create' %}"/>
-                </div>
-            </fieldset>
-        </form>
-    {% else %}
-        {% url acct_signup as signup_url %}
-        {% url acct_login as login_url %}
-        <p>{% blocktrans %}<a href="{{ signup_url }}">Sign up</a> and <a href="{{ login_url }}">log in </a> to create your own chronicle or join an existing one.{% endblocktrans %}</p>
-    {% endif %}
+
+    <h2>{% trans "Editing" %} {{changing_username}}</h2>
+
+    {% include "chronicles/edit_membership_form.html" %}
     
 {% endblock %}

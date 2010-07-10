@@ -32,6 +32,7 @@
                     {% endfor %}
                     {% if chronicle.member_users.all|length|divisibleby:"3" %}{% else %}</tr>{% endif %}
                 </table>
+                <a href="{% url chronicle_members chronicle.slug %}">All Members</a>
             </div>
         </div>
     {% endif %}

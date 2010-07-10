@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load uni_form %}
+
+<form class="uniForm" id="chronicle_form" method="POST" action="{% url chronicle_edit_membership chronicle.slug member.username %}">
+    <fieldset class="inlineLabels">
+        {{ chronicle_membership_form|as_uni_form }}
+        <div class="form_block">
+            <input type="hidden" name="action" value="update" />
+            <input type="submit" value="{% trans 'update' %}"/>
+        </div>
+    </fieldset>
+</form>

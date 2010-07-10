@@ -62,7 +62,7 @@ def list_sheets(request, group_slug=None, bridge=None):
         group = None
 
     if group:
-        sheets = group.content_objects(Sheet)
+        sheets = group.get_sheets_for_user(request.user)
     else:
         sheets = Sheet.objects.all()
     sheets = sheets.filter(player__exact=request.user)

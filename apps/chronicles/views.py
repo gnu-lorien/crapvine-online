@@ -92,7 +92,15 @@ def delete(request, group_slug=None, redirect_url=None):
 
 @login_required
 def edit_membership(request, group_slug=None, username=None,
-                    form_class=ChronicleMemberForm, template_name="chronicles/edit_membership.html"):
+                    form_class=ChronicleMemberForm, **kwargs):
+    template_name = kwargs.get("template_name", "chronicles/edit_membership.html")
+
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "chronicles/edit_membership_facebox.html"
+        )
+
     chronicle = get_object_or_404(Chronicle, slug=group_slug)
     if not chronicle.user_is_member(request.user):
         return permission_denied(request)
@@ -105,11 +113,16 @@ def edit_membership(request, group_slug=None, username=None,
 
     chronicle_membership = ChronicleMember.objects.filter(user=user, chronicle=chronicle)[0]
     chronicle_membership_form = form_class(request.POST or None, instance=chronicle_membership)
-    if chronicle_membership_form.is_valid():
-        pass
+    if chronicle_membership_form.is_valid() and request.method == "POST":
+        chronicle_membership = chronicle_membership_form.save()
+        chronicle_membership.save()
+        return HttpResponseRedirect(reverse("chronicle_members", args=[group_slug]))
+
     return render_to_response(template_name, {
         "chronicle_membership_form": chronicle_membership_form,
         "changing_username": user.username,
+        "member": user,
+        "chronicle": chronicle,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -118,6 +131,11 @@ def your_chronicles(request, template_name="chronicles/your_chronicles.html"):
         "chronicles": Chronicle.objects.filter(member_users=request.user).order_by("name"),
     }, context_instance=RequestContext(request))
 
+@login_required
+def list_members(request, group_slug=None, template_name="chronicles/list_members.html"):
+    return render_to_response(template_name, {
+        "chronicle": get_object_or_404(Chronicle, slug=group_slug),
+    }, context_instance=RequestContext(request))
 
 def chronicle(request, group_slug=None, form_class=ChronicleUpdateForm,
         template_name="chronicles/chronicle.html"):

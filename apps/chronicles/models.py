@@ -24,6 +24,15 @@ class Chronicle(Group):
     def get_url_kwargs(self):
         return {'group_slug': self.slug}
 
+    def get_sheets_for_user(self, user):
+        if not self.user_is_member(user):
+            return []
+
+        cm = ChronicleMember.objects.get(user=user, chronicle=self)
+        if 0 == cm.membership_role:
+            return self.content_objects(Sheet)
+        return self.content_objects(Sheet).filter(player=user)
+
 class ChronicleMember(models.Model):
     chronicle = models.ForeignKey(Chronicle, related_name="members", verbose_name=_('chronicle'))
     user = models.ForeignKey(User, related_name='chronicles', verbose_name=_('user'))
