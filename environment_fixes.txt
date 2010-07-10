@@ -1,3 +1,5 @@
 Applied a fix to the paginator so that hashtag would default to '' rather than None
 
 Applied a fix to the django test client http://code.djangoproject.com/attachment/ticket/12720/django-test-client-cookie-fix.patch
+
+Install django-reversion-1.1.2

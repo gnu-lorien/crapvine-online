@@ -98,6 +98,7 @@ MIDDLEWARE_CLASSES = (
     'djangodblog.middleware.DBLogMiddleware',
     'pinax.middleware.security.HideSensistiveFieldsMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
 
 ROOT_URLCONF = 'test-crapvine-online.urls'
@@ -188,6 +189,7 @@ INSTALLED_APPS = (
     'groups',
 
     # Hate! (for now)
+    'reversion',
     'characters',
     'authority',
 
