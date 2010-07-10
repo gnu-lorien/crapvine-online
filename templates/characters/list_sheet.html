@@ -78,9 +78,8 @@
 <tbody>
 <tr>
 <td>
-<font color="black" size="2">
-<u><b>Physical Traits<a href="{% url sheet_vampire_edit_traitlist sheet.id "Physical"|slugify %}" rel="facebox">Edit</a></b></u>
-({{sheet|get_traitlist:"Physical"|length}})</font></td>
+{% trait_category_header "Physical" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -96,10 +95,8 @@
 <tbody>
 <tr>
 <td>
-<font color="black" size="2">
-<u><b>Social Traits</b></u>
-({{traits|length}})</font></td>
-({{sheet|get_traitlist:"Social"|length}})</font></td>
+{% trait_category_header "Social" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -115,9 +112,8 @@
 <tbody>
 <tr>
 <td>
-<font color="black" size="2">
-<u><b>Mental Traits</b></u>
-({{sheet|get_traitlist:"Mental"|length}})</font></td>
+{% trait_category_header "Mental" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -134,11 +130,9 @@
 <table valign="top" align="left">
 <tbody>
 <tr>
-<td width="35%"><font color="black" size="2">
-{% with sheet|get_traitlist:"Abilities" as traits %}
-<u><b>Abilities</b></u>
-({{traits|length}})</font></td>
-{% endwith %}
+<td width="35%">
+{% trait_category_header "Abilities" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -152,8 +146,9 @@
 <table valign="top" align="left">
 <tbody>
 <tr>
-<td><font color="black" size="2">
-<u><b>Backgrounds</b></u></font></td>
+<td>
+{% trait_category_header "Backgrounds" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -167,8 +162,9 @@
 <table valign="top" align="left">
 <tbody>
 <tr>
-<td><font color="black" size=
-"2"><u><b>Influences</b></u></font></td>
+<td>
+{% trait_category_header "Influences" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -184,8 +180,9 @@
 <table valign="top" align="left">
 <tbody>
 <tr>
-<td><font color="black" size=
-"2"><u><b>Disciplines</b></u></font></td>
+<td>
+{% trait_category_header "Disciplines" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">
@@ -217,8 +214,9 @@
 <table valign="top" align="left">
 <tbody>
 <tr>
-<td><font color="black" size="2">
-<u><b>Status</b></u></font></td>
+<td>
+{% trait_category_header "Status" %}
+</td>
 </tr>
 <tr>
 <td><font color="black" size="1">

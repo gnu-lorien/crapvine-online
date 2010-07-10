@@ -1,5 +1,19 @@
+{% load i18n %}
+{% load openid_tags %}
+{% load ifsetting_tag %}
+{% load analytics %}
+
 <table>
 {% for trait in traits %}
-<tr><td>{{prepend}}{{trait}}</td></tr>
+<tr>
+<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_edit.png" /></td>
+<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_delete.png" /></td>
+<td>{{prepend}}{{trait}}</td>
+</tr>
 {% endfor %}
+<tr>
+<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" /></td>
+<td> </td>
+<td> </td>
+</tr>
 </table>

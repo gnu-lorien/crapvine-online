@@ -1,0 +1,6 @@
+{% load characters_extras %}
+
+<font color="black" size="2">
+<u><b>{{traitlistname.name}}<a href="{% url sheet_vampire_edit_traitlist sheet.id traitlistname.slug %}" rel="facebox">Edit</a></b></u>
+({{sheet|get_traitlist:traitlistname.name|length}})
+</font>
