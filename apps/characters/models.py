@@ -123,6 +123,8 @@ class Trait(models.Model):
     display_preference = models.SmallIntegerField(default=1, choices=DISPLAY_PREFERENCES)
     dot_character = models.CharField(max_length=8, default='O')
 
+    approved = models.BooleanField(default=False)
+
     def __show_note(self):
         return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
     def __show_val(self):
@@ -329,25 +331,25 @@ class Sheet(models.Model):
         super(Sheet, self).save(*args, **kwargs)
 
 class VampireSheet(Sheet):
-    nature = models.CharField(max_length=128)
-    demeanor = models.CharField(max_length=128)
+    nature = models.CharField(max_length=128, blank=True)
+    demeanor = models.CharField(max_length=128, blank=True)
     blood = models.PositiveSmallIntegerField()
-    clan = models.CharField(max_length=128)
+    clan = models.CharField(max_length=128, blank=True)
     conscience = models.PositiveSmallIntegerField()
     courage = models.PositiveSmallIntegerField()
     generation = models.PositiveSmallIntegerField()
-    path = models.CharField(max_length=128)
+    path = models.CharField(max_length=128, blank=True)
     pathtraits = models.PositiveSmallIntegerField()
     physicalmax = models.PositiveSmallIntegerField()
-    sect = models.CharField(max_length=128, default='')
+    sect = models.CharField(max_length=128, default='', blank=True)
     selfcontrol = models.PositiveSmallIntegerField()
     willpower = models.PositiveSmallIntegerField()
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=128, blank=True)
 
     aura = models.SmallIntegerField(default=0)
-    coterie = models.CharField(max_length=128, default='')
-    id_text = models.CharField(max_length=128, default='')
-    sire = models.CharField(max_length=128, default='')
+    coterie = models.CharField(max_length=128, default='', blank=True)
+    id_text = models.CharField(max_length=128, default='', blank=True)
+    sire = models.CharField(max_length=128, default='', blank=True)
 
     # These need to actually default to whatever value was just set for their permanents
     # Or... better yet... get turned into something that doesn't blow since we have this

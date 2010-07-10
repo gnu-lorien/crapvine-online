@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, VampireSheetTraitListForm
 from characters.models import Sheet, VampireSheet
 
 from xml_uploader import handle_sheet_upload, VampireExporter
@@ -103,3 +103,47 @@ def download_sheet(request, sheet_id):
     ve = VampireExporter(sheet)
     response.write(ve)
     return response
+
+@login_required
+def edit_vampire_sheet_attributes(request, sheet_id,
+                                  form_closs=VampireSheetAttributesForm, **kwargs):
+    template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_attributes.html")
+
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/vampires/edit_vampire_sheet_attributes_facebox.html",
+        )
+
+    vampire_sheet = VampireSheet.objects.get(id=sheet_id)
+    form = VampireSheetAttributesForm(request.POST or None, instance=vampire_sheet)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+
+    return render_to_response(template_name, {
+        'sheet': vampire_sheet,
+        'form': form,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def edit_vampire_sheet_traitlist(request, sheet_id,
+                                  form_closs=VampireSheetTraitListForm, **kwargs):
+    template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_traitlist.html")
+
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/vampires/edit_vampire_sheet_traitlist_facebox.html",
+        )
+
+    vampire_sheet = VampireSheet.objects.get(id=sheet_id)
+    form = VampireSheetTraitListForm(request.POST or None, instance=vampire_sheet)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+
+    return render_to_response(template_name, {
+        'sheet': vampire_sheet,
+        'form': form,
+    }, context_instance=RequestContext(request))

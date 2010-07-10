@@ -1,0 +1,16 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Edit Vampire Sheet Attributes{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Edit Vampire Sheet Attributes" %}</h1>
+    
+    <p>{% trans "A <b>chronicle</b> is a group of people with some common interest." %}</p>
+
+    <h2>{% trans "Editing" %} {{changing_username}}</h2>
+
+    {% include "characters/vampires/edit_vampire_sheet_attributes_form.html" %}
+    
+{% endblock %}
