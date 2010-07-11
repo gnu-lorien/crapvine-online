@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load uni_form %}
 
-<form class="uniForm" id="chronicle_form" method="POST" action="{% url sheet_vampire_edit_traitlist sheet.id traitlistname.slug %}">
+<form class="uniForm" id="edit_traitlist_form" method="POST" action="{% url sheet_edit_traitlist sheet.id traitlistname.slug %}">
     <fieldset class="inlineLabels">
         {{ formset.management_form }}
         {% for form in formset.forms %}

@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, VampireSheetTraitListForm, TraitForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitListForm, TraitForm
 from django.forms.models import modelformset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait
 
@@ -127,36 +127,6 @@ def edit_vampire_sheet_attributes(request, sheet_id,
         'form': form,
     }, context_instance=RequestContext(request))
 
-@login_required
-def edit_vampire_sheet_traitlist(request, sheet_id, traitlistname_slug,
-                                 form_closs=VampireSheetTraitListForm, **kwargs):
-    template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_traitlist.html")
-
-    if request.is_ajax():
-        template_name = kwargs.get(
-            "template_name_facebox",
-            "characters/vampires/edit_vampire_sheet_traitlist_facebox.html",
-        )
-
-    vampire_sheet = get_object_or_404(VampireSheet, id=sheet_id)
-    tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
-    tl = vampire_sheet.get_traitlist(tln.name)
-    TraitFormSet = modelformset_factory(Trait, extra=0, exclude=('approved'))
-    if request.method == "POST":
-        formset = TraitFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            formset.save()
-            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
-    else:
-        formset = TraitFormSet(queryset=tl)
-
-    return render_to_response(template_name, {
-        'sheet': vampire_sheet,
-        'traitlistname': tln,
-        'traitlist': tl,
-        'formset': formset,
-    }, context_instance=RequestContext(request))
-
 def can_edit_sheet(request, sheet):
     if request.user == sheet.player:
         return True
@@ -171,10 +141,59 @@ def can_edit_sheet(request, sheet):
         pass
 
     check = SheetPermission(request.user)
-    if not check.has_perm('sheet_permission.change_sheet', sheet, approved=True):
-        return False
+    if check.has_perm('sheet_permission.change_sheet', sheet, approved=True):
+        return True
 
     return False
+
+def can_delete_sheet(request, sheet):
+    return can_edit_sheet(request, sheet)
+
+@login_required
+def edit_traitlist(request, sheet_id, traitlistname_slug,
+                   group_slug=None, bridge=None,
+                   form_closs=TraitListForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+    else:
+        sheet = get_object_or_404(Sheet, id=sheet_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+    template_name = kwargs.get("template_name", "characters/traits/edit_traitlist.html")
+
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/edit_traitlist_facebox.html",
+        )
+
+    tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    tl = sheet.get_traitlist(tln.name)
+    TraitFormSet = modelformset_factory(Trait, extra=0, exclude=('approved'))
+    if request.method == "POST":
+        formset = TraitFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+    else:
+        formset = TraitFormSet(queryset=tl)
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'traitlistname': tln,
+        'traitlist': tl,
+        'formset': formset,
+    }, context_instance=RequestContext(request))
 
 @login_required
 def edit_trait(request, sheet_id, trait_id,

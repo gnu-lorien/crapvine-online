@@ -1,0 +1,14 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Edit Trait List{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Edit Trait List" %}</h1>
+    
+    <h2>{% trans "Editing" %} {{traitlistname.name}}</h2>
+
+    {% include "characters/traits/edit_traitlist_form.html" %}
+    
+{% endblock %}
