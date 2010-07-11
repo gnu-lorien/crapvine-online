@@ -222,9 +222,9 @@ class Sheet(models.Model):
     player = models.ForeignKey(User, related_name='personal_characters')
     #narrator = models.ForeignKey(User, related_name='narrated_characters')
     # TODO Change this to support narrators in and outside of the database?
-    narrator = models.CharField(max_length=128)
+    narrator = models.CharField(max_length=128, default='', blank=True)
     slug = models.SlugField()
-    home_chronicle = models.CharField(max_length=128) # Make this refer to a real thing from another app
+    home_chronicle = models.CharField(max_length=128, default='', blank=True) # Make this refer to a real thing from another app
 
     start_date = models.DateTimeField(default=datetime.now)
     last_modified = models.DateTimeField(default=datetime.now)

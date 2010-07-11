@@ -1,6 +1,7 @@
 from datetime import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin import widgets
 
 from characters.models import Sheet, VampireSheet, TraitList, Trait, DISPLAY_PREFERENCES
 
@@ -11,7 +12,7 @@ class SheetUploadForm(forms.Form):
 class VampireSheetAttributesForm(forms.ModelForm):
     class Meta:
         model = VampireSheet
-        fields=("nature", "demeanor", "blood", "clan", "conscience", "courage", "generation", "path", "pathtraits", "physicalmax", "sect", "selfcontrol", "willpower", "title", "aura", "coterie", "sire")
+        exclude = ("last_modified", "experience_unspent", "experience_earned", "object_id", "content_type", "traits", "experience_entries")
 
 class TraitListForm(forms.ModelForm):
     class Meta:
