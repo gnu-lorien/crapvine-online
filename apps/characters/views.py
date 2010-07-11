@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitListForm, TraitForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListDisplayForm
 from django.forms.models import modelformset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait
 
@@ -152,7 +152,7 @@ def can_delete_sheet(request, sheet):
 @login_required
 def edit_traitlist(request, sheet_id, traitlistname_slug,
                    group_slug=None, bridge=None,
-                   form_closs=TraitListForm, **kwargs):
+                   form_class=TraitListDisplayForm, **kwargs):
     if bridge is not None:
         try:
             group = bridge.get_group(group_slug)
@@ -179,20 +179,18 @@ def edit_traitlist(request, sheet_id, traitlistname_slug,
 
     tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
     tl = sheet.get_traitlist(tln.name)
-    TraitFormSet = modelformset_factory(Trait, extra=0, exclude=('approved'))
-    if request.method == "POST":
-        formset = TraitFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            formset.save()
-            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
-    else:
-        formset = TraitFormSet(queryset=tl)
+    form = form_class(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        for t in tl:
+            t.display_preference = form.cleaned_data['display']
+            t.save()
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
         'traitlistname': tln,
         'traitlist': tl,
-        'formset': formset,
+        'form': form,
     }, context_instance=RequestContext(request))
 
 @login_required

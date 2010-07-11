@@ -1,6 +1,6 @@
 {% load characters_extras %}
 
 <font color="black" size="2">
-<u><b>{{traitlistname.name}}<a href="{% url sheet_edit_traitlist sheet.id traitlistname.slug %}" rel="facebox">Edit</a></b></u>
+<u><b>{{traitlistname.name}}</b></u><a href="{% url sheet_edit_traitlist sheet.id traitlistname.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/report_edit.png" /></a>
 ({{sheet|get_traitlist:traitlistname.name|length}})
 </font>
