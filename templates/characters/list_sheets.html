@@ -6,9 +6,9 @@
 {% block head_title %}{% blocktrans %}Upload Character Sheet{% endblocktrans %}{% endblock %}
 
 {% block body %}
-    <ul>
+    <table>
     {% for sheet in sheets %}
-        <li><a href="{% url sheet_list sheet.id %}">{{ sheet.name }}</a></li>
+        <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.id %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td></tr>
     {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

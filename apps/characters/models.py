@@ -373,5 +373,5 @@ class TraitList(models.Model):
     negative = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return "->".join([self.sheet.name, self.name.name, self.trait.name])
+        return "->".join([self.sheet.name, self.name.name, self.trait.name]) + ":%d" % self.display_order
 

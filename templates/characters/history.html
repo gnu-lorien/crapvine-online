@@ -1,0 +1,24 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+
+{% block head_title %}{% blocktrans %}Character Sheet History{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <table border="1" cellspacing="10">
+        <tr><th>Date Created</th><th>User</th><th>Descrition</th><th>Trait</th></tr>
+    {% for date_created, user, object, traits in tl_versions %}
+        <tr cellspacing="10">
+            <td valign="top">{{date_created}}</td>
+            <td valign="top">{{user}}</td>
+            <td valign="top">{{object}}</td>
+            <td valign="top"><table>
+                {% for trait in traits %}
+                    <tr><td>{{trait}}</td></tr>
+                {% endfor %}
+            </table></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
