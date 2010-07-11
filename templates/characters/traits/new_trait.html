@@ -1,0 +1,12 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}New Trait{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "New Trait" %}</h1>
+    
+    {% include "characters/traits/new_trait_form.html" %}
+    
+{% endblock %}

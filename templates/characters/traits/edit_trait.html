@@ -1,0 +1,14 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Edit Trait{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Edit Trait" %}</h1>
+    
+    <h2>{% trans "Editing" %} {{form.instance}}</h2>
+
+    {% include "characters/traits/edit_trait_form.html" %}
+    
+{% endblock %}

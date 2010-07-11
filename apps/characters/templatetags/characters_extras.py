@@ -24,7 +24,13 @@ format_traitlist.needs_autoescape = True
 
 @register.inclusion_tag("characters/_trait_category.html", takes_context=True)
 def show_traitlist(context, traitlist_name, prepend=""):
-    return {'traits': context['sheet'].get_traitlist(traitlist_name), 'prepend':prepend, 'STATIC_URL': context['STATIC_URL'],}
+    return {
+        'traits': context['sheet'].get_traitlist(traitlist_name),
+        'prepend':prepend,
+        'STATIC_URL': context['STATIC_URL'],
+        'sheet': context['sheet'],
+        'traitlistname': TraitListName.objects.get(name=traitlist_name),
+    }
 
 @register.inclusion_tag("characters/trait_category_header.html", takes_context=True)
 def trait_category_header(context, traitlist_name):

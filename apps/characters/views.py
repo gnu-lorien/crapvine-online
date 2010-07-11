@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, VampireSheetTraitListForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, VampireSheetTraitListForm, TraitForm
 from django.forms.models import modelformset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait
 
@@ -107,7 +107,7 @@ def download_sheet(request, sheet_id):
 
 @login_required
 def edit_vampire_sheet_attributes(request, sheet_id,
-                                  form_closs=VampireSheetAttributesForm, **kwargs):
+                                  form_class=VampireSheetAttributesForm, **kwargs):
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_attributes.html")
 
     if request.is_ajax():
@@ -117,7 +117,7 @@ def edit_vampire_sheet_attributes(request, sheet_id,
         )
 
     vampire_sheet = VampireSheet.objects.get(id=sheet_id)
-    form = VampireSheetAttributesForm(request.POST or None, instance=vampire_sheet)
+    form = form_class(request.POST or None, instance=vampire_sheet)
     if form.is_valid() and request.method == "POST":
         form.save()
         return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
@@ -129,7 +129,7 @@ def edit_vampire_sheet_attributes(request, sheet_id,
 
 @login_required
 def edit_vampire_sheet_traitlist(request, sheet_id, traitlistname_slug,
-                                  form_closs=VampireSheetTraitListForm, **kwargs):
+                                 form_closs=VampireSheetTraitListForm, **kwargs):
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_traitlist.html")
 
     if request.is_ajax():
@@ -155,4 +155,146 @@ def edit_vampire_sheet_traitlist(request, sheet_id, traitlistname_slug,
         'traitlistname': tln,
         'traitlist': tl,
         'formset': formset,
+    }, context_instance=RequestContext(request))
+
+def can_edit_sheet(request, sheet):
+    if request.user == sheet.player:
+        return True
+
+    chronicle_sheets = Chronicle.content_objects(Sheet)
+    try:
+        chronicle_sheets.get(id=sheet.id)
+        cm = ChronicleMember.objects.get(user=request.user)
+        if 0 == cm.membership_role:
+            return True
+    except Chronicle.DoesNotExist:
+        pass
+
+    check = SheetPermission(request.user)
+    if not check.has_perm('sheet_permission.change_sheet', sheet, approved=True):
+        return False
+
+    return False
+
+@login_required
+def edit_trait(request, sheet_id, trait_id,
+               group_slug=None, bridge=None,
+               form_class=TraitForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+    else:
+        sheet = get_object_or_404(Sheet, id=sheet_id)
+
+    trait = get_object_or_404(sheet.traits.all(), id=trait_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/traits/edit_trait.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/edit_trait_facebox.html",
+        )
+
+    form = form_class(request.POST or None, instance=trait)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'form': form,
+        'trait': trait,
+        'group': group,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def delete_trait(request, sheet_id, trait_id,
+                 group_slug=None, bridge=None,
+                 **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+    else:
+        sheet = get_object_or_404(Sheet, id=sheet_id)
+    trait = get_object_or_404(sheet.traits.all(), id=trait_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/traits/delete_trait.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/delete_trait_facebox.html",
+        )
+
+    if request.method == "POST" and request.POST.has_key('__confirm__'):
+        trait.delete()
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'trait': trait,
+        'group': group,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def new_trait(request, sheet_id, traitlistname_slug,
+               group_slug=None, bridge=None,
+               form_class=TraitForm, **kwargs):
+    traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+    else:
+        sheet = get_object_or_404(Sheet, id=sheet_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/traits/new_trait.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/new_trait_facebox.html",
+        )
+
+    form = form_class(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        trait = form.save(commit=False)
+        sheet.add_trait(traitlistname.name, trait)
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'form': form,
+        'group': group,
+        'traitlistname': traitlistname,
     }, context_instance=RequestContext(request))

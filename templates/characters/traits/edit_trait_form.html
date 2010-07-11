@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load uni_form %}
+
+<form class="uniForm" id="edit_trait_form" method="POST" action="{% url sheet_edit_trait sheet.id form.instance.id %}">
+    <fieldset class="inlineLabels">
+        {{ form|as_uni_form }}
+        <div class="form_block">
+            <input type="hidden" name="action" value="sheet_edit_trait" />
+            <input type="submit" value="{% trans 'update' %}"/>
+        </div>
+    </fieldset>
+</form>

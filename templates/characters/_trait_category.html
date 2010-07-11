@@ -6,13 +6,13 @@
 <table>
 {% for trait in traits %}
 <tr>
-<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_edit.png" /></td>
-<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_delete.png" /></td>
+<td><a href="{% url sheet_edit_trait sheet.id trait.id %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_edit.png" /></a></td>
+<td><a href="{% url sheet_delete_trait sheet.id trait.id %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_delete.png" /></a></td>
 <td>{{prepend}}{{trait}}</td>
 </tr>
 {% endfor %}
 <tr>
-<td><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" /></td>
+<td><a href="{% url sheet_new_trait sheet.id traitlistname.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" /></a></td>
 <td> </td>
 <td> </td>
 </tr>
