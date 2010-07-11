@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load uni_form %}
+
+<form class="uniForm" id="reorder_traitlist_form" method="POST" action="{% url sheet_reorder_traitlist sheet.id traitlistname.slug %}">
+    <fieldset class="inlineLabels">
+        {{ formset.management_form }}
+        <ol class="sorting_list">
+            {% for form in formset.forms %}
+                <li>
+                {% for field in form %}
+                    {% if field.is_hidden %}
+                        {{ field }}
+                    {% else %}
+                        <div>{{ field.errors }} {{ field }} {{ field.help_text }}</div>
+                    {% endif %}
+                {% endfor %}
+                </li>
+            {% endfor %}
+        </ol>
+        <div class="form_block">
+            <input type="hidden" name="action" value="update_traitlist" />
+            <input type="submit" value="{% trans 'update' %}"/>
+        </div>
+    </fieldset>
+</form>

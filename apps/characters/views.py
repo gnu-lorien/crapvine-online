@@ -13,9 +13,10 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListDisplayForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListDisplayForm, DisplayOrderForm
 from django.forms.models import modelformset_factory
-from characters.models import Sheet, VampireSheet, TraitListName, Trait
+from django.forms.formsets import formset_factory
+from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitList
 
 from xml_uploader import handle_sheet_upload, VampireExporter
 
@@ -148,6 +149,62 @@ def can_edit_sheet(request, sheet):
 
 def can_delete_sheet(request, sheet):
     return can_edit_sheet(request, sheet)
+
+@login_required
+def reorder_traitlist(request, sheet_id, traitlistname_slug,
+                      group_slug=None, bridge=None,
+                      form_class=TraitListDisplayForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+    else:
+        sheet = get_object_or_404(Sheet, id=sheet_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+    template_name = kwargs.get("template_name", "characters/traits/reorder_traitlist.html")
+
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/reorder_traitlist_facebox.html",
+        )
+
+    tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    DisplayOrderFormSet = formset_factory(DisplayOrderForm, extra=0)
+    if request.method == "POST":
+        formset = DisplayOrderFormSet(request.POST)
+        if formset.is_valid():
+            from pprint import pprint
+            pprint(formset.cleaned_data)
+            for data in formset.cleaned_data:
+                traitlist = TraitList.objects.get(id=data['traitlist_id'])
+                traitlist.display_order = data['order']
+                traitlist.save()
+            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+    else:
+        qs = TraitList.objects.filter(sheet=sheet, name=tln).order_by('display_order')
+        initial = []
+        traits = []
+        for trait_list in qs:
+            initial.append({'order': trait_list.display_order, 'traitlist_id': trait_list.id, 'trait': unicode(trait_list.trait)})
+            traits.append(trait_list.trait)
+        formset = DisplayOrderFormSet(initial=initial)
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'traitlistname': tln,
+        'traits': traits,
+        'formset': formset,
+    }, context_instance=RequestContext(request))
 
 @login_required
 def edit_traitlist(request, sheet_id, traitlistname_slug,

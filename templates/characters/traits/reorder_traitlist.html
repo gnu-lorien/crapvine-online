@@ -1,0 +1,33 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Reorder Trait List{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Reorder Trait List" %}</h1>
+    
+    <h2>{% trans "Reordering" %} {{traitlistname.name}}</h2>
+
+    <p>Drag the entries around or put in new numbers to rearrange traits</p>
+
+    {% include "characters/traits/reorder_traitlist_form.html" %}
+    
+{% endblock %}
+
+{% block extra_body %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.7.3.custom.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('.sorting_list').sortable({
+                update: function() {
+                    $(this).find('li').each(function(i) {
+                        $(this).find('input[id$=order]').val(i);
+                    });
+                }
+            });
+            $('.sorting_list').disableSelection();
+            $('.sorting_list').find('input[id$=order]').parent('div').hide();
+        });
+    </script>
+{% endblock %}

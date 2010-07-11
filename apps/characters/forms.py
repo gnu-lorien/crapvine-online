@@ -1,7 +1,6 @@
 from datetime import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin import widgets
 
 from characters.models import Sheet, VampireSheet, TraitList, Trait, DISPLAY_PREFERENCES
 
@@ -24,3 +23,8 @@ class TraitListDisplayForm(forms.Form):
 class TraitForm(forms.ModelForm):
     class Meta:
         model = Trait
+
+class DisplayOrderForm(forms.Form):
+    order = forms.IntegerField(min_value=0)
+    traitlist_id = forms.IntegerField(widget=forms.widgets.HiddenInput)
+    trait = forms.CharField(max_length=128)

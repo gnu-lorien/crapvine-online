@@ -13,6 +13,7 @@ urlpatterns = patterns('characters.views',
 
     # Traits
     url(r'^edit_sheet_traitlist/(?P<sheet_id>\d+)/(?P<traitlistname_slug>[-\w]+)/$', 'edit_traitlist', name='sheet_edit_traitlist'),
+    url(r'^reorder_sheet_traitlist/(?P<sheet_id>\d+)/(?P<traitlistname_slug>[-\w]+)/$', 'reorder_traitlist', name='sheet_reorder_traitlist'),
     url(r'^edit_sheet_trait/(?P<sheet_id>\d+)/(?P<trait_id>\d+)/$', 'edit_trait', name='sheet_edit_trait'),
     url(r'^delete_sheet_trait/(?P<sheet_id>\d+)/(?P<trait_id>\d+)/$', 'delete_trait', name='sheet_delete_trait'),
     url(r'^new_sheet_trait/(?P<sheet_id>\d+)/(?P<traitlistname_slug>[-\w]+)/$', 'new_trait', name='sheet_new_trait'),
