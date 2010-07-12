@@ -7,17 +7,12 @@
 
 {% block body %}
     <table border="1" cellspacing="10">
-        <tr><th>Date Created</th><th>User</th><th>Descrition</th><th>Trait</th></tr>
-    {% for date_created, user, object, traits in tl_versions %}
+        <tr><th>Date Created</th><th>User</th><th>Description</th></tr>
+    {% for version in versions %}
         <tr cellspacing="10">
-            <td valign="top">{{date_created}}</td>
-            <td valign="top">{{user}}</td>
-            <td valign="top">{{object}}</td>
-            <td valign="top"><table>
-                {% for trait in traits %}
-                    <tr><td>{{trait}}</td></tr>
-                {% endfor %}
-            </table></td>
+            <td valign="top">{{version.revision.date_created}}</td>
+            <td valign="top">{{version.revision.user}}</td>
+            <td valign="top">{{version.object_version.object}}</td>
         </tr>
     {% endfor %}
     </table>

@@ -115,93 +115,6 @@ DISPLAY_PREFERENCES = [
     (10,"note")
 ]
 
-class Trait(models.Model):
-    name = models.CharField(max_length=128)
-    note = models.CharField(max_length=128, default='', blank=True)
-    value = models.IntegerField(default=1)
-
-    display_preference = models.SmallIntegerField(default=1, choices=DISPLAY_PREFERENCES)
-    dot_character = models.CharField(max_length=8, default='O')
-
-    approved = models.BooleanField(default=False)
-
-    def __show_note(self):
-        return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
-    def __show_val(self):
-        return self.value >= 1
-    def __tally_val(self):
-        return self.__show_val()
-    def tally_str(self):
-        if self.value >= 1:
-            return self.dot_character * self.value
-        else:
-            return ''
-
-    def __unicode__(self):
-        show_note = self.__show_note()
-        show_val  = self.__show_val()
-        tally_val = self.__tally_val()
-
-        if self.display_preference == 0:
-            return self.name
-        elif self.display_preference == 1:
-            vstr = (" x%s" % (self.value)) if show_val else ''
-            nstr = (" (%s)" % (self.note)) if show_note else ''
-            return "%s%s%s" % (self.name, vstr, nstr)
-        elif self.display_preference == 2:
-            vstr = ''
-            if show_val:
-                vstr = (" x%s" % (self.value))
-            if tally_val:
-                vstr += " %s" % (self.tally_str())
-            nstr = (" (%s)" % (self.note)) if show_note else ''
-            return "%s%s%s" % (self.name, vstr, nstr)
-        elif self.display_preference == 3:
-            vstr = " %s" % (self.tally_str()) if tally_val else ''
-            nstr = (" (%s)" % (self.note)) if show_note else ''
-            return "%s%s%s" % (self.name, vstr, nstr)
-        elif self.display_preference == 4:
-            paren_str = ""
-            if show_note and show_val:
-                paren_str = " (%s, %s)" % (self.value, self.note)
-            elif show_note and not show_val:
-                paren_str = " (%s)" % (self.note)
-            elif show_val and not show_note:
-                paren_str = " (%s)" % (self.value)
-            return "%s%s" % (self.name, paren_str)
-        elif self.display_preference == 5:
-            paren_str = ""
-            if show_note:
-                paren_str = " (%s)" % (self.note)
-            return "%s%s" % (self.name, paren_str)
-        elif self.display_preference == 6:
-            paren_str = ""
-            if show_val:
-                paren_str = " (%s)" % (self.value)
-            return "%s%s" % (self.name, paren_str)
-        elif self.display_preference == 7:
-            paren_str = (" (%s)" % (self.note)) if show_note else ''
-            dstr = "%s%s" % (self.name, paren_str)
-            its = []
-            itrange = self.value if self.value >= 1 else 1
-            for i in range(itrange):
-                its.append(dstr)
-            return self.dot_character.join(its)
-        elif self.display_preference == 8:
-            return self.tally_str()
-        elif self.display_preference == 9:
-            if show_val:
-                return "%d" % (self.value)
-            else:
-                return ''
-        elif self.display_preference == 10:
-            if show_note:
-                return self.note
-            else:
-                return ''
-
-        return 'NOCING'
-
 class Expendable(models.Model):
     name = models.CharField(max_length=128)
     value = models.IntegerField(default=1)
@@ -218,7 +131,7 @@ class TraitListName(models.Model):
 
 class Sheet(models.Model):
     name = models.CharField(max_length=128)
-    traits = models.ManyToManyField(Trait, through='TraitList')
+    #traits = models.ManyToManyField(Trait, through='TraitList')
     player = models.ForeignKey(User, related_name='personal_characters')
     #narrator = models.ForeignKey(User, related_name='narrated_characters')
     # TODO Change this to support narrators in and outside of the database?
@@ -253,31 +166,43 @@ class Sheet(models.Model):
         return " ".join([self.player.username, self.name])
 
     def get_traitlist(self, name):
-        return self.traits.filter(traitlist__name__name=name).order_by('traitlist__display_order')
+        return self.traits.filter(traitlistname__name=name).order_by('order')
 
-    def get_traitlist_names(self):
-        return TraitListName.objects.filter(traitlist__sheet__id__exact=self.id).distinct()
+    def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
+        try:
+            traitlist_name_obj = TraitListName.objects.get(name=kwargs['name'])
+        except TraitListName.DoesNotExist:
+            traitlist_name_obj = TraitListName.objects.create(name=kwargs['name'], slug=slugify(kwargs['name']))
+        del kwargs['name']
+        self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
 
-    def get_traitlists(self):
-        return TraitList.objects.filter(sheet__id__exact=self.id).distinct()
+    def get_traitlist_property(self, traitlistname):
+        return self.traitlistproperty_set.get(name=traitlistname)
 
-    def add_trait(self, traitlist_name, trait):
-        trait.save()
+    def get_traitlist_properties(self):
+        return self.traitlistproperty_set.all()
+
+    def get_traits(self, traitlist_name):
+        traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
+        return self.traits.filter(traitlistname=traitlist_name_obj)
+
+    def add_trait(self, traitlist_name, trait_attrs):
         try:
             traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         except TraitListName.DoesNotExist:
             traitlist_name_obj = TraitListName.objects.create(name=traitlist_name, slug=slugify(traitlist_name))
-        traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj).order_by('display_order')
-        TraitList.objects.create(sheet=self, trait=trait, display_order=len(traitlist), name=traitlist_name_obj).save()
+        try:
+            previous_last_order = self.traits.all().order_by('-order')[0].order
+            trait_attrs['order'] = previous_last_order + 1
+        except IndexError:
+            trait_attrs['order'] = 0
+        self.traits.create(traitlistname=traitlist_name_obj, **trait_attrs)
 
-    def insert_trait(self, traitlist_name, trait, display_order):
-        trait.save()
-        traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
-        traitlist = TraitList.objects.filter(sheet=self, name=traitlist_name_obj, display_order__gte=display_order).order_by('display_order')
-        for traitlist_obj in traitlist:
-            traitlist_obj.display_order += 1
-            traitlist_obj.save()
-        TraitList.objects.create(sheet=self, trait=trait, display_order=display_order, name=traitlist_name_obj).save()
+    def insert_trait(self, traitlist_name, trait_attrs, order):
+        for trait in self.traits.filter(orde__gte=order):
+            trait.order = trait.order + 1
+        trait_attrs['order'] = order
+        self.traits.create(**trait_attrs)
 
     def add_experience_entry(self, entry):
         try:
@@ -362,16 +287,107 @@ class VampireSheet(Sheet):
     tempconscience = models.PositiveSmallIntegerField(default=0)
     temppathtraits = models.PositiveSmallIntegerField(default=0)
 
-
-class TraitList(models.Model):
+class TraitListProperty(models.Model):
     sheet = models.ForeignKey(Sheet)
-    trait = models.ForeignKey(Trait)
     name = models.ForeignKey(TraitListName)
-    display_order = models.IntegerField()
     sorted = models.BooleanField(default=True)
     atomic = models.BooleanField(default=False)
     negative = models.BooleanField(default=False)
+    display_preference = models.SmallIntegerField(default=1, choices=DISPLAY_PREFERENCES)
+
+    class Meta:
+        ordering = ['name__name']
+
+class Trait(models.Model):
+    name = models.CharField(max_length=128)
+    note = models.CharField(max_length=128, default='', blank=True)
+    value = models.IntegerField(default=1)
+
+    display_preference = models.SmallIntegerField(default=1, choices=DISPLAY_PREFERENCES)
+    dot_character = models.CharField(max_length=8, default='O')
+
+    approved = models.BooleanField(default=False)
+
+    order = models.PositiveSmallIntegerField()
+    sheet = models.ForeignKey(Sheet, related_name='traits')
+    traitlistname = models.ForeignKey(TraitListName)
+
+    class Meta:
+        ordering = ['order']
+
+    def __show_note(self):
+        return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
+    def __show_val(self):
+        return self.value >= 1
+    def __tally_val(self):
+        return self.__show_val()
+    def tally_str(self):
+        if self.value >= 1:
+            return self.dot_character * self.value
+        else:
+            return ''
 
     def __unicode__(self):
-        return "->".join([self.sheet.name, self.name.name, self.trait.name]) + ":%d" % self.display_order
+        show_note = self.__show_note()
+        show_val  = self.__show_val()
+        tally_val = self.__tally_val()
 
+        if self.display_preference == 0:
+            return self.name
+        elif self.display_preference == 1:
+            vstr = (" x%s" % (self.value)) if show_val else ''
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 2:
+            vstr = ''
+            if show_val:
+                vstr = (" x%s" % (self.value))
+            if tally_val:
+                vstr += " %s" % (self.tally_str())
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 3:
+            vstr = " %s" % (self.tally_str()) if tally_val else ''
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 4:
+            paren_str = ""
+            if show_note and show_val:
+                paren_str = " (%s, %s)" % (self.value, self.note)
+            elif show_note and not show_val:
+                paren_str = " (%s)" % (self.note)
+            elif show_val and not show_note:
+                paren_str = " (%s)" % (self.value)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 5:
+            paren_str = ""
+            if show_note:
+                paren_str = " (%s)" % (self.note)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 6:
+            paren_str = ""
+            if show_val:
+                paren_str = " (%s)" % (self.value)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 7:
+            paren_str = (" (%s)" % (self.note)) if show_note else ''
+            dstr = "%s%s" % (self.name, paren_str)
+            its = []
+            itrange = self.value if self.value >= 1 else 1
+            for i in range(itrange):
+                its.append(dstr)
+            return self.dot_character.join(its)
+        elif self.display_preference == 8:
+            return self.tally_str()
+        elif self.display_preference == 9:
+            if show_val:
+                return "%d" % (self.value)
+            else:
+                return ''
+        elif self.display_preference == 10:
+            if show_note:
+                return self.note
+            else:
+                return ''
+
+        return 'NOCING'

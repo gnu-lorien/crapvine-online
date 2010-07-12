@@ -9,7 +9,7 @@
                 <li>
                 {% for field in form %}
                     {% if field.is_hidden %}
-                        {{ field }}
+                        {{field.errors}}{{ field }}
                     {% else %}
                         <div>{{ field.errors }} {{ field }} {{ field.help_text }}</div>
                     {% endif %}

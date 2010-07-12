@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from characters.models import Trait, TraitList, Sheet, TraitListName, VampireSheet, ExperienceEntry
+from characters.models import Trait, TraitListProperty, Sheet, TraitListName, VampireSheet, ExperienceEntry
 from django.contrib.auth.models import User
 
 from pprint import pprint
@@ -21,6 +21,7 @@ import StringIO
 
 # TODO: Test that ExperienceEntry import order is maintained properly
 # TODO: Test for escape/unescape/quoteattr side-effects
+# TODO: Look more closely at how we import and export display values to grapevine xml
 
 class PageViewPermissionsTestCase(TestCase):
     fixtures = ['double_upload']
@@ -130,8 +131,8 @@ class ExportTestCase(TestCase):
         self.assertEquals(new_sheet.experience_unspent, vampire_sheet.experience_unspent)
         self.assertEquals(new_sheet.experience_earned, vampire_sheet.experience_earned)
 
-        left_traits = new_sheet.traits.all().order_by('traitlist__name__name', 'traitlist__display_order')
-        right_traits = vampire_sheet.traits.all().order_by('traitlist__name__name', 'traitlist__display_order')
+        left_traits = new_sheet.traits.all().order_by('traitlistname__name', 'order')
+        right_traits = vampire_sheet.traits.all().order_by('traitlistname__name', 'order')
         for left, right in zip(left_traits, right_traits):
             self.assertEquals(left.value, right.value)
             self.assertEquals(left.note, right.note)

@@ -34,4 +34,5 @@ def show_traitlist(context, traitlist_name, prepend=""):
 
 @register.inclusion_tag("characters/trait_category_header.html", takes_context=True)
 def trait_category_header(context, traitlist_name):
-    return {'traitlistname': TraitListName.objects.get(name=traitlist_name), 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'],}
+    tln = TraitListName.objects.get(name=traitlist_name)
+    return {'traitlistname': tln, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'],}

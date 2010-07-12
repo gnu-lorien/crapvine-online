@@ -13,10 +13,10 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListDisplayForm, DisplayOrderForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
-from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitList
+from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty
 
 from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
@@ -159,7 +159,7 @@ def can_history_sheet(request, sheet):
 @login_required
 def reorder_traitlist(request, sheet_id, traitlistname_slug,
                       group_slug=None, bridge=None,
-                      form_class=TraitListDisplayForm, **kwargs):
+                      **kwargs):
     if bridge is not None:
         try:
             group = bridge.get_group(group_slug)
@@ -185,6 +185,7 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
         )
 
     tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    traits = []
     DisplayOrderFormSet = formset_factory(DisplayOrderForm, extra=0)
     if request.method == "POST":
         formset = DisplayOrderFormSet(request.POST)
@@ -192,17 +193,16 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
             from pprint import pprint
             pprint(formset.cleaned_data)
             for data in formset.cleaned_data:
-                traitlist = TraitList.objects.get(id=data['traitlist_id'])
-                traitlist.display_order = data['order']
-                traitlist.save()
+                trait = sheet.traits.get(id=data['trait_id'])
+                if data['order'] != trait.order:
+                    trait.order = data['order']
+                    trait.save()
             return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
     else:
-        qs = TraitList.objects.filter(sheet=sheet, name=tln).order_by('display_order')
+        traits = sheet.get_traits(tln.name)
         initial = []
-        traits = []
-        for trait_list in qs:
-            initial.append({'order': trait_list.display_order, 'traitlist_id': trait_list.id, 'trait': unicode(trait_list.trait)})
-            traits.append(trait_list.trait)
+        for trait in traits:
+            initial.append({'order': trait.order, 'trait_id': trait.id, 'trait': unicode(trait)})
         formset = DisplayOrderFormSet(initial=initial)
 
     return render_to_response(template_name, {
@@ -215,7 +215,7 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
 @login_required
 def edit_traitlist(request, sheet_id, traitlistname_slug,
                    group_slug=None, bridge=None,
-                   form_class=TraitListDisplayForm, **kwargs):
+                   form_class=TraitListPropertyForm, **kwargs):
     if bridge is not None:
         try:
             group = bridge.get_group(group_slug)
@@ -241,18 +241,19 @@ def edit_traitlist(request, sheet_id, traitlistname_slug,
         )
 
     tln = get_object_or_404(TraitListName, slug=traitlistname_slug)
-    tl = sheet.get_traitlist(tln.name)
-    form = form_class(request.POST or None)
+    tlp = sheet.get_traitlist_property(tln)
+    form = form_class(request.POST or None, instance=tlp)
     if form.is_valid() and request.method == "POST":
-        for t in tl:
-            t.display_preference = form.cleaned_data['display']
-            t.save()
+        tlp = form.save()
+        for trait in sheet.get_traitlist(tln.name):
+            if trait.display_preference != tlp.display_preference:
+                trait.display_preference = tlp.display_preference
+                trait.save()
         return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
         'traitlistname': tln,
-        'traitlist': tl,
         'form': form,
     }, context_instance=RequestContext(request))
 
@@ -368,8 +369,7 @@ def new_trait(request, sheet_id, traitlistname_slug,
 
     form = form_class(request.POST or None)
     if form.is_valid() and request.method == "POST":
-        trait = form.save(commit=False)
-        sheet.add_trait(traitlistname.name, trait)
+        sheet.add_trait(traitlistname.name, form.cleaned_data)
         return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
 
     return render_to_response(template_name, {
@@ -402,31 +402,32 @@ def history_sheet(request, sheet_slug,
 
     versions = Version.objects.get_for_object(sheet.vampiresheet)
 
-    from pprint import pformat
-    versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(TraitList))
-    tl = []
-    last_created_keys = {}
-    for version in versions:
-        obj = version.object_version.object
-        if sheet == obj.sheet:
-            tmp = [version.revision.date_created, version.revision.user, obj]
-
-            try:
-                trait_versions = Version.objects.get_for_object(obj.trait)
-            except Trait.DoesNotExist:
-                obj_trait_test = obj.trait
-                trait_versions = Version.objects.get_deleted_object(Trait, obj.trait)
-            if last_created_keys.has_key(version.object_id):
-                trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created, revision__date_created__gte=last_created_keys[version.object_id])
-            else:
-                trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created)
-            trait_versions = trait_versions.order_by("-revision__date_created")
-            traits = [v.object_version.object for v in trait_versions]
-            tl.append([version.revision.date_created, version.revision.user, obj, traits])
-            last_created_keys[version.object_id] = version.revision.date_created
+    versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
+#   from pprint import pformat
+#   versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(TraitList))
+#   tl = []
+#   last_created_keys = {}
+#   for version in versions:
+#       obj = version.object_version.object
+#       if sheet == obj.sheet:
+#           tmp = [version.revision.date_created, version.revision.user, obj]
+#
+#           try:
+#               trait_versions = Version.objects.get_for_object(obj.trait)
+#           except Trait.DoesNotExist:
+#               obj_trait_test = obj.trait
+#               trait_versions = Version.objects.get_deleted_object(Trait, obj.trait)
+#           if last_created_keys.has_key(version.object_id):
+#               trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created, revision__date_created__gte=last_created_keys[version.object_id])
+#           else:
+#               trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created)
+#           trait_versions = trait_versions.order_by("-revision__date_created")
+#           traits = [v.object_version.object for v in trait_versions]
+#           tl.append([version.revision.date_created, version.revision.user, obj, traits])
+#           last_created_keys[version.object_id] = version.revision.date_created
 
     return render_to_response(template_name, {
         'sheet': sheet,
-        'tl_versions': tl,
+        'versions': versions,
         'group': group,
     }, context_instance=RequestContext(request))

@@ -16,5 +16,189 @@
             "email": "aoeu@oue.co", 
             "date_joined": "2010-07-08 16:56:36"
         }
+    },
+        {
+        "pk": 1, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical",
+            "slug": "physical"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental",
+            "slug": "mental"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social",
+            "slug": "social"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical Negative",
+            "slug": "physical-negative"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental Negative",
+            "slug": "mental-negative"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social Negative",
+            "slug": "social-negative"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Merits",
+            "slug": "merits"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Flaws",
+            "slug": "flaws"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Influences",
+            "slug": "influences"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Health Levels",
+            "slug": "health-levels"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Physical",
+            "slug": "negative-physical"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Social",
+            "slug": "negative-social"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Mental",
+            "slug": "negative-mental"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Status",
+            "slug": "status"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Abilities",
+            "slug": "abilities"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Backgrounds",
+            "slug": "backgrounds"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Bonds",
+            "slug": "bonds"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Miscellaneous",
+            "slug": "miscellaneous"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Derangements",
+            "slug": "derangements"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Disciplines",
+            "slug": "disciplines"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Rituals",
+            "slug": "rituals"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Equipment",
+            "slug": "equipment"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Locations",
+            "slug": "locations"
+        }
     }
 ]

@@ -1,4 +1,4 @@
-from characters.models import Sheet, Expendable, Trait, TraitList, TraitListName, VampireSheet, ExperienceEntry
+from characters.models import Sheet, Expendable, Trait, TraitListProperty, TraitListName, VampireSheet, ExperienceEntry
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
@@ -8,7 +8,7 @@ class ExpendableAdmin(VersionAdmin):
     pass
 class TraitAdmin(VersionAdmin):
     pass
-class TraitListAdmin(VersionAdmin):
+class TraitListPropertyAdmin(VersionAdmin):
     pass
 class TraitListNameAdmin(VersionAdmin):
     pass
@@ -20,7 +20,7 @@ class ExperienceEntryAdmin(VersionAdmin):
 admin.site.register(Sheet, SheetAdmin)
 admin.site.register(Expendable, ExpendableAdmin)
 admin.site.register(Trait, TraitAdmin)
-admin.site.register(TraitList, TraitListAdmin)
+admin.site.register(TraitListProperty, TraitListPropertyAdmin)
 admin.site.register(TraitListName, TraitListNameAdmin)
 admin.site.register(VampireSheet, VampireSheetAdmin)
 admin.site.register(ExperienceEntry, ExperienceEntryAdmin)

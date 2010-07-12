@@ -9,7 +9,7 @@ from xml.sax.saxutils import unescape, escape
 
 from minimock import Mock
 
-from characters.models import Trait, TraitList, Sheet, VampireSheet
+from characters.models import Trait, TraitListProperty, Sheet, VampireSheet
 from pprint import pprint
 
 from django.db import IntegrityError
@@ -54,6 +54,11 @@ ENTRY_TAG_DATES = ['date']
 
 TRAIT_TAG_RENAMES = { 'val' : 'value' }
 
+TRAITLIST_TAG_RENAMES = {
+    'abc':'sorted',
+    'display': 'display_preference',
+}
+
 from crapvine.types.vampire import Vampire as CrapvineVampire
 from crapvine.xml.trait import TraitList as CrapvineTraitList
 from crapvine.xml.trait import Trait as CrapvineTrait
@@ -77,15 +82,15 @@ class VampireExporter():
         pprint(self.vampire.startdate)
         pprint(self.vampire.npc)
 
-        for tln in self.sheet.get_traitlist_names():
-            tl = TraitList.objects.filter(name__exact=tln).filter(sheet__id__exact=self.sheet.id)[0]
-            tl_attrs = dict((k, str(v)) for k,v in tl.__dict__.iteritems())
-            tl_attrs['name'] = tl.name.name
+        for tlp in self.sheet.get_traitlist_properties():
+            tl_attrs = dict((k, str(v)) for k,v in tlp.__dict__.iteritems())
+            tl_attrs['name'] = tlp.name.name
+            map_attributes(dict((v,k) for k,v in TRAITLIST_TAG_RENAMES.iteritems()), tl_attrs)
             #pprint(tl_attrs)
             ctl = CrapvineTraitList()
             ctl.read_attributes(tl_attrs)
 
-            for t in self.sheet.get_traitlist(tl.name.name):
+            for t in self.sheet.get_traits(tlp.name.name):
                 t_attrs = dict((k, str(v)) for k,v in t.__dict__.iteritems())
                 map_attributes(dict((v, k) for k, v in TRAIT_TAG_RENAMES.iteritems()), t_attrs)
                 ct = CrapvineTrait()
@@ -192,6 +197,9 @@ class VampireLoader(ContentHandler):
         elif name == 'traitlist':
             if self.current_traitlist:
                 raise IOError('TraitList encountered while still reading traitlist')
+            my_attrs = dict(attrs)
+            map_attributes(TRAITLIST_TAG_RENAMES, my_attrs)
+            self.current_vampire.add_traitlist_properties(**my_attrs)
             self.current_traitlist = attrs
             #if self.current_vampire:
             #    self.current_vampire.add_traitlist(tl)
@@ -209,8 +217,8 @@ class VampireLoader(ContentHandler):
                     int(my_attrs['value'])
                 except ValueError:
                     my_attrs['value'] = 999999
-            t = Trait.objects.create(**my_attrs)
-            self.current_vampire.add_trait(self.current_traitlist['name'], t)
+            my_attrs['display_preference'] = self.current_traitlist['display']
+            self.current_vampire.add_trait(self.current_traitlist['name'], my_attrs)
 
     def endElement(self, name):
         if name == 'vampire':
