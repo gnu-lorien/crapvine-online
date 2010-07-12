@@ -7,13 +7,13 @@
 <table>
 {% for trait in traits %}
 <tr>
-<td><a href="{% url sheet_edit_trait sheet.id trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_edit.png" /></a></td>
-<td><a href="{% url sheet_delete_trait sheet.id trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_delete.png" /></a></td>
+<td><a href="{% url sheet_edit_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_edit.png" /></a></td>
+<td><a href="{% url sheet_delete_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_delete.png" /></a></td>
 <td bgcolor="{% cycle 'aliceblue' 'white' %}">{{prepend}}{{trait}}</td>
 </tr>
 {% endfor %}
 <tr>
-<td><a href="{% url sheet_new_trait sheet.id traitlistname.slug %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" /></a></td>
+<td><a href="{% url sheet_new_trait sheet.slug traitlistname.slug %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" /></a></td>
 <td> </td>
 <td> </td>
 </tr>

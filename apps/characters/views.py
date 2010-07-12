@@ -78,7 +78,7 @@ def list_sheets(request, group_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def list_sheet(request, sheet_id, group_slug=None, bridge=None):
+def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
     if bridge is not None:
         try:
             group = bridge.get_group(group_slug)
@@ -87,7 +87,7 @@ def list_sheet(request, sheet_id, group_slug=None, bridge=None):
     else:
         group = None
 
-    sheet = get_object_or_404(Sheet, id=sheet_id)
+    sheet = get_object_or_404(Sheet, slug=sheet_slug)
     check = SheetPermission(request.user)
     if not check.has_perm('sheet_permission.fullview_sheet', sheet, approved=True):
         return permission_denied(request)
@@ -101,8 +101,8 @@ def list_sheet(request, sheet_id, group_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def download_sheet(request, sheet_id):
-    sheet = VampireSheet.objects.get(id=sheet_id, player=request.user)
+def download_sheet(request, sheet_slug):
+    sheet = VampireSheet.objects.get(slug=sheet_slug, player=request.user)
     response = HttpResponse(mimetype="application/gex")
     response['Content-Disposition'] = 'attachment; filename=Exchange.gex'
     ve = VampireExporter(sheet)
@@ -110,7 +110,7 @@ def download_sheet(request, sheet_id):
     return response
 
 @login_required
-def edit_vampire_sheet_attributes(request, sheet_id,
+def edit_vampire_sheet_attributes(request, sheet_slug,
                                   form_class=VampireSheetAttributesForm, **kwargs):
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_attributes.html")
 
@@ -120,11 +120,11 @@ def edit_vampire_sheet_attributes(request, sheet_id,
             "characters/vampires/edit_vampire_sheet_attributes_facebox.html",
         )
 
-    vampire_sheet = VampireSheet.objects.get(id=sheet_id)
+    vampire_sheet = VampireSheet.objects.get(slug=sheet_slug)
     form = form_class(request.POST or None, instance=vampire_sheet)
     if form.is_valid() and request.method == "POST":
         form.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
 
     return render_to_response(template_name, {
         'sheet': vampire_sheet,
@@ -157,7 +157,7 @@ def can_history_sheet(request, sheet):
     return can_edit_sheet(request, sheet)
 
 @login_required
-def reorder_traitlist(request, sheet_id, traitlistname_slug,
+def reorder_traitlist(request, sheet_slug, traitlistname_slug,
                       group_slug=None, bridge=None,
                       **kwargs):
     if bridge is not None:
@@ -169,9 +169,9 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
-        sheet = get_object_or_404(Sheet, id=sheet_id)
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
 
     # Check all of the various sheet editing permissions
     if not can_edit_sheet(request, sheet):
@@ -197,7 +197,7 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
                 if data['order'] != trait.order:
                     trait.order = data['order']
                     trait.save()
-            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
     else:
         traits = sheet.get_traits(tln.name)
         initial = []
@@ -213,7 +213,7 @@ def reorder_traitlist(request, sheet_id, traitlistname_slug,
     }, context_instance=RequestContext(request))
 
 @login_required
-def edit_traitlist(request, sheet_id, traitlistname_slug,
+def edit_traitlist(request, sheet_slug, traitlistname_slug,
                    group_slug=None, bridge=None,
                    form_class=TraitListPropertyForm, **kwargs):
     if bridge is not None:
@@ -225,9 +225,9 @@ def edit_traitlist(request, sheet_id, traitlistname_slug,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
-        sheet = get_object_or_404(Sheet, id=sheet_id)
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
 
     # Check all of the various sheet editing permissions
     if not can_edit_sheet(request, sheet):
@@ -249,7 +249,7 @@ def edit_traitlist(request, sheet_id, traitlistname_slug,
             if trait.display_preference != tlp.display_preference:
                 trait.display_preference = tlp.display_preference
                 trait.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -258,7 +258,7 @@ def edit_traitlist(request, sheet_id, traitlistname_slug,
     }, context_instance=RequestContext(request))
 
 @login_required
-def edit_trait(request, sheet_id, trait_id,
+def edit_trait(request, sheet_slug, trait_id,
                group_slug=None, bridge=None,
                form_class=TraitForm, **kwargs):
     if bridge is not None:
@@ -270,9 +270,9 @@ def edit_trait(request, sheet_id, trait_id,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
-        sheet = get_object_or_404(Sheet, id=sheet_id)
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
 
     trait = get_object_or_404(sheet.traits.all(), id=trait_id)
 
@@ -290,7 +290,7 @@ def edit_trait(request, sheet_id, trait_id,
     form = form_class(request.POST or None, instance=trait)
     if form.is_valid() and request.method == "POST":
         form.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -300,7 +300,7 @@ def edit_trait(request, sheet_id, trait_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def delete_trait(request, sheet_id, trait_id,
+def delete_trait(request, sheet_slug, trait_id,
                  group_slug=None, bridge=None,
                  **kwargs):
     if bridge is not None:
@@ -312,9 +312,9 @@ def delete_trait(request, sheet_id, trait_id,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
-        sheet = get_object_or_404(Sheet, id=sheet_id)
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
     trait = get_object_or_404(sheet.traits.all(), id=trait_id)
 
     # Check all of the various sheet editing permissions
@@ -330,7 +330,7 @@ def delete_trait(request, sheet_id, trait_id,
 
     if request.method == "POST" and request.POST.has_key('__confirm__'):
         trait.delete()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -339,7 +339,7 @@ def delete_trait(request, sheet_id, trait_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def new_trait(request, sheet_id, traitlistname_slug,
+def new_trait(request, sheet_slug, traitlistname_slug,
                group_slug=None, bridge=None,
                form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
@@ -352,9 +352,9 @@ def new_trait(request, sheet_id, traitlistname_slug,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), id=sheet_id)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
-        sheet = get_object_or_404(Sheet, id=sheet_id)
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
 
     # Check all of the various sheet editing permissions
     if not can_edit_sheet(request, sheet):
@@ -370,7 +370,7 @@ def new_trait(request, sheet_id, traitlistname_slug,
     form = form_class(request.POST or None)
     if form.is_valid() and request.method == "POST":
         sheet.add_trait(traitlistname.name, form.cleaned_data)
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_id]))
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -392,7 +392,7 @@ def history_sheet(request, sheet_slug,
         group = None
 
     if group:
-        sheet = get_object_or_404(group.content_objects(Sheet), sheet__slug=sheet_slug)
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
     else:
         sheet = get_object_or_404(Sheet, slug=sheet_slug)
 

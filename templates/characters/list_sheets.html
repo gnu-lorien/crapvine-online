@@ -8,7 +8,7 @@
 {% block body %}
     <table>
     {% for sheet in sheets %}
-        <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.id %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td></tr>
+        <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td></tr>
     {% endfor %}
     </table>
 {% endblock %}

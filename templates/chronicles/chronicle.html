@@ -142,7 +142,7 @@
             {% if sheets %}
                 <table class="topics">
                     {% for sheet in sheets %}
-                        <tr><td><a href="{% groupurl sheet_list chronicle sheet_id=sheet.id %}">{{sheet.name}}</a></td></tr>
+                        <tr><td><a href="{% groupurl sheet_list chronicle sheet_slug=sheet.slug %}">{{sheet.name}}</a></td></tr>
                     {% endfor %}
                 </table>
 

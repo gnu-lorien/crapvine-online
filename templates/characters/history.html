@@ -7,14 +7,14 @@
 
 {% block body %}
     <table border="1" cellspacing="10">
-        <tr><th>Date Created</th><th>User</th><th>Description</th><th>Action</th><th>Content ID</th></tr>
-    {% for date_created, user, trait, action, content_id in tl_versions %}
+        <tr><th>Date Created</th><th>User</th><th>Description</th><th>Action</th><th>Object ID</th></tr>
+    {% for date_created, user, trait, action, object_id in tl_versions %}
         <tr cellspacing="10">
             <td valign="top">{{date_created}}</td>
             <td valign="top">{{user}}</td>
             <td valign="top">{{trait}}</td>
             <td valign="top">{{action}}</td>
-            <td valign="top">{{content_id}}</td>
+            <td valign="top">{{object_id}}</td>
         </tr>
     {% endfor %}
     </table>
