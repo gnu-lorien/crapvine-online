@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from authority.views import permission_denied
-from characters.permissions import SheetPermission
+from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_list_sheet
 
 from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm
 from django.forms.models import modelformset_factory
@@ -88,8 +88,7 @@ def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
         group = None
 
     sheet = get_object_or_404(Sheet, slug=sheet_slug)
-    check = SheetPermission(request.user)
-    if not check.has_perm('sheet_permission.fullview_sheet', sheet, approved=True):
+    if not can_list_sheet(request, sheet):
         return permission_denied(request)
 
     ee = sheet.experience_entries.all().order_by('date')
@@ -130,31 +129,6 @@ def edit_vampire_sheet_attributes(request, sheet_slug,
         'sheet': vampire_sheet,
         'form': form,
     }, context_instance=RequestContext(request))
-
-def can_edit_sheet(request, sheet):
-    if request.user == sheet.player:
-        return True
-
-    chronicle_sheets = Chronicle.content_objects(Sheet)
-    try:
-        chronicle_sheets.get(id=sheet.id)
-        cm = ChronicleMember.objects.get(user=request.user)
-        if 0 == cm.membership_role:
-            return True
-    except Chronicle.DoesNotExist:
-        pass
-
-    check = SheetPermission(request.user)
-    if check.has_perm('sheet_permission.change_sheet', sheet, approved=True):
-        return True
-
-    return False
-
-def can_delete_sheet(request, sheet):
-    return can_edit_sheet(request, sheet)
-
-def can_history_sheet(request, sheet):
-    return can_edit_sheet(request, sheet)
 
 @login_required
 def reorder_traitlist(request, sheet_slug, traitlistname_slug,
