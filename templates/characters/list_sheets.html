@@ -2,13 +2,14 @@
 
 {% load i18n %}
 {% load uni_form %}
+{% load characters_extras %}
 
-{% block head_title %}{% blocktrans %}Upload Character Sheet{% endblocktrans %}{% endblock %}
+{% block head_title %}{% blocktrans %}List Character Sheets{% endblocktrans %}{% endblock %}
 
 {% block body %}
     <table>
     {% for sheet in sheets %}
-        <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td><td><a href="{% url sheet_permissions sheet.slug %}">Permissions</a></td></tr>
+        {% sheet_list_item sheet %}
     {% endfor %}
     </table>
 
@@ -18,13 +19,13 @@
             <h3>PCs</h3>
             <table>
             {% for sheet in sheet_maps.pc %}
-                <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td><td><a href="{% url sheet_permissions sheet.slug %}">Permissions</a></td></tr>
+                {% sheet_list_item sheet %}
             {% endfor %}
             </table>
             <h3>NPCs</h3>
             <table>
             {% for sheet in sheet_maps.npc %}
-                <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td><td><a href="{% url sheet_permissions sheet.slug %}">Permissions</a></td></tr>
+                {% sheet_list_item sheet %}
             {% endfor %}
             </table>
         {% endfor %}
