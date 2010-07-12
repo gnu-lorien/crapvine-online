@@ -402,7 +402,15 @@ def history_sheet(request, sheet_slug,
 
     versions = Version.objects.get_for_object(sheet.vampiresheet)
 
+    tl = []
     versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
+    for version in versions:
+        tl.append((version.revision.date_created, version.revision.user, version.object_version.object, "updated", version.object_id))
+    versions = Version.objects.get_deleted(Trait)
+    for version in versions:
+        tl.append((version.revision.date_created, version.revision.user, version.object_version.object, "deleted", version.object_id))
+    tl.sort(key=lambda x: x[0])
+
 #   from pprint import pformat
 #   versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(TraitList))
 #   tl = []
@@ -428,6 +436,6 @@ def history_sheet(request, sheet_slug,
 
     return render_to_response(template_name, {
         'sheet': sheet,
-        'versions': versions,
+        'tl_versions': tl,
         'group': group,
     }, context_instance=RequestContext(request))
