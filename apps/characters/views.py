@@ -70,11 +70,16 @@ def list_sheets(request, group_slug=None, bridge=None):
         sheets = group.get_sheets_for_user(request.user)
     else:
         sheets = Sheet.objects.all()
-    sheets = sheets.filter(player__exact=request.user)
+        sheets = sheets.filter(player__exact=request.user)
+        sheet_chronicle_map = {}
+        for chronicle_member in request.user.chronicles.all():
+            sheet_chronicle_map[chronicle_member.chronicle.name] = chronicle_member.chronicle.get_sheets_for_user(request.user)
 
     return render_to_response(
         'characters/list_sheets.html',
-        {'sheets':sheets, 'group':group},
+        {'sheets':sheets,
+         'group':group,
+         'chronicle_sheets': sheet_chronicle_map,},
         context_instance=RequestContext(request))
 
 @login_required

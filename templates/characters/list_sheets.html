@@ -11,4 +11,15 @@
         <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td></tr>
     {% endfor %}
     </table>
+
+    {% if chronicle_sheets %}
+        {% for chronicle, sheets in chronicle_sheets.items %}
+            <h2>{{chronicle}}</h2>
+            <table>
+            {% for sheet in sheets %}
+                <tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td></tr>
+            {% endfor %}
+            </table>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
