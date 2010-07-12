@@ -9,6 +9,7 @@ urlpatterns = patterns('characters.views',
     url(r'^list_sheets/$', 'list_sheets', name='sheets_list'),
     url(r'^list_sheet/(?P<sheet_slug>[-\w]+)/$', 'list_sheet', name='sheet_list'),
     url(r'^history_sheet/(?P<sheet_slug>[-\w]+)/$', 'history_sheet', name='sheet_history'),
+    url(r'^permissions_sheet/(?P<sheet_slug>[-\w]+)/$', 'permissions_sheet', name='sheet_permissions'),
     url(r'^download_sheet/(?P<sheet_slug>[-\w]+)/$', 'download_sheet', name='sheet_download'),
     url(r'^edit_vampire_sheet_attributes/(?P<sheet_slug>[-\w]+)/$', 'edit_vampire_sheet_attributes', name='sheet_vampire_edit_attributes'),
 

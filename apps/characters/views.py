@@ -418,3 +418,41 @@ def history_sheet(request, sheet_slug,
         'tl_versions': tl,
         'group': group,
     }, context_instance=RequestContext(request))
+
+@login_required
+def permissions_sheet(request, sheet_slug,
+                      group_slug=None, bridge=None,
+                      template_name="characters/permissions.html"):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_list_sheet(request, sheet):
+        return permission_denied(request)
+
+    permission_keys = ("list", "history", "delete", "edit")
+    permissions = {}
+    for key in permission_keys:
+        #permissions[key] = [user for user in User.objects.all() if globals()['can_' + key + '_sheet'](request, sheet, user=user)]
+        bl = []
+        for user in User.objects.all():
+            keep = globals()['can_' + key + '_sheet'](request, sheet, user=user, infodump=True)
+            if keep[0]:
+                bl.append((user, keep[1]))
+        permissions[key] = bl
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'permissions': permissions,
+        'group': group,
+    }, context_instance=RequestContext(request))

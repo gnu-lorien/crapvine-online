@@ -1,0 +1,17 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+
+{% block head_title %}{% blocktrans %}Character Sheet History{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    {% for key, user_bundles in permissions.items %}
+        <h2>{{key}}</h2>
+        <ul>
+        {% for user, reason in user_bundles %}
+            <li><a href="{% url profile_detail user.username %}">{{user}}</a> -> {{reason}}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}
