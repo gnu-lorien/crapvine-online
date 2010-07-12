@@ -66,6 +66,7 @@ def list_sheets(request, group_slug=None, bridge=None):
     else:
         group = None
 
+    sheet_chronicle_map = {}
     if group:
         sheets = group.get_sheets_for_user(request.user)
     else:
@@ -73,7 +74,13 @@ def list_sheets(request, group_slug=None, bridge=None):
         sheets = sheets.filter(player__exact=request.user)
         sheet_chronicle_map = {}
         for chronicle_member in request.user.chronicles.all():
-            sheet_chronicle_map[chronicle_member.chronicle.name] = chronicle_member.chronicle.get_sheets_for_user(request.user)
+            sheets_for_user = chronicle_member.chronicle.get_sheets_for_user(request.user)
+            sheet_chronicle_map[chronicle_member.chronicle.name] = {'pc': [], 'npc':[]}
+            for sheet in sheets_for_user:
+                if sheet.npc:
+                    sheet_chronicle_map[chronicle_member.chronicle.name]['npc'].append(sheet)
+                else:
+                    sheet_chronicle_map[chronicle_member.chronicle.name]['pc'].append(sheet)
 
     return render_to_response(
         'characters/list_sheets.html',
