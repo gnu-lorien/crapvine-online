@@ -386,39 +386,18 @@ def history_sheet(request, sheet_slug,
     if not can_history_sheet(request, sheet):
         return permission_denied(request)
 
-    versions = Version.objects.get_for_object(sheet.vampiresheet)
-
     tl = []
     versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
     for version in versions:
-        tl.append((version.revision.date_created, version.revision.user, version.object_version.object, "updated", version.object_id))
+        obj = version.object_version.object
+        if sheet == obj.sheet:
+            tl.append((version.revision.date_created, version.revision.user, obj, "updated", version.object_id))
     versions = Version.objects.get_deleted(Trait)
     for version in versions:
-        tl.append((version.revision.date_created, version.revision.user, version.object_version.object, "deleted", version.object_id))
+        obj = version.object_version.object
+        if sheet == obj.sheet:
+            tl.append((version.revision.date_created, version.revision.user, obj, "deleted", version.object_id))
     tl.sort(key=lambda x: x[0])
-
-#   from pprint import pformat
-#   versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(TraitList))
-#   tl = []
-#   last_created_keys = {}
-#   for version in versions:
-#       obj = version.object_version.object
-#       if sheet == obj.sheet:
-#           tmp = [version.revision.date_created, version.revision.user, obj]
-#
-#           try:
-#               trait_versions = Version.objects.get_for_object(obj.trait)
-#           except Trait.DoesNotExist:
-#               obj_trait_test = obj.trait
-#               trait_versions = Version.objects.get_deleted_object(Trait, obj.trait)
-#           if last_created_keys.has_key(version.object_id):
-#               trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created, revision__date_created__gte=last_created_keys[version.object_id])
-#           else:
-#               trait_versions = trait_versions.filter(revision__date_created__lte=version.revision.date_created)
-#           trait_versions = trait_versions.order_by("-revision__date_created")
-#           traits = [v.object_version.object for v in trait_versions]
-#           tl.append([version.revision.date_created, version.revision.user, obj, traits])
-#           last_created_keys[version.object_id] = version.revision.date_created
 
     return render_to_response(template_name, {
         'sheet': sheet,
