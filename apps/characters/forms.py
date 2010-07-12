@@ -2,7 +2,7 @@ from datetime import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from characters.models import Sheet, VampireSheet, TraitListProperty, Trait, DISPLAY_PREFERENCES
+from characters.models import Sheet, VampireSheet, TraitListProperty, Trait, DISPLAY_PREFERENCES, ExperienceEntry
 
 class SheetUploadForm(forms.Form):
     title = forms.CharField(max_length=128)
@@ -31,3 +31,8 @@ class DisplayOrderForm(forms.Form):
     order = forms.IntegerField(min_value=0)
     trait_id = forms.IntegerField(widget=forms.widgets.HiddenInput)
     trait = forms.CharField(max_length=128)
+
+class ExperienceEntryForm(forms.ModelForm):
+    class Meta:
+        model = ExperienceEntry
+        exclude = ("earned", "unspent")

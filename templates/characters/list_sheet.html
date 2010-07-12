@@ -4,7 +4,7 @@
 {% load uni_form %}
 {% load characters_extras %}
 
-{% block head_title %}{% blocktrans %}Upload Character Sheet{% endblocktrans %}{% endblock %}
+{% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
 
 {% block body %}
     {{ sheet.name }}<br/>
@@ -229,9 +229,33 @@
 </tr>
 </tbody>
 </table>
+<div class="traitlist_header">
+    <u><b>Experience</b></u>
+    <a href="{% url sheet_new_experience_entry sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/brick_add.png" /></a>
+    <a href="{% url sheet_add_recent_expenditures sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/calculator_add.png" /></a>
+</div>
 <table border="0">
-{% for entry in experience_entries %}
-<tr><td>{{entry.change}}</td><td>{{entry.get_change_type_display}}</td><td>{{entry.date}}</td><td>{{entry.reason}}</td></tr>
+<tr>
+    <th></th>
+    <th></th>
+    <th>+</th>
+    <th>Type</th>
+    <th>Date</th>
+    <th>Reason</th>
+    <th>E</th>
+    <th>U</th>
+</tr>
+{% for entry in experience_entries reversed %}
+<tr>
+    <td><a href="{% url sheet_edit_experience_entry sheet.slug entry.id %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/brick_edit.png" /></a></td>
+    <td><a href="{% url sheet_delete_experience_entry sheet.slug entry.id %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/brick_delete.png" /></a></td>
+    <td>{{entry.change}}</td>
+    <td>{{entry.get_change_type_display}}</td>
+    <td>{{entry.date}}</td>
+    <td>{{entry.reason}}</td>
+    <td>{{entry.earned}}</td>
+    <td>{{entry.unspent}}</td>
+</tr>
 {% endfor %}
 </table>
 <p>{{ sheet.note }}</p>

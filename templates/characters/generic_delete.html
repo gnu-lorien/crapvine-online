@@ -1,0 +1,12 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Delete {{object_description}}{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% blocktrans %}Delete {{object_description}}{% endblocktrans %} {{instance}}</h1>
+
+    {% include form_template %}
+    
+{% endblock %}

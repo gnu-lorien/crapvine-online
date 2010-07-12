@@ -19,4 +19,10 @@ urlpatterns = patterns('characters.views',
     url(r'^edit_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<trait_id>\d+)/$', 'edit_trait', name='sheet_edit_trait'),
     url(r'^delete_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<trait_id>\d+)/$', 'delete_trait', name='sheet_delete_trait'),
     url(r'^new_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<traitlistname_slug>[-\w]+)/$', 'new_trait', name='sheet_new_trait'),
+
+    # Experience
+    url(r'^new_experience_entry/(?P<sheet_slug>[-\w]+)/$', 'new_experience_entry', name="sheet_new_experience_entry"),
+    url(r'^add_recent_expenditures/(?P<sheet_slug>[-\w]+)/$', 'add_recent_expenditures', name="sheet_add_recent_expenditures"),
+    url(r'^edit_experience_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'edit_experience_entry', name="sheet_edit_experience_entry"),
+    url(r'^delete_experience_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'delete_experience_entry', name="sheet_delete_experience_entry"),
 )

@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load uni_form %}
+
+<form class="uniForm" id="generic_form" method="POST" action="{{post_url}}">
+    <fieldset class="inlineLabels">
+        {{ form|as_uni_form }}
+        <div class="form_block">
+            <input type="hidden" name="action" value="{{action_description}}" />
+            <input type="submit" value="{% trans action_description %}"/>
+        </div>
+    </fieldset>
+</form>

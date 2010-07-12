@@ -6,7 +6,7 @@ from chronicles.models import Chronicle, ChronicleMember
 
 class SheetPermission(permissions.BasePermission):
     label = 'sheet_permission'
-    check = ('fullview', 'view',)
+    check = ('fullview', 'change', 'delete', 'list', 'history',)
 
 authority.register(Sheet, SheetPermission)
 
@@ -57,6 +57,8 @@ def can_delete_sheet(request, sheet, user=None, infodump=False):
 
 def can_history_sheet(request, sheet, user=None, infodump=False):
     return can_something_sheet(request, sheet, 0, 'sheet_permission.history_sheet', user=user, infodump=infodump)
+def can_fullview_sheet(request, sheet, user=None, infodump=False):
+    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)
 
 def can_list_sheet(request, sheet, user=None, infodump=False):
-    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)
+    return can_something_sheet(request, sheet, 0, 'sheet_permission.list_sheet', user=user, infodump=infodump)

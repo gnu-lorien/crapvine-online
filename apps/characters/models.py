@@ -204,6 +204,69 @@ class Sheet(models.Model):
         trait_attrs['order'] = order
         self.traits.create(**trait_attrs)
 
+    def _cascade_experience_expenditure_change(self, prev_entry, next_entry):
+        print "_cascade_experience_expenditure_change"
+        if next_entry is None and prev_entry is None:
+            print "both none"
+            # No entries left
+            self.experience_unspent = self.experience_earned = 0
+            self.save()
+            return
+
+        if next_entry is None:
+            print "next none"
+            self.experience_unspent = prev_entry.unspent
+            self.experience_earned = prev_entry.earned
+            self.save()
+            return
+
+        try:
+            print "looping up"
+            while True:
+                self._calculate_earned_unspent_from_last(next_entry, prev_entry)
+                next_entry.save()
+                print "next becomes", next_entry
+                prev_entry = next_entry
+                print "prev is", next_entry
+                next_entry = next_entry.get_next_by_date()
+        except ExperienceEntry.DoesNotExist:
+            print "setting experience totals to", prev_entry
+            self.experience_unspent = prev_entry.unspent
+            self.experience_earned = prev_entry.earned
+            self.save()
+            return
+
+        raise RuntimeError("Got to an invalid place cascading an experience entry")
+
+    def delete_experience_entry(self, in_entry):
+        entry = self.experience_entries.get(id=in_entry.id)
+        try:
+            prev_entry = entry.get_previous_by_date()
+        except ExperienceEntry.DoesNotExist:
+            # This means we're the first, so use the normal update method
+            prev_entry = None
+        try:
+            next_entry = entry.get_next_by_date()
+        except ExperienceEntry.DoesNotExist:
+            # This means we're the last, so prev becomes the canonical view
+            next_entry = None
+
+        print "Deleting entry", entry
+        entry.delete()
+        self._cascade_experience_expenditure_change(prev_entry, next_entry)
+
+    def edit_experience_entry(self, in_entry):
+        entry = self.experience_entries.get(id=in_entry.id)
+        try:
+            prev_entry = entry.get_previous_by_date()
+        except ExperienceEntry.DoesNotExist:
+            # This means we're the first, so use the normal update method
+            prev_entry = None
+
+        print "Edited experience entry", entry
+        print "Prev experience entry", prev_entry
+        self._cascade_experience_expenditure_change(prev_entry, entry)
+
     def add_experience_entry(self, entry):
         try:
             last_experience_entry = self.experience_entries.reverse()[0]

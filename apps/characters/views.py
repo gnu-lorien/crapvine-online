@@ -11,12 +11,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from authority.views import permission_denied
-from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_list_sheet
+from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
-from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty
+from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry
 
 from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
@@ -100,7 +100,7 @@ def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
         group = None
 
     sheet = get_object_or_404(Sheet, slug=sheet_slug)
-    if not can_list_sheet(request, sheet):
+    if not can_fullview_sheet(request, sheet):
         return permission_denied(request)
 
     ee = sheet.experience_entries.all().order_by('date')
@@ -441,4 +441,237 @@ def permissions_sheet(request, sheet_slug,
         'sheet': sheet,
         'permissions': permissions,
         'group': group,
+    }, context_instance=RequestContext(request))
+
+def experience_entry_action(request, sheet_slug, entry_id=None,
+                            action_description="", object_description="Experience Entry",
+                            post_url="", action=None,
+                            group_slug=None, bridge=None,
+                            form_class=ExperienceEntryForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    if entry_id is not None:
+        entry = get_object_or_404(sheet.experience_entries.all(), id=entry_id)
+    else:
+        entry = None
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/generic_edit.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/generic_edit_facebox.html",
+        )
+
+    form = form_class(request.POST or None, instance=entry)
+    if form.is_valid() and request.method == "POST":
+        action(form, sheet)
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'form': form,
+        'group': group,
+        'entry': entry,
+        'action_description': action_description,
+        'object_description': object_description,
+        'form_template': 'characters/generic_edit_form.html',
+        'post_url': post_url,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def new_experience_entry(request, sheet_slug, entry_id=None,
+                         action_description="New",
+                         group_slug=None, bridge=None,
+                         form_class=ExperienceEntryForm, **kwargs):
+    def local_action(form, sheet):
+        sheet.add_experience_entry(form.save(commit=False))
+    return experience_entry_action(
+        request,
+        sheet_slug,
+        entry_id=entry_id,
+        action_description=action_description,
+        post_url=reverse('sheet_new_experience_entry', args=[sheet_slug]),
+        action=local_action,
+        form_class=form_class,
+        **kwargs)
+
+@login_required
+def add_recent_expenditures(request, sheet_slug,
+                            action_description="Recent Expenditures", object_description="Experience Entry",
+                            group_slug=None, bridge=None,
+                            form_class=ExperienceEntryForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/generic_edit.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/generic_edit_facebox.html",
+        )
+
+    if request.method == "POST":
+        form = form_class(request.POST)
+        if form.is_valid():
+            sheet.add_experience_entry(form.save(commit=False))
+            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+    else:
+        import datetime
+        entry = ExperienceEntry()
+        added = []
+        added_pks = set()
+        deleted = []
+        start_added = datetime.datetime.now()
+        versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
+        try:
+            last_date = sheet.experience_entries.all().order_by('-date')[0].date
+            versions = versions.filter(revision__date_created__gt=last_date)
+        except IndexError:
+            versions = versions.all()
+        versions = versions.order_by('revision__date_created')
+
+        for version in versions:
+            obj = version.object_version.object
+            if sheet == obj.sheet:
+                added.append(obj)
+                added_pks.add(version.object_id)
+        end_added = datetime.datetime.now()
+        print "Added: ", end_added - start_added
+
+        start_deleted = datetime.datetime.now()
+        live_pks = frozenset([unicode(pk) for pk in Trait.objects.all().values_list("pk", flat=True)])
+        mix_pks = live_pks.intersection(added_pks)
+
+        deleted_pks = added_pks - live_pks
+        deleted_versions = [Version.objects.get_deleted_object(Trait, object_id, None)
+                   for object_id in deleted_pks]
+        deleted_versions.sort(lambda a, b: cmp(a.revision.date_created, b.revision.date_created))
+        for version in deleted_versions:
+            obj = version.object_version.object
+            if sheet == obj.sheet:
+                deleted.append(obj)
+        end_deleted = datetime.datetime.now()
+        print "Deleted: ", end_deleted - start_deleted
+
+        from pprint import pformat
+        entry.reason = pformat({'added': added, 'deleted': deleted})
+
+        form = form_class(None, instance=entry)
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'form': form,
+        'group': group,
+        'entry': entry,
+        'action_description': action_description,
+        'object_description': object_description,
+        'form_template': 'characters/generic_edit_form.html',
+        'post_url': reverse('sheet_add_recent_expenditures', args=[sheet_slug]),
+    }, context_instance=RequestContext(request))
+
+@login_required
+def edit_experience_entry(request, sheet_slug, entry_id,
+                          action_description="Edit",
+                          group_slug=None, bridge=None,
+                          form_class=ExperienceEntryForm, **kwargs):
+    def local_action(form, sheet):
+        entry = form.save()
+        sheet.edit_experience_entry(entry)
+    return experience_entry_action(
+        request,
+        sheet_slug,
+        entry_id=entry_id,
+        action_description=action_description,
+        post_url=reverse('sheet_edit_experience_entry', args=[sheet_slug, entry_id]),
+        form_class=form_class,
+        action=local_action,
+        **kwargs)
+
+@login_required
+def delete_experience_entry(request, sheet_slug, entry_id,
+                            action_description="Delete",
+                            group_slug=None, bridge=None,
+                            form_class=ExperienceEntryForm, **kwargs):
+    return experience_entry_action(
+        request,
+        sheet_slug,
+        entry_id=entry_id,
+        action_description=action_description,
+        post_url=reverse('sheet_delete_experience_entry', args=[sheet_slug, entry_id]),
+        form_class=form_class,
+        **kwargs)
+
+@login_required
+def delete_experience_entry(request, sheet_slug, entry_id,
+                            group_slug=None, bridge=None,
+                            **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    if entry_id is not None:
+        entry = get_object_or_404(sheet.experience_entries.all(), id=entry_id)
+    else:
+        entry = None
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/generic_delete.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/generic_delete_facebox.html",
+        )
+
+    if request.method == "POST" and request.POST.has_key('__confirm__'):
+        sheet.delete_experience_entry(entry)
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'group': group,
+        'instance': entry,
+        'object_description': 'Experience Entry',
+        'form_template': 'characters/generic_delete_form.html',
+        'post_url': reverse('sheet_delete_experience_entry', args=[sheet_slug, entry_id]),
     }, context_instance=RequestContext(request))
