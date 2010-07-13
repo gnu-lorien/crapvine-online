@@ -547,9 +547,9 @@ def add_recent_expenditures(request, sheet_slug,
     else:
         import datetime
         entry = ExperienceEntry()
-        added = []
+        added_versions = []
+        deleted_versions = []
         added_pks = set()
-        deleted = []
         start_added = datetime.datetime.now()
         versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
         try:
@@ -562,7 +562,7 @@ def add_recent_expenditures(request, sheet_slug,
         for version in versions:
             obj = version.object_version.object
             if sheet == obj.sheet:
-                added.append(obj)
+                added_versions.append([version, obj])
                 added_pks.add(version.object_id)
         end_added = datetime.datetime.now()
         print "Added: ", end_added - start_added
@@ -572,18 +572,71 @@ def add_recent_expenditures(request, sheet_slug,
         mix_pks = live_pks.intersection(added_pks)
 
         deleted_pks = added_pks - live_pks
-        deleted_versions = [Version.objects.get_deleted_object(Trait, object_id, None)
+        deleted_versions_qs = [Version.objects.get_deleted_object(Trait, object_id, None)
                    for object_id in deleted_pks]
-        deleted_versions.sort(lambda a, b: cmp(a.revision.date_created, b.revision.date_created))
-        for version in deleted_versions:
+        deleted_versions_qs.sort(lambda a, b: cmp(a.revision.date_created, b.revision.date_created))
+        for version in deleted_versions_qs:
             obj = version.object_version.object
             if sheet == obj.sheet:
-                deleted.append(obj)
+                added_versions = [(av, ao) for av, ao in added_versions if av.id != version.id]
+                deleted_versions.append([version, obj])
         end_deleted = datetime.datetime.now()
         print "Deleted: ", end_deleted - start_deleted
 
-        from pprint import pformat
-        entry.reason = pformat({'added': added, 'deleted': deleted})
+        reasons = {'added': [], 'unspent': [], 'removed': []}
+        entry.change = 0
+        differences = []
+        for av, ao in added_versions:
+            try:
+                prev_av = Version.objects.get_for_object_reference(Trait, av.object_id).order_by('-revision__date_created')[1]
+                difference = ao.value - prev_av.object_version.object.value
+            except IndexError:
+                difference = 0
+            entry.change = entry.change + difference
+            ao.value = abs(difference)
+            if 0 <= difference:
+                reasons['added'].append(ao)
+            else:
+                reasons['unspent'].append(ao)
+            differences.append(difference)
+
+        for av, ao in deleted_versions:
+            reasons['removed'].append(ao)
+            try:
+                prev_av = Version.objects.get_for_object_reference(Trait, av.object_id).order_by('-revision__date_created')[1]
+                difference = ao.value
+            except IndexError:
+                difference = 0
+            entry.change = entry.change - difference
+            differences.append(difference)
+
+        if 0 == entry.change:
+            entry.change_type = 6
+        elif 0 < entry.change:
+            entry.change_type = 4
+        else:
+            entry.change_type = 3
+
+        #added = [obj for av, obj in added_versions]
+        #deleted = [obj for av, obj in deleted_versions]
+
+        from pprint import pformat, pprint
+        #entry.reason = pformat({'added': added, 'deleted': deleted})
+        #entry.reason = pformat({'reasons':reasons, 'differences':differences})
+
+        final_reason_str = ""
+        pprint(reasons)
+        def gen_string(reasons, key, annotate):
+            if 0 < len(reasons[key]):
+                print key
+                return annotate + ", ".join([unicode(r) for r in reasons[key]]) + ". "
+            return ''
+
+        final_reason_str = final_reason_str + gen_string(reasons, 'added', "Purchased ")
+        final_reason_str = final_reason_str + gen_string(reasons, 'unspent', "Unspent ")
+        final_reason_str = final_reason_str + gen_string(reasons, 'removed', "Removed ")
+
+        entry.reason = final_reason_str.strip()
 
         form = form_class(None, instance=entry)
 
