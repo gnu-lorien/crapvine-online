@@ -1,6 +1,6 @@
     jQuery(document).ready(function($) {
         $(document).bind('reveal.facebox', function() {
-            $("form.uniForm").submit(function() {
+            $("form.in_facebox").submit(function() {
                 form = this;
                 jQuery.facebox(function($) {
                     fields = jQuery(form).find("input[type='text']").filter(":enabled");
