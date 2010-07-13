@@ -2,5 +2,4 @@ Applied a fix to the paginator so that hashtag would default to '' rather than N
 
 Applied a fix to the django test client http://code.djangoproject.com/attachment/ticket/12720/django-test-client-cookie-fix.patch
 
-Install django-reversion-1.1.2
--- Backported a fix from 1.3 in the get_deleted method. Use frozen sets so we don't hit the underlying sql engine's limits for checking a list
+Created a fork of django-reversion to support better tracking of when an object is deleted
