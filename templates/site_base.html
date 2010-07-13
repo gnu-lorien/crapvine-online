@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/groups.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/locations.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/messages.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/microblogging.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/pagination.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/photos.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/tabs.css" />
@@ -53,7 +52,6 @@
             <li id="tab_photos"><a href="{% url photos %}">{% trans "Photos" %}</a></li>
             <li id="tab_blogs"><a href="{% url blog_list_all %}">{% trans "Blogs" %}</a></li>
             <li id="tab_chronicles"><a href="{% url chronicle_list %}">{% trans "Chronicles" %}</a></li>
-            <li id="tab_tweets"><a href="{% url tweets_you_follow %}">{% trans "Tweets" %}</a></li>
             <li id="tab_bookmarks"><a href="{% url all_bookmarks %}">{% trans "Bookmarks" %}</a></li>
             <li id="tab_swaps"><a href="{% url offer_list_all %}">{% trans "Swaps" %}</a></li>
             <li id="tab_locations"><a href="{% url loc_yours %}">{% trans "Locations" %}</a></li>
@@ -65,7 +63,7 @@
 
 {% block footer %}
 <div class="legal">
-    {% trans "&copy; 2008 &lt;your company here&gt;" %}
+    {% trans "Copyright &copy; 2010 Andrew Sayman" %}
     - <a href="{% url about %}">{% trans "About" %}</a>
     - <a href="{% url terms %}">{% trans "Terms of Service" %}</a>
     - <a href="{% url privacy %}">{% trans "Privacy Policy" %}</a>
