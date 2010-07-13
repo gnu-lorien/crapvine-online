@@ -13,6 +13,16 @@ def get_traitlist(sheet, traitlistname):
     return retlist
 
 @register.filter
+def get_trait_count(sheet, traitlistname):
+    retlist = sheet.get_traitlist(traitlistname)
+    tlp = sheet.get_traitlist_property(TraitListName.objects.get(name=traitlistname))
+    if tlp.atomic:
+        return retlist.count()
+    else:
+        count = sum([t.value for t in retlist])
+        return count
+
+@register.filter
 def format_traitlist(traitlist, prepend='', autoescape=None):
     if autoescape:
         esc = conditional_escape
