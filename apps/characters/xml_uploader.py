@@ -14,6 +14,8 @@ from pprint import pprint
 
 from django.db import IntegrityError
 
+from reversion import revision
+
 def translate_date(date):
     if isinstance(date, basestring):
         try:
@@ -403,6 +405,7 @@ class ChronicleLoader(ContentHandler):
 
 #from crapvine.xml.chronicle_loader import ChronicleLoader
 
+@revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
     chronicle_loader = ChronicleLoader(user)
 
