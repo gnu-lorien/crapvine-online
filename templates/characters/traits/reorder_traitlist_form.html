@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load uni_form %}
 
-<form class="uniForm" id="reorder_traitlist_form" method="POST" action="{% url sheet_reorder_traitlist sheet.slug traitlistname.slug %}">
+<form class="in_facebox" id="reorder_traitlist_form" method="POST" action="{% url sheet_reorder_traitlist sheet.slug traitlistname.slug %}">
     <fieldset class="inlineLabels">
         {{ formset.management_form }}
         <ol class="sorting_list">

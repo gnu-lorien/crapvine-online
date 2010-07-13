@@ -1,15 +1,4 @@
 {% load characters_extras %}
-<table valign="top" align="left">
-<tbody>
-<tr>
-<td>
-{% trait_category_header traitlistname.name %}
-</td>
-</tr>
-<tr>
-<td>
-{% show_traitlist traitlistname.name prepend %}
-</td>
-</tr>
-</tbody>
-</table>
+<div id="{{traitlistname.slug}}">
+{% include "characters/_trait_category.html" %}
+</div>

@@ -1,0 +1,9 @@
+<script type="text/javascript">
+    jQuery(document).trigger('close.facebox');
+    $("#{{traitlistname.slug}}").load("{% url sheet_reload_traits sheet.slug traitlistname.slug %}", function() {
+        $('#{{traitlistname.slug}}').find('a[rel*=facebox]').facebox({
+            loadingImage: '{{ STATIC_URL }}pinax/images/facebox/loading.gif',
+            closeImage: '{{ STATIC_URL }}pinax/images/facebox/closelabel.gif'
+        });
+    });
+</script>

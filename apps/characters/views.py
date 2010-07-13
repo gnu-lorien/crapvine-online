@@ -142,6 +142,16 @@ def edit_vampire_sheet_attributes(request, sheet_slug,
         'form': form,
     }, context_instance=RequestContext(request))
 
+def trait_change_ajax_success(request, sheet, traitlistname, group):
+    if not request.is_ajax():
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet.slug]))
+    else:
+        return render_to_response("characters/list_sheet_ajax_success.html", {
+            'sheet': sheet,
+            'traitlistname': traitlistname,
+            'group': group,
+        }, context_instance=RequestContext(request))
+
 @login_required
 def reorder_traitlist(request, sheet_slug, traitlistname_slug,
                       group_slug=None, bridge=None,
@@ -183,7 +193,7 @@ def reorder_traitlist(request, sheet_slug, traitlistname_slug,
                 if data['order'] != trait.order:
                     trait.order = data['order']
                     trait.save()
-            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+            return trait_change_ajax_success(request, sheet, tln, group)
     else:
         traits = sheet.get_traits(tln.name)
         initial = []
@@ -235,7 +245,8 @@ def edit_traitlist(request, sheet_slug, traitlistname_slug,
             if trait.display_preference != tlp.display_preference:
                 trait.display_preference = tlp.display_preference
                 trait.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        print "tln", tln
+        return trait_change_ajax_success(request, sheet, tln, group)
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -274,15 +285,49 @@ def edit_trait(request, sheet_slug, trait_id,
         )
 
     form = form_class(request.POST or None, instance=trait)
+    from pprint import pprint
+    form.is_valid()
+    pprint(form.errors)
+    print request.is_ajax()
     if form.is_valid() and request.method == "POST":
         form.save()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        return trait_change_ajax_success(request, sheet, trait.traitlistname, group)
 
     return render_to_response(template_name, {
         'sheet': sheet,
         'form': form,
         'trait': trait,
         'group': group,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def reload_traits(request, sheet_slug, traitlistname_slug,
+                  group_slug=None, bridge=None,
+                  form_class=TraitForm, **kwargs):
+    traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = "characters/_trait_category.html"
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'group': group,
+        'traitlistname': traitlistname,
+        'prepend': '',
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -315,8 +360,9 @@ def delete_trait(request, sheet_slug, trait_id,
         )
 
     if request.method == "POST" and request.POST.has_key('__confirm__'):
+        tln = trait.traitlistname
         trait.delete()
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        return trait_change_ajax_success(request, sheet, tln, group)
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -354,10 +400,15 @@ def new_trait(request, sheet_slug, traitlistname_slug,
         )
 
     form = form_class(request.POST or None)
+    print "in add trait"
+    from pprint import pprint
+    pprint(form.errors)
     if form.is_valid() and request.method == "POST":
         sheet.add_trait(traitlistname.name, form.cleaned_data)
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        print "returning ajax check"
+        return trait_change_ajax_success(request, sheet, traitlistname, group)
 
+    print "returning regs"
     return render_to_response(template_name, {
         'sheet': sheet,
         'form': form,
