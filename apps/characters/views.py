@@ -612,10 +612,11 @@ def add_recent_expenditures(request, sheet_slug,
 
         if 0 == entry.change:
             entry.change_type = 6
-        elif 0 < entry.change:
-            entry.change_type = 4
-        else:
+        elif entry.change > 0:
             entry.change_type = 3
+        else:
+            entry.change_type = 4
+            entry.change = abs(entry.change)
 
         #added = [obj for av, obj in added_versions]
         #deleted = [obj for av, obj in deleted_versions]
