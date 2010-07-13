@@ -281,6 +281,7 @@ class Sheet(models.Model):
         self.experience_entries.add(entry)
         self.experience_unspent = entry.unspent
         self.experience_earned = entry.earned
+        self.save()
 
     def _calculate_earned_unspent_from_last(self, entry, previous_entry):
         if previous_entry is None:
