@@ -50,3 +50,8 @@ def trait_category_header(context, traitlist_name):
 @register.inclusion_tag("characters/_sheet_list_item.html", takes_context=False)
 def sheet_list_item(sheet):
     return {'sheet':sheet}
+
+@register.inclusion_tag("characters/trait_category.html", takes_context=True)
+def trait_category(context, traitlist_name, prepend=''):
+    tln = TraitListName.objects.get(name=traitlist_name)
+    return {'traitlistname': tln, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'], 'prepend':prepend}
