@@ -25,7 +25,7 @@
                     {% if forloop.counter0|divisibleby:"3" %}<tr>{% endif %}
                     <td>
                         <div class="avatar">{% avatar member 40 %}</div>
-                        <div class="details"><a href="{% url profile_detail member.username %}" title="{{ member.username }}">{{ member.username }}</a> <a href="{% url chronicle_edit_membership chronicle.slug member.username %}" rel="facebox">Edit Membership</a></div>
+                        <div class="details"><a href="{% url profile_detail member.username %}" title="{{ member.username }}">{{ member.username }}</a> {% if can_edit_membership %}<a href="{% url chronicle_edit_membership chronicle.slug member.username %}" rel="facebox">Edit Membership</a>{% endif %}</div>
                     </td>
                     {% if forloop.counter0|add:"1"|divisibleby:"3" %}</tr>{% endif %}
                 {% endfor %}

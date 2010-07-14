@@ -90,6 +90,16 @@ def delete(request, group_slug=None, redirect_url=None):
     
     return HttpResponseRedirect(redirect_url)
 
+def can_edit_membership(request, chronicle, user=None):
+    if user is None:
+        user = request.user
+    if not chronicle.user_is_member(request.user):
+        return False
+    if 0 != ChronicleMember.objects.filter(user=user, chronicle=chronicle)[0].membership_role:
+        return False
+
+    return True
+
 @login_required
 def edit_membership(request, group_slug=None, username=None,
                     form_class=ChronicleMemberForm, **kwargs):
@@ -102,9 +112,7 @@ def edit_membership(request, group_slug=None, username=None,
         )
 
     chronicle = get_object_or_404(Chronicle, slug=group_slug)
-    if not chronicle.user_is_member(request.user):
-        return permission_denied(request)
-    if 0 != ChronicleMember.objects.filter(user=request.user, chronicle=chronicle)[0].membership_role:
+    if not can_edit_membership(request, chronicle):
         return permission_denied(request)
 
     user = get_object_or_404(User, username=username)
@@ -133,8 +141,10 @@ def your_chronicles(request, template_name="chronicles/your_chronicles.html"):
 
 @login_required
 def list_members(request, group_slug=None, template_name="chronicles/list_members.html"):
+    chronicle = get_object_or_404(Chronicle, slug=group_slug)
     return render_to_response(template_name, {
-        "chronicle": get_object_or_404(Chronicle, slug=group_slug),
+        "chronicle": chronicle,
+        "can_edit_membership": can_edit_membership(request, chronicle),
     }, context_instance=RequestContext(request))
 
 def chronicle(request, group_slug=None, form_class=ChronicleUpdateForm,
