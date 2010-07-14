@@ -1,0 +1,12 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Join Chronicle{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% blocktrans %}Join Chronicle{% endblocktrans %}</h1>
+
+    {% include "characters/join_chronicle_form.html" %}
+
+{% endblock %}

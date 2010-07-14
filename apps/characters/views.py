@@ -17,6 +17,7 @@ from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitF
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry
+from chronicles.models import Chronicle, ChronicleMember
 
 from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
@@ -75,12 +76,12 @@ def list_sheets(request, group_slug=None, bridge=None):
         sheet_chronicle_map = {}
         for chronicle_member in request.user.chronicles.all():
             sheets_for_user = chronicle_member.chronicle.get_sheets_for_user(request.user)
-            sheet_chronicle_map[chronicle_member.chronicle.name] = {'pc': [], 'npc':[]}
+            sheet_chronicle_map[chronicle_member.chronicle] = {'pc': [], 'npc':[]}
             for sheet in sheets_for_user:
                 if sheet.npc:
-                    sheet_chronicle_map[chronicle_member.chronicle.name]['npc'].append(sheet)
+                    sheet_chronicle_map[chronicle_member.chronicle]['npc'].append(sheet)
                 else:
-                    sheet_chronicle_map[chronicle_member.chronicle.name]['pc'].append(sheet)
+                    sheet_chronicle_map[chronicle_member.chronicle]['pc'].append(sheet)
 
     return render_to_response(
         'characters/list_sheets.html',
@@ -793,3 +794,65 @@ def delete_experience_entry(request, sheet_slug, entry_id,
         'form_template': 'characters/generic_delete_form.html',
         'post_url': reverse('sheet_delete_experience_entry', args=[sheet_slug, entry_id]),
     }, context_instance=RequestContext(request))
+
+@login_required
+def join_chronicle(request, chronicle_slug,
+                   group_slug=None, bridge=None,
+                   **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheets = group.get_sheets_for_user(request.user)
+    else:
+        sheets = Sheet.objects.all()
+        sheets = sheets.filter(player__exact=request.user)
+
+    chronicle = get_object_or_404(Chronicle, slug=chronicle_slug)
+    chronicle_sheets = chronicle.get_sheets_for_user(request.user)
+
+    set_sheets_in_chronicle = set(s.id for s in chronicle_sheets)
+
+    checklist = []
+    for sheet in sheets:
+        if sheet.id in set_sheets_in_chronicle:
+            checklist.append((True, sheet))
+        else:
+            checklist.append((False, sheet))
+
+    template_name = kwargs.get("template_name", "characters/join_chronicle.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/join_chronicle_facebox.html",
+        )
+
+    if request.method == "POST":
+        for key in request.POST:
+            try:
+                c_id = int(key)
+                if 'on' == request.POST[key]:
+                    sheet = Sheet.objects.get(id=c_id)
+                    chronicle.associate(sheet)
+                    sheet.save()
+            except ValueError:
+                continue
+
+        return HttpResponseRedirect(reverse("sheets_list"))
+
+    return render_to_response(template_name, {
+        'checklist': checklist,
+        'group': group,
+        'chronicle': chronicle,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def make_home_chronicle(request, chronicle_slug,
+                        group_slug=None, bridge=None,
+                        **kwargs):
+    raise Http404

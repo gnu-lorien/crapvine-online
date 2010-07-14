@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load uni_form %}
+
+<form class="uniForm" id="generic_form" method="POST" action="{% url sheet_join_chronicle chronicle.slug %}">
+    <fieldset class="inlineLabels">
+        {% for value, sheet in checklist %}
+            <ul>
+            <li><input type="checkbox" name="{{sheet.id}}" /><label for="{{sheet.id}}">{{sheet.name}}</label></li>
+            </ul>
+        {% endfor %}
+        <div class="form_block">
+            <input type="hidden" name="action" value="join chronicle" />
+            <input type="submit" value="{% trans "join chronicle" %}"/>
+        </div>
+    </fieldset>
+</form>
