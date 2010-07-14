@@ -6,16 +6,21 @@
 {% block head_title %}{% blocktrans %}Character Sheet History{% endblocktrans %}{% endblock %}
 
 {% block body %}
-    <table border="1" cellspacing="10">
-        <tr><th>Date Created</th><th>User</th><th>Description</th><th>Action</th><th>Object ID</th></tr>
-    {% for date_created, user, trait, action, object_id in tl_versions %}
-        <tr cellspacing="10">
-            <td valign="top">{{date_created}}</td>
-            <td valign="top">{{user}}</td>
-            <td valign="top">{{trait}}</td>
-            <td valign="top">{{action}}</td>
-            <td valign="top">{{object_id}}</td>
-        </tr>
+    {% for key, list in versions.items %}
+        <h2>{{key}}</h2>
+        <table id="history-table" border="1" cellspacing="10" width="100%">
+            <tbody border="1" cellspacing="10" style="border-spacing:10; border:1;">
+            <tr><th>Date Created</th><th>User</th><th>Description</th><th>Action</th><th>Object ID</th></tr>
+        {% for date_created, user, trait, action, object_id in list %}
+            <tr cellspacing="10">
+                <td align="center" valign="top"><div>{{date_created}}</div></td>
+                <td align="center" valign="top">{{user}}</td>
+                <td align="center" valign="top">{{trait}}</td>
+                <td align="center" valign="top">{{action}}</td>
+                <td align="center" valign="top">{{object_id}}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
     {% endfor %}
-    </table>
 {% endblock %}

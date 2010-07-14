@@ -437,22 +437,35 @@ def history_sheet(request, sheet_slug,
     if not can_history_sheet(request, sheet):
         return permission_denied(request)
 
-    tl = []
-    versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
-    for version in versions:
-        obj = version.object_version.object
-        if sheet == obj.sheet:
-            tl.append((version.revision.date_created, version.revision.user, obj, "updated", version.object_id))
-    versions = Version.objects.get_deleted(Trait)
-    for version in versions:
-        obj = version.object_version.object
-        if sheet == obj.sheet:
-            tl.append((version.revision.date_created, version.revision.user, obj, "deleted", version.object_id))
-    tl.sort(key=lambda x: x[0])
+    versions_map = {
+        'Traits':(Trait, lambda x: sheet == x.sheet),
+        'Experience Entries':(ExperienceEntry, lambda x: x.sheet_set.filter(id=sheet.id).count() > 0),
+        'Sheet attributes':(Sheet, lambda x: sheet.id == x.id),
+    }
+    try:
+        versions_map['Vampire attributes'] = (VampireSheet, lambda x: sheet.vampiresheet == x)
+    except VampireSheet.DoesNotExist:
+        pass
+
+    for key in versions_map.keys():
+        tl = []
+        versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(versions_map[key][0]))
+        for version in versions:
+            obj = version.object_version.object
+            if versions_map[key][1](obj):
+                bucket_string = "updated"
+                tl.append((version.revision.date_created, version.revision.user, obj, bucket_string, version.object_id))
+        versions = Version.objects.get_deleted(versions_map[key][0])
+        for version in versions:
+            obj = version.object_version.object
+            if versions_map[key][1](obj):
+                tl.append((version.revision.date_created, version.revision.user, obj, "deleted", version.object_id))
+        tl.sort(key=lambda x: x[0])
+        versions_map[key] = tl
 
     return render_to_response(template_name, {
         'sheet': sheet,
-        'tl_versions': tl,
+        'versions': versions_map,
         'group': group,
     }, context_instance=RequestContext(request))
 
