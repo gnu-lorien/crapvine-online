@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/comments.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/friends.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/groups.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/locations.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/messages.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/pagination.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/photos.css" />
@@ -53,8 +52,6 @@
             <li id="tab_blogs"><a href="{% url blog_list_all %}">{% trans "Blogs" %}</a></li>
             <li id="tab_chronicles"><a href="{% url chronicle_list %}">{% trans "Chronicles" %}</a></li>
             <li id="tab_bookmarks"><a href="{% url all_bookmarks %}">{% trans "Bookmarks" %}</a></li>
-            <li id="tab_swaps"><a href="{% url offer_list_all %}">{% trans "Swaps" %}</a></li>
-            <li id="tab_locations"><a href="{% url loc_yours %}">{% trans "Locations" %}</a></li>
             <li id="tab_inbox"><a href="{% url messages_inbox %}">{% trans "Inbox" %} ({{ combined_inbox_count }})</a></li>
             <li id="tab_characters"><a href="{% url sheets_list %}">{% trans "Characters" %}</a></li>
         {% endspaceless %}</ul>
