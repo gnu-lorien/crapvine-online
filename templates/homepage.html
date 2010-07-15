@@ -8,38 +8,26 @@
 {% block tab_id %}id="home_tab"{% endblock %}
 
 {% block body %}
-    <h1>{% trans "Welcome to Pinax" %}</h1>
+    <h1>{% trans "Welcome to Crapvine Online" %}</h1>
     
     <p>
         {% blocktrans %}
-        <b>Pinax</b> is a <a href="http://djangoproject.com/">Django</a>
-        project intended to provide a starting point for websites. By
-        integrating numerous reusable Django apps to take care of the
-        things that many sites have in common, it lets you focus on what
-        makes your site different.
+        <b>Crapvine Online</b> is an online character management website
+        particularly designed to support CCP/White Wolf's Mind's Eye Theatre
+        LARPing products.
         {% endblocktrans %}
     </p>
     
+    <h2>{% trans "Features" %}</h2>
+
     <p>
+        <ul>
         {% blocktrans %}
-        For more information about Pinax, see
-        <a href="http://pinaxproject.com/">http://pinaxproject.com/</a>.
+            <li>Import and Export sheets using <a href="http://grapevinelarp.com/">Grapevine's</a> XML GEX format</li>
+            <li>Edit sheets live on the site</li>
+            <li>Share your sheets with other user's and your chronicle's STs</li>
         {% endblocktrans %}
-    </p>
-    
-    <h2>{% trans "About this project" %}</h2>
-    
-    <p>
-        {% blocktrans %}
-        This project demonstrates a social networking site. It provides
-        profiles, friends, photos, blogs, tribes, wikis, tweets, bookmarks,
-        swaps, locations and user-to-user messaging.
-        {% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans %}
-        In 0.5 this was called "complete_project".
-        {% endblocktrans %}
+        </ul>
     </p>
     
     <hr />
