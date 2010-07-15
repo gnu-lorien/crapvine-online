@@ -114,9 +114,9 @@ def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
 
 @login_required
 def download_sheet(request, sheet_slug):
-    sheet = VampireSheet.objects.get(slug=sheet_slug, player=request.user)
+    sheet = get_object_or_404(VampireSheet, slug=sheet_slug, player=request.user)
     response = HttpResponse(mimetype="application/gex")
-    response['Content-Disposition'] = 'attachment; filename=Exchange.gex'
+    response['Content-Disposition'] = 'filename=' + sheet_slug + '.gex'
     ve = VampireExporter(sheet)
     response.write(ve)
     return response

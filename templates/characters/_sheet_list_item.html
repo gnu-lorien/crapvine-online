@@ -1,1 +1,1 @@
-<tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td><td><a href="{% url sheet_permissions sheet.slug %}">Permissions</a></td></tr>
+<tr><td>{{ sheet.name }}</td><td><a href="{% url sheet_list sheet.slug %}">Sheet</a></td><td><a href="{% url sheet_history sheet.slug %}">History</a></td><td><a href="{% url sheet_permissions sheet.slug %}">Permissions</a></td><td><a href="{% url sheet_download sheet.slug %}">Download</a></td></tr>
