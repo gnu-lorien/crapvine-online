@@ -135,7 +135,6 @@
                 </p>
             {% endif %}
 
-            {% content_objects chronicle "characters.Sheet" as sheets %}
             <h2>{% trans "Character Sheets"%}{% if sheets %} ({{ sheets|length }}){% endif %}</h2>
 
             {% autopaginate sheets 30 %}
@@ -147,6 +146,15 @@
                 </table>
 
                 {% paginate %}
+
+                {% groupurl sheet_upload chronicle as sheet_upload_url %}
+                {% groupurl sheets_list chronicle as sheet_list_url %}
+                <p>
+                    {% blocktrans %}
+                        <a href="{{sheet_upload_url}}">Upload sheets</a><br/>
+                        <a href="{{sheet_list_url}}">List Sheets</a><br/>
+                    {% endblocktrans %}
+                </p>
             {% else %}
                 {% groupurl sheet_upload chronicle as sheet_upload_url %}
                 <p>

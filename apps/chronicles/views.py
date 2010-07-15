@@ -185,6 +185,7 @@ def chronicle(request, group_slug=None, form_class=ChronicleUpdateForm,
     return render_to_response(template_name, {
         "chronicle_form": chronicle_form,
         "chronicle": chronicle,
+        "sheets": chronicle.get_sheets_for_user(request.user),
         "group": chronicle, # @@@ this should be the only context var for the chronicle
         "is_member": is_member,
     }, context_instance=RequestContext(request))
