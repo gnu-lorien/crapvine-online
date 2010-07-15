@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from authority.views import permission_denied
 from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm, NewSheetForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry
@@ -856,3 +856,57 @@ def make_home_chronicle(request, chronicle_slug,
                         group_slug=None, bridge=None,
                         **kwargs):
     raise Http404
+
+def new_vampire_sheet(request, form, group=None):
+    # Create the blank sheet
+    vs = VampireSheet.objects.create(name=form.cleaned_data['name'], player=request.user)
+    vs.save()
+
+    # Create the default traitlists
+    # TODO This stuff should come from menu 
+    default_trait_lists = [
+        "Physical",
+        "Negative Physical",
+        "Social",
+        "Negative Social",
+        "Mental",
+        "Negative Mental",
+        "Abilities",
+        "Backgrounds",
+        "Influences",
+        "Disciplines",
+        "Merits",
+        "Flaws",
+        "Derangements",
+        "Status",
+    ]
+    for name in default_trait_lists:
+        vs.add_traitlist_properties(name=name)
+    return vs
+
+@login_required
+def new_sheet(request,
+              group_slug=None, bridge=None,
+              form_class=NewSheetForm, template_name="characters/new_sheet.html"):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    form = form_class(request.POST or None)
+    mapping = {'vampire': new_vampire_sheet}
+    if request.method == "POST":
+        if form.is_valid():
+            ret = mapping[form.cleaned_data['creature_type']](request, form, group)
+            if group is not None:
+                group.associate(ret)
+                ret.save()
+            return HttpResponseRedirect(reverse('sheets_list'))
+
+    return render_to_response(template_name, {
+        'form': form,
+        'group': group,
+    }, context_instance=RequestContext(request))

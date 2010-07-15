@@ -323,20 +323,20 @@ class Sheet(models.Model):
 class VampireSheet(Sheet):
     nature = models.CharField(max_length=128, blank=True)
     demeanor = models.CharField(max_length=128, blank=True)
-    blood = models.PositiveSmallIntegerField()
+    blood = models.PositiveSmallIntegerField(default=10, blank=True)
     clan = models.CharField(max_length=128, blank=True)
-    conscience = models.PositiveSmallIntegerField()
-    courage = models.PositiveSmallIntegerField()
-    generation = models.PositiveSmallIntegerField()
+    conscience = models.PositiveSmallIntegerField(default=3, blank=True)
+    courage = models.PositiveSmallIntegerField(default=3, blank=True)
+    generation = models.PositiveSmallIntegerField(default=13, blank=True)
     path = models.CharField(max_length=128, blank=True)
-    pathtraits = models.PositiveSmallIntegerField()
-    physicalmax = models.PositiveSmallIntegerField()
+    pathtraits = models.PositiveSmallIntegerField(default=3, blank=True)
+    physicalmax = models.PositiveSmallIntegerField(default=10, blank=True)
     sect = models.CharField(max_length=128, default='', blank=True)
-    selfcontrol = models.PositiveSmallIntegerField()
-    willpower = models.PositiveSmallIntegerField()
+    selfcontrol = models.PositiveSmallIntegerField(default=2, blank=True)
+    willpower = models.PositiveSmallIntegerField(default=2, blank=True)
     title = models.CharField(max_length=128, blank=True)
 
-    aura = models.SmallIntegerField(default=0)
+    aura = models.SmallIntegerField(default=0, blank=True)
     coterie = models.CharField(max_length=128, default='', blank=True)
     id_text = models.CharField(max_length=128, default='', blank=True)
     sire = models.CharField(max_length=128, default='', blank=True)
@@ -344,12 +344,12 @@ class VampireSheet(Sheet):
     # These need to actually default to whatever value was just set for their permanents
     # Or... better yet... get turned into something that doesn't blow since we have this
     # great uploading framework now!!!
-    tempcourage = models.PositiveSmallIntegerField(default=0)
-    tempselfcontrol = models.PositiveSmallIntegerField(default=0)
-    tempwillpower = models.PositiveSmallIntegerField(default=0)
-    tempblood = models.PositiveSmallIntegerField(default=0)
-    tempconscience = models.PositiveSmallIntegerField(default=0)
-    temppathtraits = models.PositiveSmallIntegerField(default=0)
+    tempcourage = models.PositiveSmallIntegerField(default=0, blank=True)
+    tempselfcontrol = models.PositiveSmallIntegerField(default=0, blank=True)
+    tempwillpower = models.PositiveSmallIntegerField(default=0, blank=True)
+    tempblood = models.PositiveSmallIntegerField(default=0, blank=True)
+    tempconscience = models.PositiveSmallIntegerField(default=0, blank=True)
+    temppathtraits = models.PositiveSmallIntegerField(default=0, blank=True)
 
 class TraitListProperty(models.Model):
     sheet = models.ForeignKey(Sheet)

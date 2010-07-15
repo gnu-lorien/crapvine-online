@@ -12,6 +12,7 @@ urlpatterns = patterns('characters.views',
     url(r'^permissions_sheet/(?P<sheet_slug>[-\w]+)/$', 'permissions_sheet', name='sheet_permissions'),
     url(r'^download_sheet/(?P<sheet_slug>[-\w]+)/$', 'download_sheet', name='sheet_download'),
     url(r'^edit_vampire_sheet_attributes/(?P<sheet_slug>[-\w]+)/$', 'edit_vampire_sheet_attributes', name='sheet_vampire_edit_attributes'),
+    url(r'^new_sheet/$', 'new_sheet', name='sheet_new'),
 
     # Chronicles
     url(r'^join_chronicle/(?P<chronicle_slug>[-\w]+)/$', 'join_chronicle', name='sheet_join_chronicle'),

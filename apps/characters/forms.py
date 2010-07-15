@@ -35,3 +35,7 @@ class ExperienceEntryForm(forms.ModelForm):
     class Meta:
         model = ExperienceEntry
         exclude = ("earned", "unspent")
+
+class NewSheetForm(forms.Form):
+    name = forms.CharField()
+    creature_type = forms.ChoiceField(choices=[("vampire","Vampire")])
