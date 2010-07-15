@@ -138,6 +138,9 @@
             <h2>{% trans "Character Sheets"%}{% if sheets %} ({{ sheets|length }}){% endif %}</h2>
 
             {% autopaginate sheets 30 %}
+            {% groupurl sheet_upload chronicle as sheet_upload_url %}
+            {% groupurl sheets_list chronicle as sheet_list_url %}
+            {% url sheet_join_chronicle chronicle.slug as sheet_join_url %}
             {% if sheets %}
                 <table class="topics">
                     {% for sheet in sheets %}
@@ -147,19 +150,20 @@
 
                 {% paginate %}
 
-                {% groupurl sheet_upload chronicle as sheet_upload_url %}
-                {% groupurl sheets_list chronicle as sheet_list_url %}
+
                 <p>
                     {% blocktrans %}
                         <a href="{{sheet_upload_url}}">Upload sheets</a><br/>
                         <a href="{{sheet_list_url}}">List Sheets</a><br/>
+                        <a href="{{sheet_join_url}}">Associate sheets with this chronicle</a>
                     {% endblocktrans %}
                 </p>
             {% else %}
-                {% groupurl sheet_upload chronicle as sheet_upload_url %}
                 <p>
                     {% blocktrans %}
-                        None yet. <a href="{{sheet_upload_url}}">Upload sheets</a>
+                        None yet.<br/>
+                        <a href="{{sheet_upload_url}}">Upload sheets</a><br/>
+                        <a href="{{sheet_join_url}}">Associate sheets with this chronicle</a>
                     {% endblocktrans %}
                 </p>
             {% endif %}
