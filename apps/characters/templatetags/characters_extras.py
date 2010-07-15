@@ -55,3 +55,11 @@ def sheet_list_item(sheet):
 def trait_category(context, traitlist_name, prepend=''):
     tln = TraitListName.objects.get(name=traitlist_name)
     return {'traitlistname': tln, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'], 'prepend':prepend}
+
+@register.inclusion_tag("characters/experience_entries.html", takes_context=True)
+def experience_entries(context, experience_entries):
+    return {'experience_entries': experience_entries, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL']}
+
+@register.inclusion_tag("characters/experience_entry.html", takes_context=True)
+def show_experience_entry(context, entry,):
+    return {'entry': entry, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL']}

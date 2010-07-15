@@ -147,7 +147,7 @@ def trait_change_ajax_success(request, sheet, traitlistname, group):
     if not request.is_ajax():
         return HttpResponseRedirect(reverse("sheet_list", args=[sheet.slug]))
     else:
-        return render_to_response("characters/list_sheet_ajax_success.html", {
+        return render_to_response("characters/list_sheet_trait_ajax_success.html", {
             'sheet': sheet,
             'traitlistname': traitlistname,
             'group': group,
@@ -508,6 +508,83 @@ def permissions_sheet(request, sheet_slug,
         'group': group,
     }, context_instance=RequestContext(request))
 
+def experience_entry_change_ajax_success(request, sheet, entry, group):
+    if not request.is_ajax():
+        return HttpResponseRedirect(reverse("sheet_list", args=[sheet.slug]))
+    else:
+        if entry is None:
+            return render_to_response("characters/list_sheet_experience_entries_ajax_success.html", {
+                'sheet': sheet,
+                'group': group,
+            }, context_instance=RequestContext(request))
+        else:
+            entry_ids = sheet.experience_entries.filter(date__gte=entry.date).values_list("id", flat=True)
+            return render_to_response("characters/list_sheet_experience_entry_ajax_success.html", {
+                'sheet': sheet,
+                'entry_ids': entry_ids,
+                'group': group,
+            }, context_instance=RequestContext(request))
+
+@login_required
+def reload_entry(request, sheet_slug, entry_id,
+                 group_slug=None, bridge=None,
+                 form_class=TraitForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    entry = get_object_or_404(sheet.experience_entries.all(), id=entry_id)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = "characters/_experience_entry.html"
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'group': group,
+        'entry': entry,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def reload_entries(request, sheet_slug,
+                   group_slug=None, bridge=None,
+                   form_class=TraitForm, **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    entries = sheet.experience_entries.all()
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = "characters/_experience_entries.html"
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'group': group,
+        'experience_entries': entries,
+    }, context_instance=RequestContext(request))
+
 def experience_entry_action(request, sheet_slug, entry_id=None,
                             action_description="", object_description="Experience Entry",
                             post_url="", action=None,
@@ -545,7 +622,7 @@ def experience_entry_action(request, sheet_slug, entry_id=None,
     form = form_class(request.POST or None, instance=entry)
     if form.is_valid() and request.method == "POST":
         action(form, sheet)
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        return experience_entry_change_ajax_success(request, sheet, entry, group)
 
     return render_to_response(template_name, {
         'sheet': sheet,
@@ -608,7 +685,7 @@ def add_recent_expenditures(request, sheet_slug,
         form = form_class(request.POST)
         if form.is_valid():
             sheet.add_experience_entry(form.save(commit=False))
-            return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+            return experience_entry_change_ajax_success(request, sheet, None, group)
     else:
         import datetime
         entry = ExperienceEntry()
@@ -735,19 +812,19 @@ def edit_experience_entry(request, sheet_slug, entry_id,
         action=local_action,
         **kwargs)
 
-@login_required
-def delete_experience_entry(request, sheet_slug, entry_id,
-                            action_description="Delete",
-                            group_slug=None, bridge=None,
-                            form_class=ExperienceEntryForm, **kwargs):
-    return experience_entry_action(
-        request,
-        sheet_slug,
-        entry_id=entry_id,
-        action_description=action_description,
-        post_url=reverse('sheet_delete_experience_entry', args=[sheet_slug, entry_id]),
-        form_class=form_class,
-        **kwargs)
+#login_required
+#ef delete_experience_entry(request, sheet_slug, entry_id,
+#                           action_description="Delete",
+#                           group_slug=None, bridge=None,
+#                           form_class=ExperienceEntryForm, **kwargs):
+#   return experience_entry_action(
+#       request,
+#       sheet_slug,
+#       entry_id=entry_id,
+#       action_description=action_description,
+#       post_url=reverse('sheet_delete_experience_entry', args=[sheet_slug, entry_id]),
+#       form_class=form_class,
+#       **kwargs)
 
 @login_required
 def delete_experience_entry(request, sheet_slug, entry_id,
@@ -784,7 +861,7 @@ def delete_experience_entry(request, sheet_slug, entry_id,
 
     if request.method == "POST" and request.POST.has_key('__confirm__'):
         sheet.delete_experience_entry(entry)
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet_slug]))
+        return experience_entry_change_ajax_success(request, sheet, None, group)
 
     return render_to_response(template_name, {
         'sheet': sheet,

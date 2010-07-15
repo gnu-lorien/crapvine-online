@@ -33,4 +33,8 @@ urlpatterns = patterns('characters.views',
     url(r'^add_recent_expenditures/(?P<sheet_slug>[-\w]+)/$', 'add_recent_expenditures', name="sheet_add_recent_expenditures"),
     url(r'^edit_experience_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'edit_experience_entry', name="sheet_edit_experience_entry"),
     url(r'^delete_experience_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'delete_experience_entry', name="sheet_delete_experience_entry"),
+
+    # Experience Ajax
+    url(r'^reload_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'reload_entry', name="sheet_reload_experience_entry"),
+    url(r'^reload_entries/(?P<sheet_slug>[-\w]+)/$', 'reload_entries', name="sheet_reload_experience_entries"),
 )
