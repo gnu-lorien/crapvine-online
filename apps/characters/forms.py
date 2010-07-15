@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from characters.models import Sheet, VampireSheet, TraitListProperty, Trait, DISPLAY_PREFERENCES, ExperienceEntry
 
 class SheetUploadForm(forms.Form):
-    title = forms.CharField(max_length=128)
     file = forms.FileField()
 
 class VampireSheetAttributesForm(forms.ModelForm):
