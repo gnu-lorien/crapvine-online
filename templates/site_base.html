@@ -56,7 +56,7 @@
             <li id="tab_swaps"><a href="{% url offer_list_all %}">{% trans "Swaps" %}</a></li>
             <li id="tab_locations"><a href="{% url loc_yours %}">{% trans "Locations" %}</a></li>
             <li id="tab_inbox"><a href="{% url messages_inbox %}">{% trans "Inbox" %} ({{ combined_inbox_count }})</a></li>
-            <li id="tab_characters"><a href="{% url sheet_upload %}">{% trans "Characters" %}</a></li>
+            <li id="tab_characters"><a href="{% url sheets_list %}">{% trans "Characters" %}</a></li>
         {% endspaceless %}</ul>
     {% endif %}
 {% endblock %}
