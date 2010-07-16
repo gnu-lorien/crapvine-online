@@ -372,9 +372,10 @@ def delete_trait(request, sheet_slug, trait_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def new_trait(request, sheet_slug, traitlistname_slug, menuitem_id=None,
-               group_slug=None, bridge=None,
-               form_class=TraitForm, **kwargs):
+def new_trait(request, sheet_slug, traitlistname_slug,
+              menuitem_id=None, id_segment=None,
+              group_slug=None, bridge=None,
+              form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
     if bridge is not None:
         try:
@@ -413,6 +414,18 @@ def new_trait(request, sheet_slug, traitlistname_slug, menuitem_id=None,
             t = Trait(name=mi.name, traitlistname=traitlistname, sheet=sheet, order=0, value=mi.cost)
             t.note = mi.note
             t.display_preference = sheet.get_traitlist_property(traitlistname).display_preference
+            from pprint import pprint
+            ids = id_segment.split('/')
+            if len(ids) >= 2:
+                menus = []
+                for id in ids:
+                    menus.append(Menu.objects.get(id=id))
+                names = [m.name for m in menus[1:]]
+                pprint(names)
+                prefix = ': '.join(names) + ': '
+
+                t.name = prefix + t.name
+
         form = form_class(request.POST or None, instance=t)
 
     print "returning regs"
@@ -994,6 +1007,17 @@ def new_sheet(request,
         'group': group,
     }, context_instance=RequestContext(request))
 
+def get_menu_prefix_for_menus(menus):
+    menu_prefix = ''
+    if len(menus) >= 3:
+        from pprint import pprint
+        pprint({'raw_names': [m.name for m in menus]})
+        names = [m.name for m in menus[1:-1]]
+        pprint(names)
+        menu_prefix = ': '.join(names) + ': '
+
+    return menu_prefix
+
 @login_required
 def show_menu(request, id_segment,
               sheet=None, traitlistname=None,
@@ -1016,9 +1040,8 @@ def show_menu(request, id_segment,
     for id in ids:
         menus.append(Menu.objects.get(id=id))
 
+    menu_prefix = get_menu_prefix_for_menus(menus)
     menu = menus[-1]
-    menu_prefix = ''
-    menu_prefix = ''
     parent = None
     has_parent = False
     parent_url = ''
@@ -1026,10 +1049,6 @@ def show_menu(request, id_segment,
         has_parent = True
         parent = menus[-2]
         parent_url = reverse('menu_show', args=['/'.join([str(m.id) for m in menus[:-1]])])
-
-    if len(menus) >= 3:
-        names = [m.name for m in menus[1:-1]]
-        menu_prefix = ': '.join(names) + ': '
 
     menu_items = MenuItem.objects.filter(parent__id=menu.id).order_by('order')
 
@@ -1050,6 +1069,7 @@ def show_menu(request, id_segment,
 
     return render_to_response(template_name, {
         'previous_url': previous_url,
+        'id_segment': id_segment,
         'menu': menu,
         'menu_prefix': menu_prefix,
         'has_parent': has_parent,

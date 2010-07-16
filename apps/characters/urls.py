@@ -42,5 +42,5 @@ urlpatterns = patterns('characters.views',
     url(r'^menu/(?P<id_segment>[-/\d]+)/$', 'show_menu', name="menu_show"),
     url(r'^menus/$', 'show_menus', name="menus_show"),
     url(r'^new_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<traitlistname_slug>[-\w]+)/menu(?P<id_segment>[-/\d]*)/$', 'new_trait_from_menu', name='sheet_new_trait_from_menu'),
-    url(r'^new_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<traitlistname_slug>[-\w]+)/(?P<menuitem_id>\d+)/$', 'new_trait', name='sheet_new_trait_from_menuitem'),
+    url(r'^new_sheet_trait/(?P<sheet_slug>[-\w]+)/(?P<traitlistname_slug>[-\w]+)/(?P<menuitem_id>\d+)/(?P<id_segment>[-/\d]+)/$', 'new_trait', name='sheet_new_trait_from_menuitem'),
 )

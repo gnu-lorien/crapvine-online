@@ -73,6 +73,7 @@ def show_menu(context, in_menu):
     return {
         'menu':menu,
         'previous_url':context['previous_url'],
+        'id_segment':context['id_segment'],
         'menu_prefix':context['menu_prefix'],
         'has_parent':context['has_parent'],
         'parent':context['parent'],
@@ -92,6 +93,7 @@ def show_include_menu(context, in_menu):
     return {
         'menu':menu,
         'previous_url':context['previous_url'],
+        'id_segment':context['id_segment'],
         'under_sheet': context['under_sheet'],
         'group':context['group'],
         'sheet':context['sheet'],
@@ -103,6 +105,7 @@ def show_menu_item(context, menu_item):
     return {
         'item':menu_item,
         'previous_url':context['previous_url'],
+        'id_segment':context['id_segment'],
         'under_sheet': context['under_sheet'],
         'group':context['group'],
         'sheet':context['sheet'],
