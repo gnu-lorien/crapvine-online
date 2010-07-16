@@ -6,5 +6,5 @@
     {% show_include_menu item.menu_to_import %}
 {% endifequal %}
 {% ifequal item.item_type 2 %}
-    <li><a href="{% url menu_show previous_id_segment %}{{item.menu_to_import.id}}" rel="menu_link">{{item}}</a></li>
+    <li><a href="{% url menu_show previous_id_segment %}{{item.menu_to_import.id}}" rel="menu_link">{{item.name}}</a></li>
 {% endifequal %}
