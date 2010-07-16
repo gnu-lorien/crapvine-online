@@ -2,7 +2,7 @@
 {% ifequal item.item_type 0 %}
     <li>
     {% if under_sheet %}
-    <a href="{% url sheet_new_trait_from_menuitem sheet.slug traitlistname.slug item.id id_segment %}">{{item}}</a>
+    <a href="{% url sheet_new_trait_from_menuitem sheet.slug traitlistname.slug item.id id_segment %}" rel="menu_item_link">{{item}}</a>
     {% else %}
     {{item}}
     {% endif %}

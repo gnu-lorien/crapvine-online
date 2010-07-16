@@ -396,6 +396,7 @@ def new_trait(request, sheet_slug, traitlistname_slug,
 
     template_name = kwargs.get("template_name", "characters/traits/new_trait.html")
     if request.is_ajax():
+        print "New sheet trait is Ajax"
         template_name = kwargs.get(
             "template_name_facebox",
             "characters/traits/new_trait_facebox.html",
@@ -1134,7 +1135,13 @@ def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
         print desired_menu.name
         send_segment = "%d" % desired_menu.id
 
-    return show_menu(request, send_segment, sheet=sheet, traitlistname=traitlistname, group=group)
+    return show_menu(
+        request,
+        send_segment,
+        sheet=sheet,
+        traitlistname=traitlistname,
+        group=group,
+        template_name_facebox="characters/menus/show_menu.html")
 
     #form = form_class(request.POST or None)
     #print "in add trait"
