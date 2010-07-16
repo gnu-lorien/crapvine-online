@@ -72,11 +72,15 @@ def show_menu(context, in_menu):
         menu = in_menu
     return {
         'menu':menu,
-        'previous_id_segment':context['previous_id_segment'],
+        'previous_url':context['previous_url'],
         'menu_prefix':context['menu_prefix'],
         'has_parent':context['has_parent'],
         'parent':context['parent'],
         'parent_url':context['parent_url'],
+        'under_sheet': context['under_sheet'],
+        'group':context['group'],
+        'sheet':context['sheet'],
+        'traitlistname':context['traitlistname'],
     }
 
 @register.inclusion_tag("characters/menus/__show_menu.html", takes_context=True)
@@ -87,12 +91,20 @@ def show_include_menu(context, in_menu):
         menu = in_menu
     return {
         'menu':menu,
-        'previous_id_segment':context['previous_id_segment'],
+        'previous_url':context['previous_url'],
+        'under_sheet': context['under_sheet'],
+        'group':context['group'],
+        'sheet':context['sheet'],
+        'traitlistname':context['traitlistname'],
     }
 
 @register.inclusion_tag("characters/menus/show_menu_item.html", takes_context=True)
 def show_menu_item(context, menu_item):
     return {
         'item':menu_item,
-        'previous_id_segment':context['previous_id_segment'],
+        'previous_url':context['previous_url'],
+        'under_sheet': context['under_sheet'],
+        'group':context['group'],
+        'sheet':context['sheet'],
+        'traitlistname':context['traitlistname'],
     }

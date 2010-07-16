@@ -13,7 +13,7 @@
 </tr>
 {% endfor %}
 <tr>
-<td><a href="{% url sheet_new_trait sheet.slug traitlistname.slug %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" alt="Add New Trait"/></a></td>
+<td><a href="{% url sheet_new_trait_from_menu sheet.slug traitlistname.slug "" %}"><img class="edit_image" src="{{ STATIC_URL }}pinax/images/silk/icons/shape_square_add.png" alt="Add New Trait"/></a></td>
 <td> </td>
 <td> </td>
 </tr>

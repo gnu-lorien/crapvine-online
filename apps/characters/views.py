@@ -372,7 +372,7 @@ def delete_trait(request, sheet_slug, trait_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def new_trait(request, sheet_slug, traitlistname_slug,
+def new_trait(request, sheet_slug, traitlistname_slug, menuitem_id=None,
                group_slug=None, bridge=None,
                form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
@@ -400,14 +400,20 @@ def new_trait(request, sheet_slug, traitlistname_slug,
             "characters/traits/new_trait_facebox.html",
         )
 
-    form = form_class(request.POST or None)
-    print "in add trait"
-    from pprint import pprint
-    pprint(form.errors)
-    if form.is_valid() and request.method == "POST":
-        sheet.add_trait(traitlistname.name, form.cleaned_data)
-        print "returning ajax check"
-        return trait_change_ajax_success(request, sheet, traitlistname, group)
+    if request.method == "POST":
+        form = form_class(request.POST or None)
+        if form.is_valid():
+            sheet.add_trait(traitlistname.name, form.cleaned_data)
+            print "returning ajax check"
+            return trait_change_ajax_success(request, sheet, traitlistname, group)
+    else:
+        t = None
+        if menuitem_id is not None:
+            mi = MenuItem.objects.get(id=menuitem_id)
+            t = Trait(name=mi.name, traitlistname=traitlistname, sheet=sheet, order=0, value=mi.cost)
+            t.note = mi.note
+            t.display_preference = sheet.get_traitlist_property(traitlistname).display_preference
+        form = form_class(request.POST or None, instance=t)
 
     print "returning regs"
     return render_to_response(template_name, {
@@ -990,7 +996,10 @@ def new_sheet(request,
 
 @login_required
 def show_menu(request, id_segment,
+              sheet=None, traitlistname=None,
+              group=None,
               **kwargs):
+    print id_segment
     template_name = kwargs.get('template_name', "characters/menus/menu.html")
 
     if request.is_ajax():
@@ -1023,13 +1032,34 @@ def show_menu(request, id_segment,
         menu_prefix = ': '.join(names) + ': '
 
     menu_items = MenuItem.objects.filter(parent__id=menu.id).order_by('order')
+
+    previous_url = reverse('menu_show', args=[id_segment])
+    under_sheet = False
+    print sheet
+    if sheet is not None:
+        under_sheet = True
+        parent_url = reverse('sheet_new_trait_from_menu', args=[
+            sheet.slug,
+            traitlistname.slug,
+            '/' + '/'.join([str(m.id) for m in menus[:-1]])])
+        previous_url = reverse('sheet_new_trait_from_menu', args=[
+            sheet.slug,
+            traitlistname.slug,
+            '/' + id_segment])
+    print "Under sheet", under_sheet
+
     return render_to_response(template_name, {
-        'previous_id_segment': id_segment,
+        'previous_url': previous_url,
         'menu': menu,
         'menu_prefix': menu_prefix,
         'has_parent': has_parent,
         'parent': parent,
         'parent_url': parent_url,
+
+        'under_sheet': under_sheet,
+        'group': group,
+        'sheet': sheet,
+        'traitlistname': traitlistname,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -1038,3 +1068,67 @@ def show_menus(request,
     return render_to_response(template_name, {
         'menus': Menu.objects.all(),
     }, context_instance=RequestContext(request))
+
+@login_required
+def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
+                        group_slug=None, bridge=None,
+                        form_class=TraitForm, **kwargs):
+    traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/traits/new_trait.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/traits/new_trait_facebox.html",
+        )
+
+    print traitlistname.name
+    print "sheet in new_trait_from_menu", sheet
+    send_segment = None
+    if len(id_segment) > 0:
+        from pprint import pformat
+        print "id_segment", pformat(id_segment[1:])
+        send_segment = id_segment[1:]
+    else:
+        try:
+            if sheet.vampiresheet:
+                desired_menu = Menu.get_menu_for_traitlistname(traitlistname, VampireSheet)
+        except ObjectDoesNotExist:
+            desired_menu = Menu.get_menu_for_traitlistname(traitlistname)
+        print desired_menu.name
+        send_segment = "%d" % desired_menu.id
+
+    return show_menu(request, send_segment, sheet=sheet, traitlistname=traitlistname, group=group)
+
+    #form = form_class(request.POST or None)
+    #print "in add trait"
+    #from pprint import pprint
+    #pprint(form.errors)
+    #if form.is_valid() and request.method == "POST":
+    #    sheet.add_trait(traitlistname.name, form.cleaned_data)
+    #    print "returning ajax check"
+    #    return trait_change_ajax_success(request, sheet, traitlistname, group)
+
+    #print "returning regs"
+    #return render_to_response(template_name, {
+    #    'sheet': sheet,
+    #    'form': form,
+    #    'group': group,
+    #    'traitlistname': traitlistname,
+    #}, context_instance=RequestContext(request))

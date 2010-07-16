@@ -562,6 +562,13 @@ CREATURE_TYPES = [
     (13, "Demon"),
 ]
 
+CREATURE_TYPE_TO_NAME = dict(CREATURE_TYPES)
+CREATURE_NAME_TO_TYPE = dict((p,l) for l,p in CREATURE_TYPES)
+
+CREATURE_TYPE_SHEET_MAPPING = {
+    VampireSheet: "Vampire",
+}
+
 class Menu(models.Model):
     name = models.CharField(max_length=128)
     category = models.PositiveSmallIntegerField(choices=CREATURE_TYPES, default=1)
@@ -574,6 +581,28 @@ class Menu(models.Model):
     def __unicode__(self):
         from pprint import pformat
         return pformat(self.__dict__)
+
+    @classmethod
+    def get_menu_for_traitlistname(self, traitlistname, sheet_class=None):
+        translations = {
+            'Negative Physical': 'Physical, Negative',
+            'Negative Social': 'Social, Negative',
+            'Negative Mental': 'Mental, Negative',
+        }
+        lookup_name = traitlistname.name
+        if translations.has_key(lookup_name):
+            lookup_name = translations[lookup_name]
+
+        if sheet_class is not None:
+            try:
+                #from pprint import pprint
+                #pprint(Menu.objects.filter(category=CREATURE_NAME_TO_TYPE[CREATURE_TYPE_SHEET_MAPPING[sheet_class]]).filter(name__startswith=lookup_name).values_list('name', flat=True))
+                return Menu.objects.filter(category=CREATURE_NAME_TO_TYPE[CREATURE_TYPE_SHEET_MAPPING[sheet_class]]).get(name__startswith=lookup_name)
+            except Menu.DoesNotExist:
+                pass
+            except Menu.MultipleObjectsReturned:
+                pass
+        return Menu.objects.get(name=lookup_name)
 
 class MenuItem(models.Model):
     name = models.CharField(max_length=128)

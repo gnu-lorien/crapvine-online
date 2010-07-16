@@ -1,10 +1,16 @@
 {% load characters_extras %}
 {% ifequal item.item_type 0 %}
-    <li>{{item}}</li>
+    <li>
+    {% if under_sheet %}
+    <a href="{% url sheet_new_trait_from_menuitem sheet.slug traitlistname.slug item.id %}">{{item}}</a>
+    {% else %}
+    {{item}}
+    {% endif %}
+    </li>
 {% endifequal %}
 {% ifequal item.item_type 1 %}
     {% show_include_menu item.menu_to_import %}
 {% endifequal %}
 {% ifequal item.item_type 2 %}
-    <li><a href="{% url menu_show previous_id_segment %}{{item.menu_to_import.id}}" rel="menu_link">{{item.name}}</a></li>
+    <li><a href="{{previous_url}}{{item.menu_to_import.id}}" rel="menu_link">{{item.name}}</a></li>
 {% endifequal %}
