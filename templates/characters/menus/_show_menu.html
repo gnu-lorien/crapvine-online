@@ -1,4 +1,7 @@
 {% load characters_extras %}
+{% if under_sheet %}
+<p><a href="{% url sheet_new_trait sheet.slug traitlistname.slug %}">Add Custom Trait</a></p>
+{% endif %}
 <h2>{{menu_prefix}}{{menu.name}}</h2>
 {% if has_parent %}
 <a href="{{parent_url}}" rel="menu_link">{{parent.name}}</a>
