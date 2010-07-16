@@ -37,4 +37,8 @@ urlpatterns = patterns('characters.views',
     # Experience Ajax
     url(r'^reload_entry/(?P<sheet_slug>[-\w]+)/(?P<entry_id>\d+)/$', 'reload_entry', name="sheet_reload_experience_entry"),
     url(r'^reload_entries/(?P<sheet_slug>[-\w]+)/$', 'reload_entries', name="sheet_reload_experience_entries"),
+
+    # Menus
+    url(r'menu/(?P<id_segment>[-/\d]+)/$', 'show_menu', name="menu_show"),
+    url(r'menus/$', 'show_menus', name="menus_show"),
 )

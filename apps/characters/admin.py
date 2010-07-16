@@ -1,4 +1,4 @@
-from characters.models import Sheet, Expendable, Trait, TraitListProperty, TraitListName, VampireSheet, ExperienceEntry
+from characters.models import Sheet, Expendable, Trait, TraitListProperty, TraitListName, VampireSheet, ExperienceEntry, Menu, MenuItem
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
@@ -24,3 +24,6 @@ admin.site.register(TraitListProperty, TraitListPropertyAdmin)
 admin.site.register(TraitListName, TraitListNameAdmin)
 admin.site.register(VampireSheet, VampireSheetAdmin)
 admin.site.register(ExperienceEntry, ExperienceEntryAdmin)
+
+admin.site.register(Menu)
+admin.site.register(MenuItem)

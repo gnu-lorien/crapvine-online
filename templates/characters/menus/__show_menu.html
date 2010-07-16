@@ -1,0 +1,4 @@
+{% load characters_extras %}
+{% for item in menu.menuitem_set.all %}
+    {% show_menu_item item %}
+{% endfor %}

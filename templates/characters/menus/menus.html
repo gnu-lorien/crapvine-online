@@ -1,0 +1,15 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+{% load characters_extras %}
+
+{% block head_title %}{% blocktrans %}Menus{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <ol>
+        {% for menu in menus %}
+            <li><a href="{% url menu_show menu.id %}">{{menu.name}}</a></li>
+        {% endfor %}
+    </ol>
+{% endblock %}

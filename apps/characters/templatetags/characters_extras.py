@@ -3,7 +3,7 @@ from pprint import pformat, pprint
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from characters.models import TraitListName
+from characters.models import TraitListName, Menu, MenuItem
 
 register = template.Library()
 
@@ -63,3 +63,36 @@ def experience_entries(context, experience_entries):
 @register.inclusion_tag("characters/experience_entry.html", takes_context=True)
 def show_experience_entry(context, entry,):
     return {'entry': entry, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL']}
+
+@register.inclusion_tag("characters/menus/show_menu.html", takes_context=True)
+def show_menu(context, in_menu):
+    if isinstance(in_menu, basestring):
+        menu = Menu.objects.get(name=in_menu)
+    else:
+        menu = in_menu
+    return {
+        'menu':menu,
+        'previous_id_segment':context['previous_id_segment'],
+        'menu_prefix':context['menu_prefix'],
+        'has_parent':context['has_parent'],
+        'parent':context['parent'],
+        'parent_url':context['parent_url'],
+    }
+
+@register.inclusion_tag("characters/menus/__show_menu.html", takes_context=True)
+def show_include_menu(context, in_menu):
+    if isinstance(in_menu, basestring):
+        menu = Menu.objects.get(name=in_menu)
+    else:
+        menu = in_menu
+    return {
+        'menu':menu,
+        'previous_id_segment':context['previous_id_segment'],
+    }
+
+@register.inclusion_tag("characters/menus/show_menu_item.html", takes_context=True)
+def show_menu_item(context, menu_item):
+    return {
+        'item':menu_item,
+        'previous_id_segment':context['previous_id_segment'],
+    }

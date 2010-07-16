@@ -16,7 +16,7 @@ from characters.permissions import SheetPermission, can_edit_sheet, can_delete_s
 from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm, NewSheetForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
-from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry
+from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem
 from chronicles.models import Chronicle, ChronicleMember
 
 from reversion.models import Version
@@ -986,4 +986,55 @@ def new_sheet(request,
     return render_to_response(template_name, {
         'form': form,
         'group': group,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def show_menu(request, id_segment,
+              **kwargs):
+    template_name = kwargs.get('template_name', "characters/menus/menu.html")
+
+    if request.is_ajax():
+        print "Im in ajax mode"
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/menus/_show_menu.html",
+        )
+    else:
+        print "Not in Ajax mode"
+
+    ids = id_segment.split('/')
+    menus = []
+    for id in ids:
+        menus.append(Menu.objects.get(id=id))
+
+    menu = menus[-1]
+    menu_prefix = ''
+    menu_prefix = ''
+    parent = None
+    has_parent = False
+    parent_url = ''
+    if len(menus) >= 2:
+        has_parent = True
+        parent = menus[-2]
+        parent_url = reverse('menu_show', args=['/'.join([str(m.id) for m in menus[:-1]])])
+
+    if len(menus) >= 3:
+        names = [m.name for m in menus[1:-1]]
+        menu_prefix = ': '.join(names) + ': '
+
+    menu_items = MenuItem.objects.filter(parent__id=menu.id).order_by('order')
+    return render_to_response(template_name, {
+        'previous_id_segment': id_segment,
+        'menu': menu,
+        'menu_prefix': menu_prefix,
+        'has_parent': has_parent,
+        'parent': parent,
+        'parent_url': parent_url,
+    }, context_instance=RequestContext(request))
+
+@login_required
+def show_menus(request,
+              template_name="characters/menus/menus.html"):
+    return render_to_response(template_name, {
+        'menus': Menu.objects.all(),
     }, context_instance=RequestContext(request))

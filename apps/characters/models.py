@@ -362,6 +362,96 @@ class TraitListProperty(models.Model):
     class Meta:
         ordering = ['name__name']
 
+class Formatter():
+    def __init__(self,
+            name, value, note,
+            note_default,
+            dot_character,
+            display_preference):
+        self.name               = name
+        self.value              = value
+        self.note               = note
+        self.note_default       = note_default
+        self.dot_character      = dot_character
+        self.display_preference = display_preference
+
+    def __show_note(self):
+        return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
+    def __show_val(self):
+        return self.value >= 1
+    def __tally_val(self):
+        return self.__show_val()
+    def tally_str(self):
+        if self.value >= 1:
+            return self.dot_character * self.value
+        else:
+            return ''
+
+    def __unicode__(self):
+        show_note = self.__show_note()
+        show_val  = self.__show_val()
+        tally_val = self.__tally_val()
+
+        if self.display_preference == 0:
+            return self.name
+        elif self.display_preference == 1:
+            vstr = (" x%s" % (self.value)) if show_val else ''
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 2:
+            vstr = ''
+            if show_val:
+                vstr = (" x%s" % (self.value))
+            if tally_val:
+                vstr += " %s" % (self.tally_str())
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 3:
+            vstr = " %s" % (self.tally_str()) if tally_val else ''
+            nstr = (" (%s)" % (self.note)) if show_note else ''
+            return "%s%s%s" % (self.name, vstr, nstr)
+        elif self.display_preference == 4:
+            paren_str = ""
+            if show_note and show_val:
+                paren_str = " (%s, %s)" % (self.value, self.note)
+            elif show_note and not show_val:
+                paren_str = " (%s)" % (self.note)
+            elif show_val and not show_note:
+                paren_str = " (%s)" % (self.value)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 5:
+            paren_str = ""
+            if show_note:
+                paren_str = " (%s)" % (self.note)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 6:
+            paren_str = ""
+            if show_val:
+                paren_str = " (%s)" % (self.value)
+            return "%s%s" % (self.name, paren_str)
+        elif self.display_preference == 7:
+            paren_str = (" (%s)" % (self.note)) if show_note else ''
+            dstr = "%s%s" % (self.name, paren_str)
+            its = []
+            itrange = self.value if self.value >= 1 else 1
+            for i in range(itrange):
+                its.append(dstr)
+            return self.dot_character.join(its)
+        elif self.display_preference == 8:
+            return self.tally_str()
+        elif self.display_preference == 9:
+            if show_val:
+                return "%d" % (self.value)
+            else:
+                return ''
+        elif self.display_preference == 10:
+            if show_note:
+                return self.note
+            else:
+                return ''
+
+        return 'NOCING'
+
 class Trait(models.Model):
     name = models.CharField(max_length=128)
     note = models.CharField(max_length=128, default='', blank=True)
@@ -455,3 +545,55 @@ class Trait(models.Model):
                 return ''
 
         return 'NOCING'
+
+CREATURE_TYPES = [
+    (0, "Mortal"),
+    (1, "Player"),
+    (2, "Vampire"),
+    (3, "Werewolf"),
+    (5, "Changeling"),
+    (6, "Wraith"),
+    (7, "Mage"),
+    (8, "Fera"),
+    (9, "Various"),
+    (10, "Mummy"),
+    (11, "Kuei-Jin"),
+    (12, "Hunter"),
+    (13, "Demon"),
+]
+
+class Menu(models.Model):
+    name = models.CharField(max_length=128)
+    category = models.PositiveSmallIntegerField(choices=CREATURE_TYPES, default=1)
+    sorted = models.BooleanField(default=False)
+    negative = models.BooleanField(default=False)
+    required = models.BooleanField(default=False)
+    autonote = models.BooleanField(default=False)
+    display_preference = models.PositiveSmallIntegerField(default=0, choices=DISPLAY_PREFERENCES)
+
+    def __unicode__(self):
+        from pprint import pformat
+        return pformat(self.__dict__)
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=128)
+    cost = models.CharField(max_length=128, default='1', blank=True)
+    note = models.CharField(max_length=128, default='', blank=True)
+    order = models.PositiveSmallIntegerField()
+    parent = models.ForeignKey(Menu)
+
+    item_type = models.PositiveSmallIntegerField(choices=[(0, "item"), (1, "include"), (2, "submenu")])
+    menu_to_import = models.ForeignKey(Menu, related_name='imported_menus', null=True)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __unicode__(self):
+        formatter = Formatter(
+            name=self.name,
+            value=self.cost,
+            note=self.note,
+            note_default='',
+            dot_character='O',
+            display_preference=self.parent.display_preference)
+        return formatter.__unicode__()

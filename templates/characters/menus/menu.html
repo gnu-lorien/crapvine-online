@@ -1,0 +1,29 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+{% load uni_form %}
+{% load characters_extras %}
+
+{% block head_title %}{% blocktrans %}Menu{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    {% show_menu menu.name %}
+{% endblock %}
+
+{% block extra_body %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            function responseFunction() {
+                $('#grapevine_menu').load($(this).attr('href'), function(response, status, xhr) {
+                    if (status == "error") {
+                        alert(xhr.status + " " + xhr.statusText);
+                    } else {
+                        $('a[rel*=menu_link]').click(responseFunction);
+                    }
+                });
+                return false;
+            }
+            $('a[rel*=menu_link]').click(responseFunction);
+        });
+    </script>
+{% endblock %}
