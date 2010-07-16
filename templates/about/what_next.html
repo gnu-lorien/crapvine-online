@@ -28,7 +28,10 @@
             <dd>so you can follow what they're up to.</dd>
 
             <dt><a href="{% url sheet_upload %}">upload a sheet</a></dt>
-            <dd>to get started editing and updating it online!</dd>
+            <dd>to get started editing and updating it online</dd>
+
+            <dt><a href="{% url sheet_new %}">create a sheet</a></dt>
+            <dd>start making a sheet online</dd>
             
             {% ifsetting ACCOUNT_OPEN_SIGNUP %}
                 <dt><a href="{% url invitations %}">invite more people to the site</a></dt>
