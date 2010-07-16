@@ -1,5 +1,7 @@
+{% load i18n %}
 {% load characters_extras %}
 {% if under_sheet %}
+<p>{% trans "Return to viewing" %} <a href="{% url sheet_list sheet.slug %}">{{sheet.name}}</a></p>
 <p><a href="{% url sheet_new_trait sheet.slug traitlistname.slug %}">Add Custom Trait</a></p>
 {% endif %}
 <h2>{{menu_prefix}}{{menu.name}}</h2>
