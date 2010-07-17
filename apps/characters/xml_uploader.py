@@ -146,6 +146,8 @@ class VampireLoader(ContentHandler):
     def add_vampire(self, vamp):
         vamp.update_experience_total()
         vamp.save()
+        vamp.add_default_traitlist_properties()
+        vamp.save()
         self.vampires[vamp.name] = vamp
 
     def startElement(self, name, attrs):
