@@ -119,10 +119,10 @@ class VampireExporter():
         self.vampire.add_experience(e)
 
     def __unicode__(self):
-        return self.vampire.get_xml()
+        return "<?xml version=\"1.0\"?>\n<grapevine version=\"3\">\n%s\n</grapevine>" % (self.vampire.get_xml(indent='  '))
 
     def __str__(self):
-        return self.vampire.get_xml()
+        return "<?xml version=\"1.0\"?>\n<grapevine version=\"3\">\n%s\n</grapevine>" % (self.vampire.get_xml(indent='  '))
 
 class VampireLoader(ContentHandler):
     def __init__(self, user):
