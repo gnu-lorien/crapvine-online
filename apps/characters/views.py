@@ -959,26 +959,9 @@ def new_vampire_sheet(request, form, group=None):
     vs = VampireSheet.objects.create(name=form.cleaned_data['name'], player=request.user)
     vs.save()
 
-    # Create the default traitlists
-    # TODO This stuff should come from menu 
-    default_trait_lists = [
-        "Physical",
-        "Negative Physical",
-        "Social",
-        "Negative Social",
-        "Mental",
-        "Negative Mental",
-        "Abilities",
-        "Backgrounds",
-        "Influences",
-        "Disciplines",
-        "Merits",
-        "Flaws",
-        "Derangements",
-        "Status",
-    ]
-    for name in default_trait_lists:
-        vs.add_traitlist_properties(name=name)
+    vs.add_default_traitlist_properties()
+    vs.save()
+
     return vs
 
 @login_required

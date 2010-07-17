@@ -316,6 +316,12 @@ class Sheet(models.Model):
         except IndexError:
             self.experience_unspent = self.experience_earned = 0
 
+    def add_default_traitlist_properties(self):
+        try:
+            self.vampiresheet.add_default_traitlist_properties
+        except VampireSheet.DoesNotExist:
+            pass
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())
         super(Sheet, self).save(*args, **kwargs)
@@ -350,6 +356,28 @@ class VampireSheet(Sheet):
     tempblood = models.PositiveSmallIntegerField(default=0, blank=True)
     tempconscience = models.PositiveSmallIntegerField(default=0, blank=True)
     temppathtraits = models.PositiveSmallIntegerField(default=0, blank=True)
+
+    def add_default_traitlist_properties(self):
+        self.add_traitlist_properties(name="Physical", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Social", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Mental", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Negative Physical", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(name="Negative Social", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(name="Negative Mental", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(name="Status", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Abilities", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Influences", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Backgrounds", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Health Levels", sorted=False, display_preference=1)
+        self.add_traitlist_properties(name="Bonds", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Miscellaneous", sorted=False, display_preference=1)
+        self.add_traitlist_properties(name="Derangements", sorted=True, atomic=True, negative=True, display_preference=5)
+        self.add_traitlist_properties(name="Disciplines", sorted=False, atomic=True, display_preference=5)
+        self.add_traitlist_properties(name="Rituals", sorted=False, atomic=True, display_preference=5)
+        self.add_traitlist_properties(name="Merits", sorted=True, atomic=True, display_preference=4)
+        self.add_traitlist_properties(name="Flaws", sorted=True, atomic=True, negative=True, display_preference=4)
+        self.add_traitlist_properties(name="Equipment", sorted=True, display_preference=1)
+        self.add_traitlist_properties(name="Locations", sorted=True, atomic=True, display_preference=5)
 
 class TraitListProperty(models.Model):
     sheet = models.ForeignKey(Sheet)
