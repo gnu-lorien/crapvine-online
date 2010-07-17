@@ -2,6 +2,7 @@
 <grapevine version="3">
   <vampire name="Charles McMillan" nature="Competitor" demeanor="Pedagogue" clan="Ventrue" sect="Camarilla" coterie="The White Handkerchief" sire="Mirena Joaquina Valez del Rosario" generation="9" title="Prince" blood="14" willpower="10" conscience="2" selfcontrol="4" courage="4" path="Humanity" pathtraits="2" physicalmax="13" player="Andrew Sayman" status="Active" startdate="3/21/2004 7:43:51 AM" lastmodified="6/19/2010 1:09:08 PM">
     <experience unspent="29" earned="390">
+      <entry date="12:00:00 AM" change="1" type="6" reason="12/30/1899 was a hell of a time" earned="0" unspent="0"/>
       <entry date="2/6/2004" change="2" type="0" reason="Haven Write-up" earned="2" unspent="2"/>
       <entry date="2/7/2004" change="2" type="0" reason="Attendance" earned="4" unspent="4"/>
       <entry date="2/7/2004 2:14:48 AM" change="0.5" type="0" reason="Workshop" earned="4.5" unspent="4.5"/>

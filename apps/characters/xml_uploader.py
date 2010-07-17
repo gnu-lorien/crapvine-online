@@ -21,9 +21,10 @@ def translate_date(date):
         try:
             dt = datetime.strptime(date, "%m/%d/%Y %H:%M:%S %p")
         except ValueError:
-            dt = datetime.strptime(date, "%m/%d/%Y")
-        except ValueError:
-            dt = datetime.now()
+            try:
+                dt = datetime.strptime(date, "%m/%d/%Y")
+            except ValueError:
+                dt = datetime.strptime(date, "%H:%M:%S %p")
 
         return dt
     else:
