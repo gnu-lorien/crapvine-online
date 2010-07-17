@@ -169,14 +169,23 @@ class Sheet(models.Model):
         return self.traits.filter(traitlistname__name=name).order_by('order')
 
     def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
+        overwrite = kwargs.get('overwrite', True)
         try:
             traitlist_name_obj = TraitListName.objects.get(name=kwargs['name'])
         except TraitListName.DoesNotExist:
             traitlist_name_obj = TraitListName.objects.create(name=kwargs['name'], slug=slugify(kwargs['name']))
         del kwargs['name']
-        self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
+        if kwargs.has_key('overwrite'):
+            del kwargs['overwrite']
+        try:
+            existing_property = self.traitlistproperty_set.get(name=traitlist_name_obj)
+            for key, value in kwargs.iteritems():
+                setattr(existing_property, key, value)
+        except TraitListProperty.DoesNotExist:
+            self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
 
     def get_traitlist_property(self, traitlistname):
+        print "get_traitlist_property", traitlistname.name
         return self.traitlistproperty_set.get(name=traitlistname)
 
     def get_traitlist_properties(self):
@@ -358,26 +367,26 @@ class VampireSheet(Sheet):
     temppathtraits = models.PositiveSmallIntegerField(default=0, blank=True)
 
     def add_default_traitlist_properties(self):
-        self.add_traitlist_properties(name="Physical", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Social", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Mental", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Negative Physical", sorted=True, negative=True, display_preference=1)
-        self.add_traitlist_properties(name="Negative Social", sorted=True, negative=True, display_preference=1)
-        self.add_traitlist_properties(name="Negative Mental", sorted=True, negative=True, display_preference=1)
-        self.add_traitlist_properties(name="Status", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Abilities", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Influences", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Backgrounds", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Health Levels", sorted=False, display_preference=1)
-        self.add_traitlist_properties(name="Bonds", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Miscellaneous", sorted=False, display_preference=1)
-        self.add_traitlist_properties(name="Derangements", sorted=True, atomic=True, negative=True, display_preference=5)
-        self.add_traitlist_properties(name="Disciplines", sorted=False, atomic=True, display_preference=5)
-        self.add_traitlist_properties(name="Rituals", sorted=False, atomic=True, display_preference=5)
-        self.add_traitlist_properties(name="Merits", sorted=True, atomic=True, display_preference=4)
-        self.add_traitlist_properties(name="Flaws", sorted=True, atomic=True, negative=True, display_preference=4)
-        self.add_traitlist_properties(name="Equipment", sorted=True, display_preference=1)
-        self.add_traitlist_properties(name="Locations", sorted=True, atomic=True, display_preference=5)
+        self.add_traitlist_properties(overwrite=False, name="Physical", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Social", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Mental", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Negative Physical", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Negative Social", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Negative Mental", sorted=True, negative=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Status", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Abilities", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Influences", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Backgrounds", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Health Levels", sorted=False, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Bonds", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Miscellaneous", sorted=False, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Derangements", sorted=True, atomic=True, negative=True, display_preference=5)
+        self.add_traitlist_properties(overwrite=False, name="Disciplines", sorted=False, atomic=True, display_preference=5)
+        self.add_traitlist_properties(overwrite=False, name="Rituals", sorted=False, atomic=True, display_preference=5)
+        self.add_traitlist_properties(overwrite=False, name="Merits", sorted=True, atomic=True, display_preference=4)
+        self.add_traitlist_properties(overwrite=False, name="Flaws", sorted=True, atomic=True, negative=True, display_preference=4)
+        self.add_traitlist_properties(overwrite=False, name="Equipment", sorted=True, display_preference=1)
+        self.add_traitlist_properties(overwrite=False, name="Locations", sorted=True, atomic=True, display_preference=5)
 
 class TraitListProperty(models.Model):
     sheet = models.ForeignKey(Sheet)
@@ -389,6 +398,7 @@ class TraitListProperty(models.Model):
 
     class Meta:
         ordering = ['name__name']
+        unique_together = (("sheet", "name"),)
 
 class Formatter():
     def __init__(self,
