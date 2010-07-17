@@ -170,6 +170,7 @@ class Sheet(models.Model):
 
     def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
         overwrite = kwargs.get('overwrite', True)
+        print "Adding traitlist property with overwrite", overwrite
         try:
             traitlist_name_obj = TraitListName.objects.get(name=kwargs['name'])
         except TraitListName.DoesNotExist:
@@ -181,6 +182,7 @@ class Sheet(models.Model):
             existing_property = self.traitlistproperty_set.get(name=traitlist_name_obj)
             for key, value in kwargs.iteritems():
                 setattr(existing_property, key, value)
+            existing_property.save()
         except TraitListProperty.DoesNotExist:
             self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
 
@@ -327,7 +329,7 @@ class Sheet(models.Model):
 
     def add_default_traitlist_properties(self):
         try:
-            self.vampiresheet.add_default_traitlist_properties
+            self.vampiresheet.add_default_traitlist_properties()
         except VampireSheet.DoesNotExist:
             pass
 
@@ -399,6 +401,9 @@ class TraitListProperty(models.Model):
     class Meta:
         ordering = ['name__name']
         unique_together = (("sheet", "name"),)
+
+    def __unicode__(self):
+        return "%s:%s" % (self.sheet, self.name)
 
 class Formatter():
     def __init__(self,
