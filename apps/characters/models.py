@@ -228,7 +228,7 @@ class Sheet(models.Model):
                 print "next becomes", next_entry
                 prev_entry = next_entry
                 print "prev is", next_entry
-                next_entry = next_entry.get_next_by_date()
+                next_entry = next_entry.get_next_by_date(sheet=self)
         except ExperienceEntry.DoesNotExist:
             print "setting experience totals to", prev_entry
             self.experience_unspent = prev_entry.unspent
@@ -241,12 +241,12 @@ class Sheet(models.Model):
     def delete_experience_entry(self, in_entry):
         entry = self.experience_entries.get(id=in_entry.id)
         try:
-            prev_entry = entry.get_previous_by_date()
+            prev_entry = entry.get_previous_by_date(sheet=self)
         except ExperienceEntry.DoesNotExist:
             # This means we're the first, so use the normal update method
             prev_entry = None
         try:
-            next_entry = entry.get_next_by_date()
+            next_entry = entry.get_next_by_date(sheet=self)
         except ExperienceEntry.DoesNotExist:
             # This means we're the last, so prev becomes the canonical view
             next_entry = None
@@ -258,7 +258,7 @@ class Sheet(models.Model):
     def edit_experience_entry(self, in_entry):
         entry = self.experience_entries.get(id=in_entry.id)
         try:
-            prev_entry = entry.get_previous_by_date()
+            prev_entry = entry.get_previous_by_date(sheet=self)
         except ExperienceEntry.DoesNotExist:
             # This means we're the first, so use the normal update method
             prev_entry = None
