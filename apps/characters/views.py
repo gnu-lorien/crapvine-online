@@ -113,8 +113,20 @@ def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def download_sheet(request, sheet_slug):
-    sheet = get_object_or_404(VampireSheet, slug=sheet_slug, player=request.user)
+def download_sheet(request, sheet_slug,
+                   group_slug=None, bridge=None):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    sheet = get_object_or_404(Sheet, slug=sheet_slug)
+    if not can_fullview_sheet(request, sheet):
+        return permission_denied(request)
+
     response = HttpResponse(mimetype="application/gex")
     response['Content-Disposition'] = 'filename=' + sheet_slug + '.gex'
     ve = VampireExporter(sheet)
