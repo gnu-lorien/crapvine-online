@@ -3,3 +3,6 @@ Applied a fix to the paginator so that hashtag would default to '' rather than N
 Applied a fix to the django test client http://code.djangoproject.com/attachment/ticket/12720/django-test-client-cookie-fix.patch
 
 Created a fork of django-reversion to support better tracking of when an object is deleted
+
+Installed django-authority
+Installed minimock
