@@ -470,8 +470,18 @@ def history_sheet(request, sheet_slug,
     if not can_history_sheet(request, sheet):
         return permission_denied(request)
 
+    def expanded_trait_call(trait_in):
+        print "expanded_trait_call Sheet outer", sheet
+        print "expanded_trait_call trait in", trait_in
+        try:
+            print "expanded_trait_call trait sheet", trait_in.sheet
+            return sheet == trait_in.sheet
+        except Sheet.DoesNotExist:
+            print "Sheet has since been deleted... I knew there would be more bugs from this"
+            return False
+
     versions_map = {
-        'Traits':(Trait, lambda x: sheet == x.sheet),
+        'Traits':(Trait, expanded_trait_call), #lambda x: sheet == x.sheet),
         'Experience Entries':(ExperienceEntry, lambda x: x.sheet_set.filter(id=sheet.id).count() > 0),
         'Sheet attributes':(Sheet, lambda x: sheet.id == x.id),
     }
