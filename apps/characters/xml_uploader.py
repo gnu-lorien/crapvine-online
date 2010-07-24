@@ -73,6 +73,7 @@ class VampireExporter():
         self.sheet = vampire_sheet
 
         vamp_attrs = dict((k, str(v)) for k,v in self.sheet.__dict__.iteritems())
+        vamp_attrs.update((k, str(v)) for k,v in self.sheet.vampiresheet.__dict__.iteritems())
         vamp_attrs['player'] = self.sheet.player.username
         vamp_attrs['npc'] = 'yes' if self.sheet.npc else 'no'
         for date_attribute in VAMPIRE_TAG_DATES:
