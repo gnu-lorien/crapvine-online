@@ -1,3 +1,4 @@
+from __future__ import with_statement
 from django.test import TestCase
 from django.test.client import Client
 from characters.models import Trait, TraitListProperty, Sheet, TraitListName, VampireSheet, ExperienceEntry
