@@ -2,22 +2,43 @@
 
 {% load i18n %}
 {% load uni_form %}
+{% load group_tags %}
 {% load characters_extras %}
 
 {% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
 
+{% block subnav_base %}
+<div class="clearfix">
+    {% if user.is_authenticated %}
+        <ul>
+            <li><a href="{% groupurl sheet_upload group %}">{% trans "Upload Sheet" %}</a></li>
+            <li><a href="{% groupurl sheets_list group %}">{% trans "List Sheets" %}</a></li>
+            <li><a href="{% groupurl sheet_new group %}">{% trans "New Sheet" %}</a></li>
+        </ul>
+    {% else %}
+        &nbsp;
+    {% endif %}
+&nbsp;</div>
+<style>
+#subsubnav {
+    background: lightgray;
+}
+
+#subsubnav h3 {
+    float: left;
+    font-size: inherit;
+    margin-left: 181px;
+    padding-left: 10px;
+}
+</style>
+<div id="subsubnav" class="clearfix">
+{% sheet_list_item sheet %}
+&nbsp;</div>
+{% endblock %}
+
 {% block body %}
-    {{ sheet.name }}<br/>
-    {{ sheet.player.username }}<br/>
 <table width="" border="0" bgcolor="white">
 <tbody>
-<tr>
-<td colspan="3" width="675">
-<center>
-<h3><font color="black" size="2">One World By Night</font></h3>
-</center>
-</td>
-</tr>
 <tr><td><a href="{% url sheet_vampire_edit_attributes sheet.slug %}">Edit Attributes</a></td></tr>
 <tr>
 <td width="240"><font color="black" size="2"><b>Name:</b>
