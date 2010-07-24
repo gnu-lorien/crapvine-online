@@ -17,6 +17,24 @@
             "date_joined": "2010-07-08 16:56:36"
         }
     },
+     {
+        "pk": 65535, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "deleted_character_sheets_9391029394032498aotuhoaesuthauchasc",
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": false, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-07-08 17:00:33", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a0760$5ac0e72a6ed13d07a00080632eae34f3af105bfb", 
+            "email": "", 
+            "date_joined": "2010-07-08 16:56:36"
+        }
+    },
         {
         "pk": 1, 
         "model": "characters.traitlistname", 

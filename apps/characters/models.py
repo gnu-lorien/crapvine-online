@@ -333,6 +333,13 @@ class Sheet(models.Model):
         except VampireSheet.DoesNotExist:
             pass
 
+    def safe_delete(self):
+        delete_storage_user = User.objects.get(username__startswith='deleted_character_sheets')
+        self.player = delete_storage_user
+        from datetime import datetime
+        self.name = self.name + "||" + unicode(datetime.now())
+        self.save()
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())
         super(Sheet, self).save(*args, **kwargs)

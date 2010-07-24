@@ -162,9 +162,7 @@ def delete_sheet(request, sheet_slug,
         )
 
     if request.method == "POST" and request.POST.has_key('__confirm__'):
-        print "In delete"
-        sheet.delete()
-        print "I just deleted the guy. What's up?"
+        sheet.safe_delete()
         return HttpResponseRedirect(reverse('sheets_list'))
 
     return render_to_response(template_name, {
