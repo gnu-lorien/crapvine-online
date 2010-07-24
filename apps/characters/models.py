@@ -341,6 +341,8 @@ class Sheet(models.Model):
         self.player = delete_storage_user
         from datetime import datetime
         self.name = self.name + "||" + unicode(datetime.now())
+        self.object_id = None
+        self.content_type = None
         self.save()
 
     def save(self, *args, **kwargs):
