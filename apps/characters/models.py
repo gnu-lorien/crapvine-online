@@ -86,7 +86,7 @@ EXPERIENCE_ENTRY_CHANGE_TYPES = [
 ]
 
 class ExperienceEntry(models.Model):
-    reason = models.CharField(max_length=128)
+    reason = models.TextField()
     change = models.FloatField()
     change_type = models.PositiveSmallIntegerField(default=0, choices=EXPERIENCE_ENTRY_CHANGE_TYPES)
     earned = models.FloatField()
