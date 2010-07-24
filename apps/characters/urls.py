@@ -11,6 +11,7 @@ urlpatterns = patterns('characters.views',
     url(r'^history_sheet/(?P<sheet_slug>[-\w]+)/$', 'history_sheet', name='sheet_history'),
     url(r'^permissions_sheet/(?P<sheet_slug>[-\w]+)/$', 'permissions_sheet', name='sheet_permissions'),
     url(r'^download_sheet/(?P<sheet_slug>[-\w]+)/$', 'download_sheet', name='sheet_download'),
+    url(r'^delete_sheet/(?P<sheet_slug>[-\w]+)/$', 'delete_sheet', name='sheet_delete'),
     url(r'^edit_vampire_sheet_attributes/(?P<sheet_slug>[-\w]+)/$', 'edit_vampire_sheet_attributes', name='sheet_vampire_edit_attributes'),
     url(r'^new_sheet/$', 'new_sheet', name='sheet_new'),
 

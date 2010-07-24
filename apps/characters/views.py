@@ -134,6 +134,49 @@ def download_sheet(request, sheet_slug,
     return response
 
 @login_required
+def delete_sheet(request, sheet_slug,
+                 group_slug=None, bridge=None,
+                 **kwargs):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(group_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_delete_sheet(request, sheet):
+        return permission_denied(request)
+
+    template_name = kwargs.get("template_name", "characters/generic_delete.html")
+    if request.is_ajax():
+        template_name = kwargs.get(
+            "template_name_facebox",
+            "characters/generic_delete_facebox.html",
+        )
+
+    if request.method == "POST" and request.POST.has_key('__confirm__'):
+        print "In delete"
+        sheet.delete()
+        print "I just deleted the guy. What's up?"
+        return HttpResponseRedirect(reverse('sheets_list'))
+
+    return render_to_response(template_name, {
+        'sheet': sheet,
+        'group': group,
+        'instance': sheet,
+        'object_description': 'Sheet',
+        'form_template': 'characters/generic_delete_form.html',
+        'post_url': reverse('sheet_delete', args=[sheet_slug]),
+    }, context_instance=RequestContext(request))
+
+@login_required
 def edit_vampire_sheet_attributes(request, sheet_slug,
                                   form_class=VampireSheetAttributesForm, **kwargs):
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_attributes.html")
