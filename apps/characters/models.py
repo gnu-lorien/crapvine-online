@@ -159,6 +159,9 @@ class Sheet(models.Model):
     content_type = models.ForeignKey(ContentType, null=True)
     group = generic.GenericForeignKey("object_id", "content_type")
 
+    class Meta:
+        unique_together = (("player", "name"))
+
     def __unicode__(self):
         return self.name
 
