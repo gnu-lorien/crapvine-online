@@ -408,6 +408,7 @@ class TraitListProperty(models.Model):
     class Meta:
         ordering = ['name__name']
         unique_together = (("sheet", "name"),)
+        verbose_name_plural = "trait list properties"
 
     def __unicode__(self):
         return "%s:%s" % (self.sheet, self.name)
