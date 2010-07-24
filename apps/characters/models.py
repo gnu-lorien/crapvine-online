@@ -170,7 +170,7 @@ class Sheet(models.Model):
 
     def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
         overwrite = kwargs.get('overwrite', True)
-        print "Adding traitlist property with overwrite", overwrite
+        #print "Adding traitlist property with overwrite", overwrite
         try:
             traitlist_name_obj = TraitListName.objects.get(name=kwargs['name'])
         except TraitListName.DoesNotExist:
@@ -187,7 +187,7 @@ class Sheet(models.Model):
             self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
 
     def get_traitlist_property(self, traitlistname):
-        print "get_traitlist_property", traitlistname.name
+        #print "get_traitlist_property", traitlistname.name
         return self.traitlistproperty_set.get(name=traitlistname)
 
     def get_traitlist_properties(self):
@@ -216,32 +216,32 @@ class Sheet(models.Model):
         self.traits.create(**trait_attrs)
 
     def _cascade_experience_expenditure_change(self, prev_entry, next_entry):
-        print "_cascade_experience_expenditure_change"
+        #print "_cascade_experience_expenditure_change"
         if next_entry is None and prev_entry is None:
-            print "both none"
+            #print "both none"
             # No entries left
             self.experience_unspent = self.experience_earned = 0
             self.save()
             return
 
         if next_entry is None:
-            print "next none"
+            #print "next none"
             self.experience_unspent = prev_entry.unspent
             self.experience_earned = prev_entry.earned
             self.save()
             return
 
         try:
-            print "looping up"
+            #print "looping up"
             while True:
                 self._calculate_earned_unspent_from_last(next_entry, prev_entry)
                 next_entry.save()
-                print "next becomes", next_entry
+                #print "next becomes", next_entry
                 prev_entry = next_entry
-                print "prev is", next_entry
+                #print "prev is", next_entry
                 next_entry = next_entry.get_next_by_date(sheet=self)
         except ExperienceEntry.DoesNotExist:
-            print "setting experience totals to", prev_entry
+            #print "setting experience totals to", prev_entry
             self.experience_unspent = prev_entry.unspent
             self.experience_earned = prev_entry.earned
             self.save()
@@ -262,7 +262,7 @@ class Sheet(models.Model):
             # This means we're the last, so prev becomes the canonical view
             next_entry = None
 
-        print "Deleting entry", entry
+        #print "Deleting entry", entry
         entry.delete()
         self._cascade_experience_expenditure_change(prev_entry, next_entry)
 
@@ -274,8 +274,8 @@ class Sheet(models.Model):
             # This means we're the first, so use the normal update method
             prev_entry = None
 
-        print "Edited experience entry", entry
-        print "Prev experience entry", prev_entry
+        #print "Edited experience entry", entry
+        #print "Prev experience entry", prev_entry
         self._cascade_experience_expenditure_change(prev_entry, entry)
 
     def add_experience_entry(self, entry):
@@ -298,11 +298,11 @@ class Sheet(models.Model):
         if previous_entry is None:
             FauxEntry = collections.namedtuple('FauxEntry', 'unspent earned')
             previous_entry = FauxEntry(0, 0)
-            print "No last entry"
+            #print "No last entry"
         entry.unspent = previous_entry.unspent
         entry.earned = previous_entry.earned
-        print entry.change_type, "->", entry.get_change_type_display()
-        print "previous_entry:", previous_entry
+        #print entry.change_type, "->", entry.get_change_type_display()
+        #print "previous_entry:", previous_entry
         if 3 == entry.change_type:
             entry.unspent = previous_entry.unspent - entry.change
         elif 0 == entry.change_type:

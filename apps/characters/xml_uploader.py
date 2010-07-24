@@ -82,8 +82,8 @@ class VampireExporter():
         pprint(vamp_attrs)
         self.vampire = CrapvineVampire()
         self.vampire.read_attributes(vamp_attrs)
-        pprint(self.vampire.startdate)
-        pprint(self.vampire.npc)
+        #pprint(self.vampire.startdate)
+        #pprint(self.vampire.npc)
 
         for tlp in self.sheet.get_traitlist_properties():
             tl_attrs = dict((k, str(v)) for k,v in tlp.__dict__.iteritems())
