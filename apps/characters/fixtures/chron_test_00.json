@@ -1,0 +1,2484 @@
+[
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "play", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-07-23 21:16:55", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$f47a8$ac14b13142363f2c1302ae7909395b43d86c734d", 
+            "email": "", 
+            "date_joined": "2010-07-23 21:07:20"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "hst", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-07-23 21:19:53", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$0f1ee$017e655e30b8dafa044bb52749223973311cc37b", 
+            "email": "", 
+            "date_joined": "2010-07-23 21:07:25"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "3rdparty", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-07-23 21:17:45", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$8e2b8$2654f99d2894c8c86f6a1c9bbf309f67b7eb257e", 
+            "email": "", 
+            "date_joined": "2010-07-23 21:15:11"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "example.com", 
+            "name": "example.com"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "you have received an invitation", 
+            "display": "Invitation Received", 
+            "label": "friends_invite"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have sent an invitation", 
+            "display": "Invitation Sent", 
+            "label": "friends_invite_sent"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "an invitation you sent has been accepted", 
+            "display": "Acceptance Received", 
+            "label": "friends_accept"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have accepted an invitation you received", 
+            "display": "Acceptance Sent", 
+            "label": "friends_accept_sent"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "one of your friends has a new connection", 
+            "display": "Other Connection", 
+            "label": "friends_otherconnect"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "an invitation you sent to join this site has been accepted", 
+            "display": "Join Invitation Accepted", 
+            "label": "join_accept"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "you have received a message", 
+            "display": "Message Received", 
+            "label": "messages_received"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have sent a message", 
+            "display": "Message Sent", 
+            "label": "messages_sent"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have replied to a message", 
+            "display": "Message Replied", 
+            "label": "messages_replied"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "you have received a reply to a message", 
+            "display": "Reply Received", 
+            "label": "messages_reply_received"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have deleted a message", 
+            "display": "Message Deleted", 
+            "label": "messages_deleted"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "you have undelete a message", 
+            "display": "Message Recovered", 
+            "label": "messages_recovered"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "you have received an announcement", 
+            "display": "Announcement", 
+            "label": "announcement"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "your article has been edited", 
+            "display": "Article Edited", 
+            "label": "wiki_article_edited"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "your revision has been reverted", 
+            "display": "Article Revision Reverted", 
+            "label": "wiki_revision_reverted"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "an article you observe has changed", 
+            "display": "Observed Article Changed", 
+            "label": "wiki_observed_article_changed"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has proposed a swap for one of your offers", 
+            "display": "New Swap Proposal", 
+            "label": "swaps_proposal"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has accepted a swap that you proposed", 
+            "display": "Swap Acceptance", 
+            "label": "swaps_acceptance"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has rejected a swap that you proposed", 
+            "display": "Swap Rejection", 
+            "label": "swaps_rejection"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has canceled a proposed swap for one of your offers", 
+            "display": "Swap Cancellation", 
+            "label": "swaps_cancellation"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has changed their proposing offer in a swap for one of your offers", 
+            "display": "Swap Proposing Offer Changed", 
+            "label": "swaps_proposing_offer_changed"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has changed their responding offer in a swap that you proposed", 
+            "display": "Swap Responding Offer Changed", 
+            "label": "swaps_responding_offer_changed"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has commented on a swap in which your offer is involved", 
+            "display": "Swap Comment", 
+            "label": "swaps_comment"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "your swap has lost a conflict to another swap", 
+            "display": "Swap Conflict", 
+            "label": "swaps_conflict"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "a friend of yours posted to their blog", 
+            "display": "Friend Posted to Blog", 
+            "label": "blog_friend_post"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "a comment was made on one of your blog posts", 
+            "display": "New Comment on Blog Post", 
+            "label": "blog_post_comment"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "avatar have been updated", 
+            "display": "Avatar Updated", 
+            "label": "avatar_updated"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "a friend has updated his avatar", 
+            "display": "Friend Updated Avatar", 
+            "label": "avatar_friend_updated"
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone has started following your tweets", 
+            "display": "New Tweet Follower", 
+            "label": "tweet_follow"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "someone sent a tweet reply to you", 
+            "display": "New Tweet Reply", 
+            "label": "tweet_reply_received"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "a chronicle you are a member of has a new member", 
+            "display": "New Chronicle Member", 
+            "label": "chronicles_new_member"
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "a chronicle you created has a new member", 
+            "display": "New Member Of Chronicle You Created", 
+            "label": "chronicles_created_new_member"
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 1, 
+            "description": "a new chronicle has been created", 
+            "display": "New Chronicle Created", 
+            "label": "chronicles_new_chronicle"
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "notification.noticetype", 
+        "fields": {
+            "default": 2, 
+            "description": "a chronicle you are a member of has a new character", 
+            "display": "New Chronicle Character", 
+            "label": "chronicles_new_character"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 32, 
+            "medium": "1", 
+            "user": 3, 
+            "send": true
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 31, 
+            "medium": "1", 
+            "user": 3, 
+            "send": false
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 31, 
+            "medium": "1", 
+            "user": 2, 
+            "send": false
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 31, 
+            "medium": "1", 
+            "user": 1, 
+            "send": false
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 32, 
+            "medium": "1", 
+            "user": 4, 
+            "send": true
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "notification.noticesetting", 
+        "fields": {
+            "notice_type": 31, 
+            "medium": "1", 
+            "user": 4, 
+            "send": false
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:17:11", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 2, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:17:11", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:17:11", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 4, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:17:11", 
+            "on_site": true, 
+            "notice_type": 32, 
+            "user": 4, 
+            "unseen": true, 
+            "message": "New Member Of Chronicle You Created"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:16:00", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:16:00", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 4, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:16:00", 
+            "on_site": true, 
+            "notice_type": 32, 
+            "user": 4, 
+            "unseen": true, 
+            "message": "New Member Of Chronicle You Created"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:09:49", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 1, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:09:49", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 2, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:09:49", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:09:49", 
+            "on_site": true, 
+            "notice_type": 32, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Member Of Chronicle You Created"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:08:43", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 2, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:08:43", 
+            "on_site": true, 
+            "notice_type": 31, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Chronicle Member"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "notification.notice", 
+        "fields": {
+            "archived": false, 
+            "added": "2010-07-23 21:08:43", 
+            "on_site": true, 
+            "notice_type": 32, 
+            "user": 3, 
+            "unseen": true, 
+            "message": "New Member Of Chronicle You Created"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "notification.noticequeuebatch", 
+        "fields": {
+            "pickled_data": "KGxwMQooSTEKUydjaHJvbmljbGVzX25ld19jaHJvbmljbGUnCnAyCihkcDMKUydjaHJvbmljbGUn\nCnA0CmNjb3B5X3JlZwpfcmVjb25zdHJ1Y3RvcgpwNQooY2Nocm9uaWNsZXMubW9kZWxzCkNocm9u\naWNsZQpwNgpjX19idWlsdGluX18Kb2JqZWN0CnA3Ck50UnA4CihkcDkKUydfY3JlYXRvcl9jYWNo\nZScKcDEwCmc1CihjZGphbmdvLmNvbnRyaWIuYXV0aC5tb2RlbHMKVXNlcgpwMTEKZzcKTnRScDEy\nCihkcDEzClMndXNlcm5hbWUnCnAxNApWaHN0CnAxNQpzUydmaXJzdF9uYW1lJwpwMTYKVgpzUyds\nYXN0X25hbWUnCnAxNwpWCnNTJ2lzX2FjdGl2ZScKcDE4CkkwMQpzUydlbWFpbCcKcDE5ClYKc1Mn\naXNfc3VwZXJ1c2VyJwpwMjAKSTAwCnNTJ2lzX3N0YWZmJwpwMjEKSTAwCnNTJ2xhc3RfbG9naW4n\nCnAyMgpjZGF0ZXRpbWUKZGF0ZXRpbWUKcDIzCihTJ1x4MDdceGRhXHgwN1x4MTdceDE1XHgwN1x4\nMTlceDAyXHg4N34nCnRScDI0CnNTJ3Bhc3N3b3JkJwpwMjUKVnNoYTEkMGYxZWUkMDE3ZTY1NWUz\nMGI4ZGFmYTA0NGJiNTI3NDkyMjM5NzMzMTFjYzM3YgpwMjYKc1MnaWQnCnAyNwpJMwpzUydkYXRl\nX2pvaW5lZCcKcDI4CmcyMwooUydceDA3XHhkYVx4MDdceDE3XHgxNVx4MDdceDE5XHgwMnVceGNm\nJwp0UnAyOQpzYnNTJ2Rlc2NyaXB0aW9uJwpwMzAKVnRlc3RpCnAzMQpzUydjcmVhdGVkJwpwMzIK\nZzIzCihTJ1x4MDdceGRhXHgwN1x4MTdceDE1XHgwOFx4MWRcbkhceGNmJwp0UnAzMwpzUydwcml2\nYXRlJwpwMzQKSTAwCnNTJ3NsdWcnCnAzNQpWdGVzdGkKcDM2CnNTJ2NyZWF0b3JfaWQnCnAzNwpJ\nMwpzZzI3CkkxCnNTJ25hbWUnCnAzOApWdGVzdGkKcDM5CnNic0kwMQp0cDQwCmEoSTIKZzIKZzMK\nSTAxCnRwNDEKYShJMwpnMgpnMwpJMDEKdHA0MgphLg==\n"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "notification.noticequeuebatch", 
+        "fields": {
+            "pickled_data": "KGxwMQooSTEKUydjaHJvbmljbGVzX25ld19jaHJvbmljbGUnCnAyCihkcDMKUydjaHJvbmljbGUn\nCnA0CmNjb3B5X3JlZwpfcmVjb25zdHJ1Y3RvcgpwNQooY2Nocm9uaWNsZXMubW9kZWxzCkNocm9u\naWNsZQpwNgpjX19idWlsdGluX18Kb2JqZWN0CnA3Ck50UnA4CihkcDkKUydfY3JlYXRvcl9jYWNo\nZScKcDEwCmc1CihjZGphbmdvLmNvbnRyaWIuYXV0aC5tb2RlbHMKVXNlcgpwMTEKZzcKTnRScDEy\nCihkcDEzClMndXNlcm5hbWUnCnAxNApWM3JkcGFydHkKcDE1CnNTJ2ZpcnN0X25hbWUnCnAxNgpW\nCnNTJ2xhc3RfbmFtZScKcDE3ClYKc1MnaXNfYWN0aXZlJwpwMTgKSTAxCnNTJ2VtYWlsJwpwMTkK\nVgpzUydpc19zdXBlcnVzZXInCnAyMApJMDAKc1MnaXNfc3RhZmYnCnAyMQpJMDAKc1MnbGFzdF9s\nb2dpbicKcDIyCmNkYXRldGltZQpkYXRldGltZQpwMjMKKFMnXHgwN1x4ZGFceDA3XHgxN1x4MTVc\neDBmXHgwYlx0XHgxNVx4YmUnCnRScDI0CnNTJ3Bhc3N3b3JkJwpwMjUKVnNoYTEkOGUyYjgkMjY1\nNGY5OWQyODk0YzhjODZmNmExYzliYmYzMDlmNjdiN2ViMjU3ZQpwMjYKc1MnaWQnCnAyNwpJNApz\nUydkYXRlX2pvaW5lZCcKcDI4CmcyMwooUydceDA3XHhkYVx4MDdceDE3XHgxNVx4MGZceDBiXHgw\nOFx4ZmJceGFkJwp0UnAyOQpzYnNTJ2Rlc2NyaXB0aW9uJwpwMzAKVndob2NhcmVzCnAzMQpzUydj\ncmVhdGVkJwpwMzIKZzIzCihTJ1x4MDdceGRhXHgwN1x4MTdceDE1XHgwZlx4MTVcdFdceDBiJwp0\nUnAzMwpzUydwcml2YXRlJwpwMzQKSTAwCnNTJ3NsdWcnCnAzNQpWd2hvY2FyZXMKcDM2CnNTJ2Ny\nZWF0b3JfaWQnCnAzNwpJNApzZzI3CkkyCnNTJ25hbWUnCnAzOApWd2hvY2FyZXMKcDM5CnNic0kw\nMQp0cDQwCmEoSTIKZzIKZzMKSTAxCnRwNDEKYShJMwpnMgpnMwpJMDEKdHA0MgphKEk0CmcyCmcz\nCkkwMQp0cDQzCmEu\n"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "emailconfirmation.emailaddress", 
+        "fields": {
+            "verified": true, 
+            "user": 1, 
+            "primary": true, 
+            "email": "aoeu@oue.co"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*?flickr.com/\\S*", 
+            "endpoint": "http://www.flickr.com/services/oembed/", 
+            "name": "Flickr", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*?viddler.com/\\S*", 
+            "endpoint": "http://lab.viddler.com/services/oembed/", 
+            "name": "Viddler", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://qik.com/\\S*", 
+            "endpoint": "http://qik.com/api/oembed.json", 
+            "name": "Qik", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*?pownce.com/\\S*", 
+            "endpoint": "http://api.pownce.com/2.1/oembed.json", 
+            "name": "Pownce", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*?revision3.com/\\S*", 
+            "endpoint": "http://revision3.com/api/oembed/", 
+            "name": "Revision3", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.amazon.(com|co.uk|de|ca|jp)/\\S*/(gp/product|o/ASIN|obidos/ASIN|dp)/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Amazon Product Image (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.collegehumor.com/video:\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "CollegeHumor Video (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.funnyordie.com/videos/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Funny or Die Video (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://video.google.com/videoplay?\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Google Video (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://www.hulu.com/watch/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Hulu (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.metacafe.com/watch/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Metacafe (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://twitter.com/\\S*/statuses/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Twitter Status (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.wikipedia.org/wiki/\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "Wikipedia (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://\\S*.youtube.com/watch\\S*", 
+            "endpoint": "http://oohembed.com/oohembed/", 
+            "name": "YouTube (OohEmbed)", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "oembed.providerrule", 
+        "fields": {
+            "regex": "http://vimeo.com/\\S*", 
+            "endpoint": "http://vimeo.com/api/oembed.json", 
+            "name": "Vimeo", 
+            "format": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "photologue.photosize", 
+        "fields": {
+            "name": "admin_thumbnail", 
+            "watermark": null, 
+            "increment_count": false, 
+            "effect": null, 
+            "crop": true, 
+            "height": 75, 
+            "width": 100, 
+            "upscale": false, 
+            "pre_cache": false, 
+            "quality": 70
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "photologue.photosize", 
+        "fields": {
+            "name": "thumbnail", 
+            "watermark": null, 
+            "increment_count": false, 
+            "effect": null, 
+            "crop": true, 
+            "height": 75, 
+            "width": 100, 
+            "upscale": false, 
+            "pre_cache": false, 
+            "quality": 70
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "photologue.photosize", 
+        "fields": {
+            "name": "display", 
+            "watermark": null, 
+            "increment_count": true, 
+            "effect": null, 
+            "crop": false, 
+            "height": 0, 
+            "width": 400, 
+            "upscale": false, 
+            "pre_cache": false, 
+            "quality": 80
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "profiles.profile", 
+        "fields": {
+            "website": null, 
+            "about": null, 
+            "location": null, 
+            "user": 1, 
+            "name": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "profiles.profile", 
+        "fields": {
+            "website": null, 
+            "about": null, 
+            "location": null, 
+            "user": 2, 
+            "name": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "profiles.profile", 
+        "fields": {
+            "website": null, 
+            "about": null, 
+            "location": null, 
+            "user": 3, 
+            "name": null
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "profiles.profile", 
+        "fields": {
+            "website": null, 
+            "about": null, 
+            "location": null, 
+            "user": 4, 
+            "name": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "account.account", 
+        "fields": {
+            "timezone": "US/Eastern", 
+            "user": 1, 
+            "language": "en"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "account.account", 
+        "fields": {
+            "timezone": "US/Eastern", 
+            "user": 2, 
+            "language": "en"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "account.account", 
+        "fields": {
+            "timezone": "US/Eastern", 
+            "user": 3, 
+            "language": "en"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "account.account", 
+        "fields": {
+            "timezone": "US/Eastern", 
+            "user": 4, 
+            "language": "en"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "chronicles.chronicle", 
+        "fields": {
+            "description": "testi", 
+            "creator": 3, 
+            "created": "2010-07-23 21:08:29", 
+            "private": false, 
+            "slug": "testi", 
+            "name": "testi"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "chronicles.chronicle", 
+        "fields": {
+            "description": "whocares", 
+            "creator": 4, 
+            "created": "2010-07-23 21:15:21", 
+            "private": false, 
+            "slug": "whocares", 
+            "name": "whocares"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 0, 
+            "user": 3, 
+            "chronicle": 1, 
+            "membership_role_other": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 2, 
+            "user": 2, 
+            "chronicle": 1, 
+            "membership_role_other": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 0, 
+            "user": 1, 
+            "chronicle": 1, 
+            "membership_role_other": "aoeu"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 0, 
+            "user": 4, 
+            "chronicle": 2, 
+            "membership_role_other": ""
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 2, 
+            "user": 3, 
+            "chronicle": 2, 
+            "membership_role_other": ""
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "chronicles.chroniclemember", 
+        "fields": {
+            "membership_role": 2, 
+            "user": 2, 
+            "chronicle": 2, 
+            "membership_role_other": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "reversion.revision", 
+        "fields": {
+            "comment": "", 
+            "date_created": "2010-07-23 21:08:58", 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "reversion.revision", 
+        "fields": {
+            "comment": "", 
+            "date_created": "2010-07-23 21:09:23", 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "reversion.revision", 
+        "fields": {
+            "comment": "", 
+            "date_created": "2010-07-23 21:17:05", 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "reversion.revision", 
+        "fields": {
+            "comment": "", 
+            "date_created": "2010-07-23 21:17:17", 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya", 
+            "object_id": "1", 
+            "content_type": 73, 
+            "serialized_data": "[{\"pk\": 1, \"model\": \"characters.vampiresheet\", \"fields\": {\"sire\": \"\", \"generation\": 13, \"id_text\": \"\", \"demeanor\": \"\", \"conscience\": 3, \"pathtraits\": 3, \"title\": \"\", \"willpower\": 2, \"tempcourage\": 0, \"tempwillpower\": 0, \"selfcontrol\": 2, \"sect\": \"\", \"coterie\": \"\", \"nature\": \"\", \"tempselfcontrol\": 0, \"physicalmax\": 10, \"courage\": 3, \"blood\": 10, \"path\": \"\", \"tempconscience\": 0, \"clan\": \"\", \"tempblood\": 0, \"aura\": 0, \"temppathtraits\": 0}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Social", 
+            "object_id": "2", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 2, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 3, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Mental", 
+            "object_id": "3", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 3, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 2, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Negative Physical", 
+            "object_id": "4", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 4, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 11, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Negative Social", 
+            "object_id": "5", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 5, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 12, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Negative Mental", 
+            "object_id": "6", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 6, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 13, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya", 
+            "object_id": "1", 
+            "content_type": 72, 
+            "serialized_data": "[{\"pk\": 1, \"model\": \"characters.sheet\", \"fields\": {\"status\": \"\", \"narrator\": \"\", \"name\": \"BallsPlaya\", \"object_id\": null, \"notes\": \"\", \"experience_unspent\": 0.0, \"npc\": false, \"slug\": \"play-ballsplaya\", \"player\": 2, \"last_modified\": \"2010-07-23 21:08:58\", \"last_saved\": \"2010-07-23 21:08:58\", \"content_type\": null, \"experience_entries\": [], \"home_chronicle\": \"\", \"experience_earned\": 0.0, \"start_date\": \"2010-07-23 21:08:58\", \"biography\": \"\"}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Abilities", 
+            "object_id": "8", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 8, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 15, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Influences", 
+            "object_id": "9", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 9, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 9, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Backgrounds", 
+            "object_id": "10", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 10, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 16, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Health Levels", 
+            "object_id": "11", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 11, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 10, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": false}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Bonds", 
+            "object_id": "12", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 12, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 17, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Miscellaneous", 
+            "object_id": "13", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 13, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 18, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": false}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Derangements", 
+            "object_id": "14", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 14, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 19, \"negative\": true, \"display_preference\": 5, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Disciplines", 
+            "object_id": "15", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 15, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 20, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": false}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Rituals", 
+            "object_id": "16", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 16, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 21, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": false}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Merits", 
+            "object_id": "17", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 17, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 7, \"negative\": false, \"display_preference\": 4, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Flaws", 
+            "object_id": "18", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 18, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 8, \"negative\": true, \"display_preference\": 4, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Equipment", 
+            "object_id": "19", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 19, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 22, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Locations", 
+            "object_id": "20", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 20, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 23, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Physical", 
+            "object_id": "1", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 1, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 1, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya:Status", 
+            "object_id": "7", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 7, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 1, \"name\": 14, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 1
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "BallsPlaya", 
+            "object_id": "1", 
+            "content_type": 72, 
+            "serialized_data": "[{\"pk\": 1, \"model\": \"characters.sheet\", \"fields\": {\"status\": \"\", \"narrator\": \"\", \"name\": \"BallsPlaya\", \"object_id\": 1, \"notes\": \"\", \"experience_unspent\": 0.0, \"npc\": false, \"slug\": \"play-ballsplaya\", \"player\": 2, \"last_modified\": \"2010-07-23 21:08:58\", \"last_saved\": \"2010-07-23 21:09:23\", \"content_type\": 61, \"experience_entries\": [], \"home_chronicle\": \"\", \"experience_earned\": 0.0, \"start_date\": \"2010-07-23 21:08:58\", \"biography\": \"\"}}]", 
+            "revision": 2
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares", 
+            "object_id": "2", 
+            "content_type": 73, 
+            "serialized_data": "[{\"pk\": 2, \"model\": \"characters.vampiresheet\", \"fields\": {\"sire\": \"\", \"generation\": 13, \"id_text\": \"\", \"demeanor\": \"\", \"conscience\": 3, \"pathtraits\": 3, \"title\": \"\", \"willpower\": 2, \"tempcourage\": 0, \"tempwillpower\": 0, \"selfcontrol\": 2, \"sect\": \"\", \"coterie\": \"\", \"nature\": \"\", \"tempselfcontrol\": 0, \"physicalmax\": 10, \"courage\": 3, \"blood\": 10, \"path\": \"\", \"tempconscience\": 0, \"clan\": \"\", \"tempblood\": 0, \"aura\": 0, \"temppathtraits\": 0}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares", 
+            "object_id": "2", 
+            "content_type": 72, 
+            "serialized_data": "[{\"pk\": 2, \"model\": \"characters.sheet\", \"fields\": {\"status\": \"\", \"narrator\": \"\", \"name\": \"Suck my who cares\", \"object_id\": null, \"notes\": \"\", \"experience_unspent\": 0.0, \"npc\": false, \"slug\": \"play-suck-my-who-cares\", \"player\": 2, \"last_modified\": \"2010-07-23 21:17:05\", \"last_saved\": \"2010-07-23 21:17:05\", \"content_type\": null, \"experience_entries\": [], \"home_chronicle\": \"\", \"experience_earned\": 0.0, \"start_date\": \"2010-07-23 21:17:05\", \"biography\": \"\"}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Physical", 
+            "object_id": "21", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 21, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 1, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Social", 
+            "object_id": "22", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 22, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 3, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Mental", 
+            "object_id": "23", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 23, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 2, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Negative Physical", 
+            "object_id": "24", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 24, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 11, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Negative Social", 
+            "object_id": "25", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 25, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 12, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Negative Mental", 
+            "object_id": "26", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 26, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 13, \"negative\": true, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Status", 
+            "object_id": "27", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 27, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 14, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Abilities", 
+            "object_id": "28", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 28, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 15, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Influences", 
+            "object_id": "29", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 29, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 9, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Backgrounds", 
+            "object_id": "30", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 30, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 16, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Health Levels", 
+            "object_id": "31", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 31, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 10, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": false}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Bonds", 
+            "object_id": "32", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 32, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 17, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Miscellaneous", 
+            "object_id": "33", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 33, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 18, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": false}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Derangements", 
+            "object_id": "34", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 34, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 19, \"negative\": true, \"display_preference\": 5, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Disciplines", 
+            "object_id": "35", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 35, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 20, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": false}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Rituals", 
+            "object_id": "36", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 36, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 21, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": false}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Merits", 
+            "object_id": "37", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 37, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 7, \"negative\": false, \"display_preference\": 4, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Flaws", 
+            "object_id": "38", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 38, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 8, \"negative\": true, \"display_preference\": 4, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Equipment", 
+            "object_id": "39", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 39, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 22, \"negative\": false, \"display_preference\": 1, \"atomic\": false, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares:Locations", 
+            "object_id": "40", 
+            "content_type": 74, 
+            "serialized_data": "[{\"pk\": 40, \"model\": \"characters.traitlistproperty\", \"fields\": {\"sheet\": 2, \"name\": 23, \"negative\": false, \"display_preference\": 5, \"atomic\": true, \"sorted\": true}}]", 
+            "revision": 3
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "reversion.version", 
+        "fields": {
+            "format": "json", 
+            "object_repr": "Suck my who cares", 
+            "object_id": "2", 
+            "content_type": 72, 
+            "serialized_data": "[{\"pk\": 2, \"model\": \"characters.sheet\", \"fields\": {\"status\": \"\", \"narrator\": \"\", \"name\": \"Suck my who cares\", \"object_id\": 2, \"notes\": \"\", \"experience_unspent\": 0.0, \"npc\": false, \"slug\": \"play-suck-my-who-cares\", \"player\": 2, \"last_modified\": \"2010-07-23 21:17:05\", \"last_saved\": \"2010-07-23 21:17:17\", \"content_type\": 61, \"experience_entries\": [], \"home_chronicle\": \"\", \"experience_earned\": 0.0, \"start_date\": \"2010-07-23 21:17:05\", \"biography\": \"\"}}]", 
+            "revision": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical", 
+            "slug": "physical"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental", 
+            "slug": "mental"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social", 
+            "slug": "social"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Physical Negative", 
+            "slug": "physical-negative"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Mental Negative", 
+            "slug": "mental-negative"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Social Negative", 
+            "slug": "social-negative"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Merits", 
+            "slug": "merits"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Flaws", 
+            "slug": "flaws"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Influences", 
+            "slug": "influences"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Health Levels", 
+            "slug": "health-levels"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Physical", 
+            "slug": "negative-physical"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Social", 
+            "slug": "negative-social"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Negative Mental", 
+            "slug": "negative-mental"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Status", 
+            "slug": "status"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Abilities", 
+            "slug": "abilities"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Backgrounds", 
+            "slug": "backgrounds"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Bonds", 
+            "slug": "bonds"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Miscellaneous", 
+            "slug": "miscellaneous"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Derangements", 
+            "slug": "derangements"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Disciplines", 
+            "slug": "disciplines"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Rituals", 
+            "slug": "rituals"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Equipment", 
+            "slug": "equipment"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "characters.traitlistname", 
+        "fields": {
+            "name": "Locations", 
+            "slug": "locations"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "characters.sheet", 
+        "fields": {
+            "status": "", 
+            "narrator": "", 
+            "name": "BallsPlaya", 
+            "object_id": 1, 
+            "notes": "", 
+            "experience_unspent": 0.0, 
+            "npc": false, 
+            "slug": "play-ballsplaya", 
+            "player": 2, 
+            "last_modified": "2010-07-23 21:08:58", 
+            "last_saved": "2010-07-23 21:09:23", 
+            "content_type": 61, 
+            "experience_entries": [], 
+            "home_chronicle": "", 
+            "experience_earned": 0.0, 
+            "start_date": "2010-07-23 21:08:58", 
+            "biography": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.sheet", 
+        "fields": {
+            "status": "", 
+            "narrator": "", 
+            "name": "Suck my who cares", 
+            "object_id": 2, 
+            "notes": "", 
+            "experience_unspent": 0.0, 
+            "npc": false, 
+            "slug": "play-suck-my-who-cares", 
+            "player": 2, 
+            "last_modified": "2010-07-23 21:17:05", 
+            "last_saved": "2010-07-23 21:17:17", 
+            "content_type": 61, 
+            "experience_entries": [], 
+            "home_chronicle": "", 
+            "experience_earned": 0.0, 
+            "start_date": "2010-07-23 21:17:05", 
+            "biography": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "characters.vampiresheet", 
+        "fields": {
+            "sire": "", 
+            "generation": 13, 
+            "id_text": "", 
+            "demeanor": "", 
+            "experience_entries": [], 
+            "conscience": 3, 
+            "pathtraits": 3, 
+            "title": "", 
+            "willpower": 2, 
+            "tempcourage": 0, 
+            "tempwillpower": 0, 
+            "selfcontrol": 2, 
+            "sect": "", 
+            "coterie": "", 
+            "nature": "", 
+            "tempselfcontrol": 0, 
+            "physicalmax": 10, 
+            "courage": 3, 
+            "blood": 10, 
+            "path": "", 
+            "tempconscience": 0, 
+            "clan": "", 
+            "tempblood": 0, 
+            "aura": 0, 
+            "temppathtraits": 0
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.vampiresheet", 
+        "fields": {
+            "sire": "", 
+            "generation": 13, 
+            "id_text": "", 
+            "demeanor": "", 
+            "experience_entries": [], 
+            "conscience": 3, 
+            "pathtraits": 3, 
+            "title": "", 
+            "willpower": 2, 
+            "tempcourage": 0, 
+            "tempwillpower": 0, 
+            "selfcontrol": 2, 
+            "sect": "", 
+            "coterie": "", 
+            "nature": "", 
+            "tempselfcontrol": 0, 
+            "physicalmax": 10, 
+            "courage": 3, 
+            "blood": 10, 
+            "path": "", 
+            "tempconscience": 0, 
+            "clan": "", 
+            "tempblood": 0, 
+            "aura": 0, 
+            "temppathtraits": 0
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 15, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 15, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 16, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 16, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 17, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 17, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 19, 
+            "negative": true, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 19, 
+            "negative": true, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 20, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 20, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 22, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 22, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 8, 
+            "negative": true, 
+            "display_preference": 4, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 8, 
+            "negative": true, 
+            "display_preference": 4, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 10, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 10, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 9, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 9, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 23, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 23, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 2, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 2, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 7, 
+            "negative": false, 
+            "display_preference": 4, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 7, 
+            "negative": false, 
+            "display_preference": 4, 
+            "atomic": true, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 18, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 18, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 13, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 13, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 11, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 11, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 12, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 12, 
+            "negative": true, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 1, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 1, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 21, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 21, 
+            "negative": false, 
+            "display_preference": 5, 
+            "atomic": true, 
+            "sorted": false
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 3, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 3, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 1, 
+            "name": 14, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "characters.traitlistproperty", 
+        "fields": {
+            "sheet": 2, 
+            "name": 14, 
+            "negative": false, 
+            "display_preference": 1, 
+            "atomic": false, 
+            "sorted": true
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangodblog.errorbatch", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "MultipleObjectsReturned", 
+            "checksum": "35e508d63242b78c9ed5cbe5f03cd9b4", 
+            "times_seen": 4, 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 26, in can_something_sheet\n    cm = ChronicleMember.objects.get(user=user)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/manager.py\", line 117, in get\n    return self.get_query_set().get(*args, **kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 324, in get\n    % (self.model._meta.object_name, num, kwargs))\nMultipleObjectsReturned: get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}\n", 
+            "is_resolved": false, 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-ballsplaya/", 
+            "message": "get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}", 
+            "first_seen": "2010-07-23 21:16:08", 
+            "last_seen": "2010-07-23 21:16:08"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangodblog.errorbatch", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "DoesNotExist", 
+            "checksum": "aa002dbf308818f3f3bd32249a17c0a8", 
+            "times_seen": 1, 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 25, in can_something_sheet\n    chronicle_sheets.get(id=sheet.id)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 322, in get\n    % self.model._meta.object_name)\nDoesNotExist: Sheet matching query does not exist.\n", 
+            "is_resolved": false, 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-suck-my-who-cares/", 
+            "message": "Sheet matching query does not exist.", 
+            "first_seen": "2010-07-23 21:17:48", 
+            "last_seen": "2010-07-23 21:17:48"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangodblog.error", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "MultipleObjectsReturned", 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 26, in can_something_sheet\n    cm = ChronicleMember.objects.get(user=user)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/manager.py\", line 117, in get\n    return self.get_query_set().get(*args, **kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 324, in get\n    % (self.model._meta.object_name, num, kwargs))\nMultipleObjectsReturned: get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}\n", 
+            "datetime": "2010-07-23 21:16:08", 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-ballsplaya/", 
+            "message": "get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangodblog.error", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "MultipleObjectsReturned", 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 26, in can_something_sheet\n    cm = ChronicleMember.objects.get(user=user)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/manager.py\", line 117, in get\n    return self.get_query_set().get(*args, **kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 324, in get\n    % (self.model._meta.object_name, num, kwargs))\nMultipleObjectsReturned: get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}\n", 
+            "datetime": "2010-07-23 21:16:28", 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-ballsplaya/", 
+            "message": "get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "djangodblog.error", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "MultipleObjectsReturned", 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 26, in can_something_sheet\n    cm = ChronicleMember.objects.get(user=user)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/manager.py\", line 117, in get\n    return self.get_query_set().get(*args, **kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 324, in get\n    % (self.model._meta.object_name, num, kwargs))\nMultipleObjectsReturned: get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}\n", 
+            "datetime": "2010-07-23 21:16:40", 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-ballsplaya/", 
+            "message": "get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "djangodblog.error", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "DoesNotExist", 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 25, in can_something_sheet\n    chronicle_sheets.get(id=sheet.id)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 322, in get\n    % self.model._meta.object_name)\nDoesNotExist: Sheet matching query does not exist.\n", 
+            "datetime": "2010-07-23 21:17:48", 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-suck-my-who-cares/", 
+            "message": "Sheet matching query does not exist."
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "djangodblog.error", 
+        "fields": {
+            "server_name": "phenominal", 
+            "class_name": "MultipleObjectsReturned", 
+            "traceback": "Traceback (most recent call last):\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/core/handlers/base.py\", line 91, in get_response\n    response = callback(request, *callback_args, **callback_kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/contrib/auth/decorators.py\", line 78, in __call__\n    return self.view_func(request, *args, **kwargs)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/views.py\", line 104, in list_sheet\n    if not can_fullview_sheet(request, sheet):\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 61, in can_fullview_sheet\n    return can_something_sheet(request, sheet, 0, 'sheet_permission.fullview_sheet', user=user, infodump=infodump)\n  File \"/home/lorien/dev/test-crapvine-online/apps/characters/permissions.py\", line 26, in can_something_sheet\n    cm = ChronicleMember.objects.get(user=user)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/manager.py\", line 117, in get\n    return self.get_query_set().get(*args, **kwargs)\n  File \"/home/lorien/dev/pinax-env/lib/python2.6/site-packages/django/db/models/query.py\", line 324, in get\n    % (self.model._meta.object_name, num, kwargs))\nMultipleObjectsReturned: get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}\n", 
+            "datetime": "2010-07-23 21:19:57", 
+            "url": "http://10.10.101.101:8000/characters/list_sheet/play-ballsplaya/", 
+            "message": "get() returned more than one ChronicleMember -- it returned 2! Lookup parameters were {'user': <User: hst>}"
+        }
+    }
+]

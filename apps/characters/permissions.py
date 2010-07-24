@@ -23,13 +23,13 @@ def can_something_sheet(request, sheet, role, checkperm, user=None, infodump=Fal
         chronicle_sheets = chronicle.content_objects(Sheet)
         try:
             chronicle_sheets.get(id=sheet.id)
-            cm = ChronicleMember.objects.get(user=user)
+            cm = ChronicleMember.objects.get(user=user, chronicle=chronicle)
             if role == cm.membership_role:
                 if infodump:
                     return (True, "%s in %s" % (cm.get_membership_role_display(), cm.chronicle.name))
                 else:
                     return True
-        except Chronicle.DoesNotExist:
+        except Sheet.DoesNotExist:
             pass
         except ChronicleMember.DoesNotExist:
             pass

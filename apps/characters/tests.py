@@ -2,6 +2,7 @@ from __future__ import with_statement
 from django.test import TestCase
 from django.test.client import Client
 from characters.models import Trait, TraitListProperty, Sheet, TraitListName, VampireSheet, ExperienceEntry
+from chronicles.models import Chronicle
 from django.contrib.auth.models import User
 
 from pprint import pprint
@@ -102,6 +103,43 @@ class ExperienceEntriesTestCase(TestCase):
         pprint(locals())
         self.assertEqual(start_unspent + adding, self.sheet.experience_unspent)
         self.assertEqual(start_earned + adding, self.sheet.experience_earned)
+
+class StorytellerViewSheetsTestCase(TestCase):
+    fixtures = ['chron_test_00']
+
+    def setUp(self):
+        """
+        as hst
+        create testi
+        as 3rdparty create
+        whocares
+        as play
+        create suck my who cares
+        associate with whocares
+        create ballsplaya
+        associate with testi
+        """
+        chronicle = Chronicle.objects.get(name="testi")
+        s = Sheet.objects.get(slug='play-ballsplaya')
+        chronicle.associate(s)
+        s.save()
+
+        chronicle = Chronicle.objects.get(name="whocares")
+        s = Sheet.objects.get(slug='play-suck-my-who-cares')
+        chronicle.associate(s)
+        s.save()
+
+    def test3rdPartyViewSheet(self):
+        """login as 3rdparty and try to view play-suck-my-who-cares"""
+        logged_in = self.client.login(username='3rdparty', password='3rdparty')
+        response = self.client.get("/characters/list_sheet/play-suck-my-who-cares/")
+        self.assertEqual(response.status_code, 200)
+
+    def testHstViewSheet(self):
+        """login as hst and try to view play-ballsplaya"""
+        logged_in = self.client.login(username='hst', password='hst')
+        response = self.client.get("/characters/list_sheet/play-ballsplaya/")
+        self.assertEqual(response.status_code, 200)
 
 class PageViewPermissionsTestCase(TestCase):
     fixtures = ['double_upload']
