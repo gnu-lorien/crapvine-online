@@ -24,6 +24,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from xml_uploader import handle_sheet_upload, VampireExporter
 
+from pprint import pprint, pformat
+
 @login_required
 def upload_sheet(request, group_slug=None, bridge=None):
     if bridge is not None:
@@ -240,7 +242,6 @@ def reorder_traitlist(request, sheet_slug, traitlistname_slug,
     if request.method == "POST":
         formset = DisplayOrderFormSet(request.POST)
         if formset.is_valid():
-            from pprint import pprint
             pprint(formset.cleaned_data)
             for data in formset.cleaned_data:
                 trait = sheet.traits.get(id=data['trait_id'])
@@ -339,7 +340,6 @@ def edit_trait(request, sheet_slug, trait_id,
         )
 
     form = form_class(request.POST or None, instance=trait)
-    from pprint import pprint
     form.is_valid()
     pprint(form.errors)
     print request.is_ajax()
@@ -468,7 +468,6 @@ def new_trait(request, sheet_slug, traitlistname_slug,
             t = Trait(name=mi.name, traitlistname=traitlistname, sheet=sheet, order=0, value=mi.cost)
             t.note = mi.note
             t.display_preference = sheet.get_traitlist_property(traitlistname).display_preference
-            from pprint import pprint
             ids = id_segment.split('/')
             if len(ids) >= 2:
                 menus = []
@@ -765,72 +764,133 @@ def add_recent_expenditures(request, sheet_slug,
         )
 
     if request.method == "POST":
+        print "Posting recent"
         form = form_class(request.POST)
+        pprint(request.POST)
+        form.is_valid()
+        pprint(form.cleaned_data)
+        pprint(form.errors)
         if form.is_valid():
+            print "Valid?"
             sheet.add_experience_entry(form.save(commit=False))
             return experience_entry_change_ajax_success(request, sheet, None, group)
+        else:
+            print "Invalid?"
     else:
         import datetime
         entry = ExperienceEntry()
         added_versions = []
         deleted_versions = []
         added_pks = set()
+        deleted_pks = set()
+
+        reasons = {'added': [], 'unspent': [], 'removed': []}
+        entry.change = 0
+        differences = []
+
         start_added = datetime.datetime.now()
         versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait))
         try:
             last_date = sheet.experience_entries.all().order_by('-date')[0].date
             versions = versions.filter(revision__date_created__gt=last_date)
         except IndexError:
+            last_data = None
             versions = versions.all()
-        versions = versions.order_by('revision__date_created')
+        versions = versions.order_by('-revision__date_created')
+
+        sheet_trait_ids = frozenset(unicode(pk) for pk in sheet.traits.values_list("pk", flat=True))
+        multiple_changes_pks = set()
 
         for version in versions:
-            obj = version.object_version.object
-            if sheet == obj.sheet:
-                added_versions.append([version, obj])
-                added_pks.add(version.object_id)
+            print "date ->", version.revision.date_created
+            if version.object_id in sheet_trait_ids:
+                if not version.object_id in added_pks:
+                    added_pks.add(version.object_id)
+            else:
+                deleted_pks.add(version.object_id)
+
         end_added = datetime.datetime.now()
-        print "Added: ", end_added - start_added
+        print "Added: ", added_pks
+
+        def is_meaningful_xp_trait_change(current, previous):
+            #attrs_hold = ["name",
+            #              "note",
+            #              "value",
+            #              "display_preference",
+            #              "dot_character",
+            #              "approved",
+            #              "order",
+            #              "sheet",
+            #              "traitlistname"]
+            attrs_hold = ["value"]
+            print "in is_meaningful_xp_trait_change"
+            print current
+            print previous
+            has_differences = [getattr(current, ah) != getattr(previous, ah) for ah in attrs_hold]
+            print has_differences
+            print "out is_meaningful_xp_trait_change"
+            return any(has_differences)
+
+        for added_pk in added_pks:
+            # Get the most recent value for a trait and
+            # the valid closest one to the "last_date" for comparison
+            most_recent = sheet.traits.get(id=added_pk)
+            print "Most recent", most_recent
+            prev_comparison_filter = Version.objects.filter(content_type=ContentType.objects.get_for_model(Trait)).filter(object_id=added_pk)
+            if last_date is not None:
+                print "last_date ", last_date
+                prev_comparison_filter = prev_comparison_filter.filter(revision__date_created__lte=last_date)
+            else:
+                print "last_date None"
+                prev_comparison_filter.all()
+            prev_comparison_filter = prev_comparison_filter.order_by('-revision__date_created')
+            print "All revisions for pk [" + ", ".join([unicode(v) for v in prev_comparison_filter]) + "]"
+            try:
+                need_valid_filter = True
+                i = 0
+                while need_valid_filter:
+                    prev_comparison = prev_comparison_filter[i].object_version.object
+                    need_valid_filter = not is_meaningful_xp_trait_change(most_recent, prev_comparison)
+                    i = i + 1
+                difference = most_recent.value - prev_comparison.value
+                print "prev_camparison ", prev_comparison
+                print "difference", difference
+            except IndexError:
+                # If we hit here, then "most_recent" is the initial entry
+                difference = most_recent.value
+                print "prev_camparison None"
+                print "difference", difference
+            entry.change = entry.change + difference
+            most_recent.value = abs(difference)
+            if 0 <= difference:
+                reasons['added'].append(most_recent)
+            else:
+                reasons['unspent'].append(most_recent)
+            differences.append(difference)
 
         start_deleted = datetime.datetime.now()
-        live_pks = frozenset([unicode(pk) for pk in Trait.objects.all().values_list("pk", flat=True)])
-        mix_pks = live_pks.intersection(added_pks)
 
-        deleted_pks = added_pks - live_pks
         deleted_versions_qs = [Version.objects.get_deleted_object(Trait, object_id, None)
                    for object_id in deleted_pks]
         deleted_versions_qs.sort(lambda a, b: cmp(a.revision.date_created, b.revision.date_created))
         for version in deleted_versions_qs:
             obj = version.object_version.object
             if sheet == obj.sheet:
-                added_versions = [(av, ao) for av, ao in added_versions if av.id != version.id]
                 deleted_versions.append([version, obj])
         end_deleted = datetime.datetime.now()
-        print "Deleted: ", end_deleted - start_deleted
-
-        reasons = {'added': [], 'unspent': [], 'removed': []}
-        entry.change = 0
-        differences = []
-        for av, ao in added_versions:
-            try:
-                prev_av = Version.objects.get_for_object_reference(Trait, av.object_id).order_by('-revision__date_created')[1]
-                difference = ao.value - prev_av.object_version.object.value
-            except IndexError:
-                difference = 0
-            entry.change = entry.change + difference
-            ao.value = abs(difference)
-            if 0 <= difference:
-                reasons['added'].append(ao)
-            else:
-                reasons['unspent'].append(ao)
-            differences.append(difference)
+        print "Deleted: ", deleted_pks
 
         for av, ao in deleted_versions:
             reasons['removed'].append(ao)
             try:
                 prev_av = Version.objects.get_for_object_reference(Trait, av.object_id).order_by('-revision__date_created')[1]
-                difference = ao.value
             except IndexError:
+                prev_av = None
+            if prev_av is not None:
+                difference = ao.value
+                if 0 == difference:
+                    continue
+            else:
                 difference = 0
             entry.change = entry.change - difference
             differences.append(difference)
@@ -846,7 +906,6 @@ def add_recent_expenditures(request, sheet_slug,
         #added = [obj for av, obj in added_versions]
         #deleted = [obj for av, obj in deleted_versions]
 
-        from pprint import pformat, pprint
         #entry.reason = pformat({'added': added, 'deleted': deleted})
         #entry.reason = pformat({'reasons':reasons, 'differences':differences})
 
@@ -1056,7 +1115,6 @@ def new_sheet(request,
 def get_menu_prefix_for_menus(menus):
     menu_prefix = ''
     if len(menus) >= 3:
-        from pprint import pprint
         pprint({'raw_names': [m.name for m in menus]})
         names = [m.name for m in menus[1:-1]]
         pprint(names)
@@ -1168,7 +1226,6 @@ def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
     print "sheet in new_trait_from_menu", sheet
     send_segment = None
     if len(id_segment) > 0:
-        from pprint import pformat
         print "id_segment", pformat(id_segment[1:])
         send_segment = id_segment[1:]
     else:
