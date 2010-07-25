@@ -236,6 +236,10 @@
                     fields.each(function() {
                         params[this.name] = this.value;
                     });
+                    fields = jQuery(form).find("textarea").filter(":enabled");
+                    fields.each(function() {
+                        params[this.name] = this.value;
+                    });
                     fields = jQuery(form).find("input[type='hidden']");
                     fields.each(function() {
                         params[this.name] = this.value;
