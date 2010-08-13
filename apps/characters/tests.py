@@ -154,17 +154,17 @@ class PageViewPermissionsTestCase(TestCase):
     def testProperView(self):
         logged_in = self.client.login(username='lorien', password='lorien')
         self.assertTrue(logged_in)
-        response = self.client.get("/characters/list_sheet/2/")
+        response = self.client.get("/characters/list_sheet/lorien-charles-mcmillan/")
         self.assertEqual(response.status_code, 200)
 
     def testNoLoginView(self):
-        response = self.client.get("/characters/list_sheet/1/")
+        response = self.client.get("/characters/list_sheet/lorien-charles-mcmillan/")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["location"], "http://testserver/account/login/?next=/characters/list_sheet/1/")
+        self.assertEqual(response["location"], "http://testserver/account/login/?next=/characters/list_sheet/lorien-charles-mcmillan/")
 
     def testUnauthorizedView(self):
         logged_in = self.client.login(username='perpet', password='lorien')
-        response = self.client.get("/characters/list_sheet/2/")
+        response = self.client.get("/characters/list_sheet/lorien-charles-mcmillan/")
         self.assertEqual(response.status_code, 403)
 
     def testNewSheetView(self):
@@ -179,11 +179,11 @@ class PageViewPermissionsTestCase(TestCase):
                            {'title': 'whocares',
                             'file': f,
                             'action': 'upload'})
-        response = c.get("/characters/list_sheet/3/")
+        response = c.get("/characters/list_sheet/perpet-adam-st-charles/")
         self.assertEqual(response.status_code, 200, "perpet should be able to access his sheets")
 
         self.assertTrue(self.client.login(username='lorien', password='lorien'))
-        response = self.client.get("/characters/list_sheet/3/")
+        response = self.client.get("/characters/list_sheet/perpet-adam-st-charles/")
         self.assertEqual(response.status_code, 403, "lorien should not be able to access perpet's sheets")
 
 
