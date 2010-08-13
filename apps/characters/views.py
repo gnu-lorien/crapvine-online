@@ -19,7 +19,7 @@ from django.forms.formsets import formset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem
 from chronicles.models import Chronicle, ChronicleMember
 
-from reversion.models import Version
+from reversion.models import Version, DeletedVersion
 from django.contrib.contenttypes.models import ContentType
 
 from xml_uploader import handle_sheet_upload, VampireExporter
@@ -510,23 +510,30 @@ def history_sheet(request, sheet_slug,
     if not can_history_sheet(request, sheet):
         return permission_denied(request)
 
-    def expanded_trait_call(trait_in):
+    sheet_trait_ids = frozenset(unicode(pk) for pk in sheet.traits.values_list("pk", flat=True))
+    sheet_deleted_trait_ids = frozenset(unicode(pk) for pk in sheet.deleted_traits.values_list("pk", flat=True))
+    print "sheet_trait_ids", sheet_trait_ids
+    print "sheet_deleted_trait_ids", sheet_deleted_trait_ids
+
+    def expanded_trait_call(version, trait_in):
         print "expanded_trait_call Sheet outer", sheet
         print "expanded_trait_call trait in", trait_in
-        try:
-            print "expanded_trait_call trait sheet", trait_in.sheet
-            return sheet == trait_in.sheet
-        except Sheet.DoesNotExist:
-            print "Sheet has since been deleted... I knew there would be more bugs from this"
-            return False
+        if version.object_id in sheet_trait_ids or version.object_id in sheet_deleted_trait_ids:
+                try:
+                    return sheet == trait_in.sheet
+                except Sheet.DoesNotExist:
+                    print "Sheet does not exist"
+        else:
+            print "Not in current or deleted trait ids"
+        return False
 
     versions_map = {
-        'Traits':(Trait, expanded_trait_call), #lambda x: sheet == x.sheet),
-        'Experience Entries':(ExperienceEntry, lambda x: x.sheet_set.filter(id=sheet.id).count() > 0),
-        'Sheet attributes':(Sheet, lambda x: sheet.id == x.id),
+        'Traits':(Trait, expanded_trait_call),
+        'Experience Entries':(ExperienceEntry, lambda v,x: x.sheet_set.filter(id=sheet.id).count() > 0),
+        'Sheet attributes':(Sheet, lambda v,x: sheet.id == x.id),
     }
     try:
-        versions_map['Vampire attributes'] = (VampireSheet, lambda x: sheet.vampiresheet == x)
+        versions_map['Vampire attributes'] = (VampireSheet, lambda v,x: sheet.vampiresheet == x)
     except VampireSheet.DoesNotExist:
         pass
 
@@ -535,14 +542,19 @@ def history_sheet(request, sheet_slug,
         versions = Version.objects.filter(content_type=ContentType.objects.get_for_model(versions_map[key][0]))
         for version in versions:
             obj = version.object_version.object
-            if versions_map[key][1](obj):
+            if versions_map[key][1](version, obj):
                 bucket_string = "updated"
                 tl.append((version.revision.date_created, version.revision.user, obj, bucket_string, version.object_id))
-        versions = Version.objects.get_deleted(versions_map[key][0])
-        for version in versions:
-            obj = version.object_version.object
-            if versions_map[key][1](obj):
-                tl.append((version.revision.date_created, version.revision.user, obj, "deleted", version.object_id))
+        dversions = DeletedVersion.objects.filter(content_type=ContentType.objects.get_for_model(versions_map[key][0]))
+        print "printing dversions"
+        pprint(dversions)
+        print "print all deleted versions"
+        print ", ".join([unicode(dv) for dv in DeletedVersion.objects.all()])
+        for dversion in dversions:
+            obj = Version.objects.get_deleted_object(dversion).object_version.object
+            if versions_map[key][1](dversion, obj):
+                tl.append((dversion.revision.date_created, dversion.revision.user, obj, "deleted", dversion.object_id))
+
         tl.sort(key=lambda x: x[0])
         versions_map[key] = tl
 
@@ -799,15 +811,13 @@ def add_recent_expenditures(request, sheet_slug,
         versions = versions.order_by('-revision__date_created')
 
         sheet_trait_ids = frozenset(unicode(pk) for pk in sheet.traits.values_list("pk", flat=True))
-        multiple_changes_pks = set()
+        sheet_deleted_trait_ids = frozenset(unicode(pk) for pk in sheet.deleted_traits.values_list("pk", flat=True))
 
         for version in versions:
             print "date ->", version.revision.date_created
             if version.object_id in sheet_trait_ids:
                 if not version.object_id in added_pks:
                     added_pks.add(version.object_id)
-            else:
-                deleted_pks.add(version.object_id)
 
         end_added = datetime.datetime.now()
         print "Added: ", added_pks

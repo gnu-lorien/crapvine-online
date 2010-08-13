@@ -602,6 +602,16 @@ class Trait(models.Model):
 
         return 'NOCING'
 
+class DeletedTrait(models.Model):
+    sheet = models.ForeignKey(Sheet, related_name='deleted_traits')
+    object_id = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+def track_deleted_trait(sender, instance, **kwargs):
+    DeletedTrait.objects.create(sheet=instance.sheet,
+                                object_id=unicode(instance.pk))
+models.signals.post_delete.connect(track_deleted_trait, Trait)
+
 CREATURE_TYPES = [
     (0, "Mortal"),
     (1, "Player"),
