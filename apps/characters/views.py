@@ -179,6 +179,10 @@ def delete_sheet(request, sheet_slug,
 @login_required
 def edit_vampire_sheet_attributes(request, sheet_slug,
                                   form_class=VampireSheetAttributesForm, **kwargs):
+    sheet = get_object_or_404(Sheet, slug=sheet_slug)
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
     template_name = kwargs.get("template_name", "characters/vampires/edit_vampire_sheet_attributes.html")
 
     if request.is_ajax():
@@ -187,7 +191,7 @@ def edit_vampire_sheet_attributes(request, sheet_slug,
             "characters/vampires/edit_vampire_sheet_attributes_facebox.html",
         )
 
-    vampire_sheet = VampireSheet.objects.get(slug=sheet_slug)
+    vampire_sheet = sheet.vampiresheet
     form = form_class(request.POST or None, instance=vampire_sheet)
     if form.is_valid() and request.method == "POST":
         form.save()
