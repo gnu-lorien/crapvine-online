@@ -36,6 +36,9 @@ def upload_sheet_for_user(sheet_file, user):
 def upload_sheet_for_username(sheet_file, username):
     upload_sheet_for_user(sheet_file, User.objects.get(username__exact=username))
 
+def upload_chronicle_for_username(chron_file, username):
+    upload_sheet_for_user(chron_file, User.objects.get(username__exact=username))
+
 class ExperienceEntriesTestCase(TestCase):
     fixtures = ['players']
 
@@ -266,14 +269,17 @@ class ExportTestCase(TestCase):
             self.assertEquals(left.unspent, right.unspent)
             self.assertEquals(left.date, right.date)
 
+    def testChronicle(self):
+        pass
+
 class ImportTestCase(TestCase):
     fixtures = ['players']
 
     def setUp(self):
         self.user = User.objects.get(username__exact='Andre')
-        upload_sheet_for_user('mcmillan.gex', self.user)
 
     def testMcMillan(self):
+        upload_sheet_for_user('mcmillan.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
         entries = self.sheet.experience_entries.all().order_by('date')
         #for ee in entries:
@@ -286,15 +292,16 @@ class ImportTestCase(TestCase):
         #    grapevine_ee = CrapvineExperienceEntry()
         #    grapevine_ee.read_attributes(dict((k, str(v)) for k,v in ee.__dict__.iteritems()))
         #    print grapevine_ee
-        self.assertEquals(entries[1].change, 2)
-        self.assertEquals(entries[2].change, 0.5)
-        self.assertEquals(entries[1].reason, "Attendance")
-        self.assertEquals(entries[2].reason, "Workshop")
+        self.assertEquals(entries[2].change, 2)
+        self.assertEquals(entries[3].change, 0.5)
+        self.assertEquals(entries[2].reason, "Attendance")
+        self.assertEquals(entries[3].reason, "Workshop")
 
         self.assertEquals(self.sheet.experience_unspent, 29)
         self.assertEquals(self.sheet.experience_earned, 390)
 
     def testExperienceReversing(self):
+        upload_sheet_for_user('mcmillan.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
         erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
         err = [e.reason for e in self.sheet.experience_entries.all().order_by('-date')]
@@ -303,6 +310,7 @@ class ImportTestCase(TestCase):
         self.assertEquals(erf, list(reversed(err)))
 
     def testExperienceOrdering(self):
+        upload_sheet_for_user('mcmillan.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
         erf = [e.reason for e in self.sheet.experience_entries.all().order_by('date')]
         err = [e.reason for e in self.sheet.experience_entries.all()]
@@ -311,6 +319,7 @@ class ImportTestCase(TestCase):
         self.assertEquals(erf, err)
 
     def testExperienceAdd(self):
+        upload_sheet_for_user('mcmillan.gex', self.user)
         self.imported_sheet = Sheet.objects.get(name__exact='Charles McMillan')
         self.sheet = Sheet.objects.create(
             name='Michele',
@@ -342,6 +351,34 @@ class ImportTestCase(TestCase):
 
         self.assertEquals(self.sheet.experience_unspent, 29)
         self.assertEquals(self.sheet.experience_earned, 390)
+
+    def assertSheetExists(self, sheet_name):
+        Sheet.objects.get(name__exact=sheet_name)
+
+    def assertSheetExists(self, sheet_name):
+        self.assertRaises(Sheet.DoesNotExist, Sheet.objects.get(name__exact=sheet_name))
+
+    def testChronicleAll(self):
+        upload_chronicle_for_username('chronicle_00.gex', 'Andre')
+        self.assertSheetExists('Charles McMillan')
+        self.assertSheetExists('Adam St. Charles')
+        self.assertSheetExists('ValueForEverything')
+
+    def testChronicleInclude(self):
+        upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')
+        self.assertSheetExists('Charles McMillan')
+        self.assertSheetDoesNotExist('Adam St. Charles')
+        self.assertSheetDoesNotExist('ValueForEverything')
+        upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Adam.*')
+        self.assertSheetExists('Charles McMillan')
+        self.assertSheetExists('Adam St. Charles')
+        self.assertSheetDoesNotExist('ValueForEverything')
+
+    def testChronicleExclude(self):
+        upload_chronicle_for_username('chronicle_00.gex', 'Andre', exclude='^C')
+        self.assertSheetDoesNotExist('Charles McMillan')
+        self.assertSheetExists('Adam St. Charles')
+        self.assertSheetExists('ValueForEverything')
 
 class CharactersTestCase(TestCase):
     def _build_trait(self, name, value, note):
