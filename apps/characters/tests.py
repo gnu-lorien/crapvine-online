@@ -25,19 +25,22 @@ import StringIO
 # TODO: Test for escape/unescape/quoteattr side-effects
 # TODO: Look more closely at how we import and export display values to grapevine xml
 
+def upload_sheet_for_user(sheet_file, user):
+    app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
+    for app_fixture in app_fixtures:
+        sheet_file_fp = os.path.join(app_fixture, sheet_file)
+        if os.path.exists(sheet_file_fp):
+            with open(sheet_file_fp, 'r') as fp:
+                handle_sheet_upload(fp, user)
+
+def upload_sheet_for_username(sheet_file, username):
+    upload_sheet_for_user(sheet_file, User.objects.get(username__exact=username))
+
 class ExperienceEntriesTestCase(TestCase):
     fixtures = ['players']
 
     def setUp(self):
-        loadfn = 'mcmillan.gex'
-        self.user = User.objects.get(username__exact='Andre')
-
-        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
-        for app_fixture in app_fixtures:
-            if os.path.exists(os.path.join(app_fixture, loadfn)):
-                with open(os.path.join(app_fixture, loadfn), 'r') as fp:
-                    handle_sheet_upload(fp, self.user)
-
+        upload_sheet_for_username('mcmillan.gex', 'Andre')
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
 
     def testSimpleEndEdit(self):
@@ -144,6 +147,10 @@ class StorytellerViewSheetsTestCase(TestCase):
 class PageViewPermissionsTestCase(TestCase):
     fixtures = ['double_upload']
 
+    def setUp(self):
+        upload_sheet_for_username('mcmillan.gex', 'lorien')
+        upload_sheet_for_username('valueforeverything.gex', 'perpet')
+
     def testProperView(self):
         logged_in = self.client.login(username='lorien', password='lorien')
         self.assertTrue(logged_in)
@@ -184,15 +191,8 @@ class ExportTestCase(TestCase):
     fixtures = ['players']
 
     def setUp(self):
-        loadfn = 'mcmillan.gex'
         self.user = User.objects.get(username__exact='Andre')
-
-        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
-        for app_fixture in app_fixtures:
-            if os.path.exists(os.path.join(app_fixture, loadfn)):
-                with open(os.path.join(app_fixture, loadfn), 'r') as fp:
-                    handle_sheet_upload(fp, self.user)
-
+        upload_sheet_for_user('mcmillan.gex', self.user)
 
     def testModelLooks(self):
         print dir(ExperienceEntry._meta)
@@ -270,14 +270,8 @@ class ImportTestCase(TestCase):
     fixtures = ['players']
 
     def setUp(self):
-        loadfn = 'mcmillan.gex'
         self.user = User.objects.get(username__exact='Andre')
-
-        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
-        for app_fixture in app_fixtures:
-            if os.path.exists(os.path.join(app_fixture, loadfn)):
-                with open(os.path.join(app_fixture, loadfn), 'r') as fp:
-                    handle_sheet_upload(fp, self.user)
+        upload_sheet_for_user('mcmillan.gex', self.user)
 
     def testMcMillan(self):
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
