@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from authority.views import permission_denied
-from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet
+from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet, can_list_sheet
 
 from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm, NewSheetForm
 from django.forms.models import modelformset_factory
