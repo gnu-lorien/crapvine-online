@@ -1,5 +1,3 @@
-# pinax.wsgi is configured to live in projects/test-crapvine-online/deploy.
-
 import os
 import sys
 
@@ -8,15 +6,20 @@ import sys
 sys.stdout = sys.stderr
 
 from os.path import abspath, dirname, join
-from site import addsitedir
 
-sys.path.insert(0, abspath(join(dirname(__file__), "../../")))
+sys.path.insert(0, '/home/ourianet/public_html/virtfs/lib/python2.6/site-packages')
+sys.path.insert(0, '/home/ourianet/public_html')
+
+sys.path.insert(0, '/home/ourianet/public_html/virtfs/lib/python2.6/site-packages')
+sys.path.insert(0, '/home/ourianet/public_html/virtfs/lib/python2.6')
+
+sys.path.insert(0, '/home/ourianet/public_html/testpinax')
+sys.path.insert(0, '/home/ourianet/public_html/testpinax/apps')
 
 from django.conf import settings
-os.environ["DJANGO_SETTINGS_MODULE"] = "test-crapvine-online.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "testpinax.settings"
 
-sys.path.insert(0, join(settings.PINAX_ROOT, "apps"))
-sys.path.insert(0, join(settings.PROJECT_ROOT, "apps"))
 
 from django.core.handlers.wsgi import WSGIHandler
 application = WSGIHandler()
+

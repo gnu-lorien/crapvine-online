@@ -2,6 +2,7 @@
 # Django settings for social pinax project.
 
 import sys
+sys.path.append("/home/ourianet/public_html/virtfs/usr/share/django/contrib")
 import os.path
 import posixpath
 import pinax

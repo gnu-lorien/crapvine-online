@@ -1,4 +1,4 @@
-# pinax.fcgi is configured to live in projects/test-crapvine-online/deploy.
+# pinax.fcgi is configured to live in projects/testpinax/deploy.
 
 import os
 import sys
@@ -9,9 +9,8 @@ from site import addsitedir
 sys.path.insert(0, abspath(join(dirname(__file__), "../../")))
 
 from django.conf import settings
-os.environ["DJANGO_SETTINGS_MODULE"] = "test-crapvine-online.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "testpinax.settings"
 
-sys.path.insert(0, join(settings.PINAX_ROOT, "apps"))
 sys.path.insert(0, join(settings.PROJECT_ROOT, "apps"))
 
 from django.core.servers.fastcgi import runfastcgi
