@@ -1,7 +1,7 @@
 {% extends "characters/base.html" %}
 
 {% load i18n %}
-{% load uni_form %}
+{% load uni_form_tags %}
 {% load group_tags %}
 {% load characters_extras %}
 
@@ -191,8 +191,8 @@
 </table>
 <div class="traitlist_header">
     <u><b>Experience</b></u>
-    <a href="{% url sheet_new_experience_entry sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/brick_add.png" /></a>
-    <a href="{% url sheet_add_recent_expenditures sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/calculator_add.png" /></a>
+    <a href="{% url sheet_new_experience_entry sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/img/silk/icons/brick_add.png" /></a>
+    <a href="{% url sheet_add_recent_expenditures sheet.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/img/silk/icons/calculator_add.png" /></a>
 </div>
 <p>{{ sheet.note }}</p>
 {% experience_entries experience_entries %}

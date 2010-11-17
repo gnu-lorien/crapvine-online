@@ -74,6 +74,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, "site_media", "static")
 # URL that handles the static files like app media.
 # Example: "http://media.lawrence.com"
 STATIC_URL = "/site_media/static/"
+SILK_URL = "/site_media/static/pinax/img/silk/icons/"
 
 # Additional directories which hold static files
 STATICFILES_DIRS = [
@@ -111,7 +112,7 @@ MIDDLEWARE_CLASSES = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-ROOT_URLCONF = "crapinstall.urls"
+ROOT_URLCONF = "test-crapvine-online.urls"
 
 TEMPLATE_DIRS = [
     os.path.join(PROJECT_ROOT, "templates"),
@@ -137,7 +138,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "messages.context_processors.inbox",
     "friends_app.context_processors.invitations",
     
-    "crapinstall.context_processors.combined_inbox_count",
+    "test-crapvine-online.context_processors.combined_inbox_count",
 ]
 
 COMBINED_INBOX_COUNT_SOURCES = [
@@ -190,9 +191,6 @@ INSTALLED_APPS = [
     "django_markup",
     "tagging_ext",
     
-    'reversion',
-    'characters',
-    'authority',
     # Pinax
     "pinax.apps.account",
     "pinax.apps.signup_codes",
@@ -207,6 +205,10 @@ INSTALLED_APPS = [
     
     # project
     "about",
+    "characters",
+    "reversion",
+    "chronicles",
+    "authority",
 ]
 
 FIXTURE_DIRS = [

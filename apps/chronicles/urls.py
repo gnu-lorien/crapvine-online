@@ -19,7 +19,5 @@ urlpatterns = patterns('chronicles.views',
     url(r'^chronicle/(?P<group_slug>[-\w]+)/members/$', 'list_members', name='chronicle_members'),
 )
 
-urlpatterns += bridge.include_urls('topics.urls', r'^chronicle/(?P<group_slug>[-\w]+)/topics/')
 urlpatterns += bridge.include_urls('wiki.urls', r'^chronicle/(?P<group_slug>[-\w]+)/wiki/')
-urlpatterns += bridge.include_urls('photos.urls', r'^chronicle/(?P<group_slug>[-\w]+)/photos/')
 urlpatterns += bridge.include_urls('characters.urls', r'^chronicle/(?P<group_slug>[-\w]+)/characters/')

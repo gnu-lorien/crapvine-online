@@ -1,7 +1,7 @@
 {% extends "characters/base.html" %}
 
 {% load i18n %}
-{% load uni_form %}
+{% load uni_form_tags %}
 
 {% block head_title %}{% blocktrans %}Upload Character Sheets{% endblocktrans %}{% endblock %}
 
@@ -10,6 +10,7 @@
         The file provided must be a grapevine XML gex. It can contain multiple vampire characters.
     </p>
     <form class="uniForm" id="edit-profile" method="POST" enctype="multipart/form-data" action="">
+        {% csrf_token %}
         <fieldset class="inlineLabels">
             {{ form|as_uni_form }}
             <div class="form_block">

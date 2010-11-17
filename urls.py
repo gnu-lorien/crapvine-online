@@ -45,8 +45,6 @@ urlpatterns = patterns("",
     url(r"^$", direct_to_template, {
         "template": "homepage.html",
     }, name="home"),
-    (r'^characters/', include('characters.urls')),
-    (r'^authority/', include('authority.urls')),
     url(r"^admin/invite_user/$", "pinax.apps.signup_codes.views.admin_invite_user", name="admin_invite_user"),
     url(r"^admin/", include(admin.site.urls)),
     url(r"^about/", include("about.urls")),
@@ -73,6 +71,10 @@ urlpatterns = patterns("",
     url(r"^feeds/tweets/(.*)/$", "django.contrib.syndication.views.feed", tweets_feed_dict),
     url(r"^feeds/posts/(.*)/$", "django.contrib.syndication.views.feed", blogs_feed_dict),
     url(r"^feeds/bookmarks/(.*)/?$", "django.contrib.syndication.views.feed", bookmarks_feed_dict),
+    url(r'^characters/', include('characters.urls')),
+    url(r'^chronicles/', include('chronicles.urls')),
+    url(r'^authority/', include('authority.urls')),
+
 )
 
 ## @@@ for now, we'll use friends_app to glue this stuff together

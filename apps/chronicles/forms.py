@@ -9,7 +9,7 @@ class ChronicleForm(forms.ModelForm):
     
     slug = forms.SlugField(max_length=20,
         help_text = _("a short version of the name consisting only of letters, numbers, underscores and hyphens."),
-        error_message = _("This value must contain only letters, numbers, underscores and hyphens."))
+        error_messages = {'invalid': _("This value must contain only letters, numbers, underscores and hyphens.")})
             
     def clean_slug(self):
         if Chronicle.objects.filter(slug__iexact=self.cleaned_data["slug"]).count() > 0:

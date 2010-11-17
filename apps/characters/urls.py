@@ -1,8 +1,5 @@
 from django.conf.urls.defaults import *
 
-from blog import views, models
-from blog.forms import *
-
 
 urlpatterns = patterns('characters.views',
     url(r'^upload_sheet/$', 'upload_sheet', name='sheet_upload'),

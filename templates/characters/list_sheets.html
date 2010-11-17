@@ -1,7 +1,7 @@
 {% extends "characters/base.html" %}
 
 {% load i18n %}
-{% load uni_form %}
+{% load uni_form_tags %}
 {% load characters_extras %}
 
 {% block head_title %}{% blocktrans %}List Character Sheets{% endblocktrans %}{% endblock %}
@@ -16,8 +16,8 @@
     {% if chronicle_sheets %}
         {% for chronicle, sheet_maps in chronicle_sheets.items %}
             <h2>{{chronicle.name}}</h2>
-            <a href="{% url sheet_join_chronicle chronicle.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/images/silk/icons/add.png" /></a>
-            <a href="{% url sheet_make_home_chronicle chronicle.slug %}"><img src="{{ STATIC_URL }}pinax/images/silk/icons/anchor.png" /></a>
+            <a href="{% url sheet_join_chronicle chronicle.slug %}" rel="facebox"><img src="{{ STATIC_URL }}pinax/img/silk/icons/add.png" /></a>
+            <a href="{% url sheet_make_home_chronicle chronicle.slug %}"><img src="{{ STATIC_URL }}pinax/img/silk/icons/anchor.png" /></a>
             <h3>PCs</h3>
             <table>
             {% for sheet in sheet_maps.pc %}
