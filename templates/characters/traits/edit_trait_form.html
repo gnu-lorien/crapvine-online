@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="uniForm" id="edit_trait_form" method="POST" action="{% url sheet_edit_trait sheet.slug form.instance.id %}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         {{ form|as_uni_form }}
         <div class="form_block">

@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="uniForm" id="chronicle_form" method="POST" action="{% url sheet_vampire_edit_attributes sheet.slug %}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         {{ form|as_uni_form }}
         <div class="form_block">

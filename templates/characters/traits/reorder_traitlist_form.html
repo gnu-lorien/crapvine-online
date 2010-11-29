@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="in_facebox" id="reorder_traitlist_form" method="POST" action="{% url sheet_reorder_traitlist sheet.slug traitlistname.slug %}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         {{ formset.management_form }}
         <ol class="sorting_list">

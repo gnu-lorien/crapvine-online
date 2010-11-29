@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="uniForm" id="chronicle_form" method="POST" action="{% url chronicle_edit_membership chronicle.slug member.username %}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         {{ chronicle_membership_form|as_uni_form }}
         <div class="form_block">

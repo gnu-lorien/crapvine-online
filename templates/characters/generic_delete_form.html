@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="uniForm" id="edit_trait_form" method="POST" action="{{post_url}}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         <div class="form_block">
             <input type="hidden" name="__confirm__" value="1" />

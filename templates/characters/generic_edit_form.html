@@ -2,6 +2,7 @@
 {% load uni_form_tags %}
 
 <form class="uniForm" id="generic_form" method="POST" action="{{post_url}}">
+{% csrf_token %}
     <fieldset class="inlineLabels">
         {{ form|as_uni_form }}
         <div class="form_block">
