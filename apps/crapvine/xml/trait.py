@@ -29,7 +29,7 @@ class TraitList(AttributedListModel):
 	defaults = { 'atomic' : False, 'negative' : False }
 
 	column_attrs = [ 'name', 'val', 'note' ]
-	column_attr_types = [ str(), str(), str() ]
+	column_attr_types = [ unicode(), unicode(), unicode() ]
 
 	text_children = []
 

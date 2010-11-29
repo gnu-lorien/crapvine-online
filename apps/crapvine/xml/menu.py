@@ -221,7 +221,7 @@ class MenuModel():
 	def on_get_n_columns(self):
 		return 1
 	def on_get_column_type(self, index):
-		return str()
+		return unicode()
 	def on_get_path(self, iter):
 		return (iter, )
 	def on_get_iter(self, path):

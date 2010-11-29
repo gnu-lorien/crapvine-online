@@ -26,7 +26,7 @@ class Experience(AttributedListModel):
 	number_as_text_attrs = [('unspent', {'enforce_as':'float'}),
 		('earned', {'enforce_as':'float'})]
 	column_attrs = ['date', 'type', 'change', 'unspent', 'earned', 'reason']
-	column_attr_types = [ str(), str(), str(), str(), str(), str() ]
+	column_attr_types = [ unicode(), unicode(), unicode(), unicode(), unicode(), unicode() ]
 
 	def __init__(self):
 		AttributedListModel.__init__(self)
