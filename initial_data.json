@@ -1,23 +1,5 @@
 [
      {
-        "pk": 1, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "lorien", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": true, 
-            "is_staff": true, 
-            "last_login": "2010-07-08 17:00:33", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$a0760$5ac0e7206dd13d07a000e0637eae3473af105b9b", 
-            "email": "aoeu@oue.co", 
-            "date_joined": "2010-07-08 16:56:36"
-        }
-    },
-     {
         "pk": 65535, 
         "model": "auth.user", 
         "fields": {
