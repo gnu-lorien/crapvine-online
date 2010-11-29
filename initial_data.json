@@ -21,7 +21,7 @@
         "pk": 65535, 
         "model": "auth.user", 
         "fields": {
-            "username": "deleted_character_sheets_9391029394032498aotuhoaesuthauchasc",
+            "username": "deleted_character_sheets_93910",
             "first_name": "", 
             "last_name": "", 
             "is_active": false, 
