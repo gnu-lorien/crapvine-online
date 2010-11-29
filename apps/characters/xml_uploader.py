@@ -161,6 +161,7 @@ class VampireLoader(ContentHandler):
             map_dates(VAMPIRE_TAG_DATES, my_attrs)
 
             my_attrs['player'] = self.__user
+            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
             v = VampireSheet.objects.create(**my_attrs)
             #v.read_attributes(attrs)
             self.current_vampire = v
@@ -187,6 +188,7 @@ class VampireLoader(ContentHandler):
                     #print my_attrs['date']
                     my_attrs['date'] = self.last_entry.date + timedelta(seconds=1)
             try:
+                my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
                 exp = self.current_vampire.experience_entries.create(**my_attrs)
             except IntegrityError, e:
                 pprint({'name':name, 'attrs':attrs, 'my_attrs':my_attrs})
@@ -205,6 +207,7 @@ class VampireLoader(ContentHandler):
                 raise IOError('TraitList encountered while still reading traitlist')
             my_attrs = dict(attrs)
             map_attributes(TRAITLIST_TAG_RENAMES, my_attrs)
+            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
             self.current_vampire.add_traitlist_properties(**my_attrs)
             self.current_traitlist = attrs
             #if self.current_vampire:
@@ -224,6 +227,7 @@ class VampireLoader(ContentHandler):
                 except ValueError:
                     my_attrs['value'] = 999999
             my_attrs['display_preference'] = self.current_traitlist['display']
+            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
             self.current_vampire.add_trait(self.current_traitlist['name'], my_attrs)
 
     def endElement(self, name):
