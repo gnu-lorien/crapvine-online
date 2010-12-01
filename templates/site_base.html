@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/topics.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/wiki.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/jquery.autocomplete.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}bookmarks/css/bookmarks.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/characters.css" />
     {% block extra_head %}{% endblock %}
 {% endblock %}
@@ -46,7 +45,6 @@
             <li id="tab_photos"><a href="{% url photos %}">{% trans "Photos" %}</a></li>
             <li id="tab_blogs"><a href="{% url blog_list_all %}">{% trans "Blogs" %}</a></li>
             <li id="tab_chronicles"><a href="{% url chronicle_list %}">{% trans "Chronicles" %}</a></li>
-            <li id="tab_bookmarks"><a href="{% url all_bookmarks %}">{% trans "Bookmarks" %}</a></li>
             <li id="tab_inbox"><a href="{% url messages_inbox %}">{% trans "Inbox" %} ({{ combined_inbox_count }})</a></li>
             <li id="tab_characters"><a href="{% url sheets_list %}">{% trans "Characters" %}</a></li>
         {% endspaceless %}</ul>
