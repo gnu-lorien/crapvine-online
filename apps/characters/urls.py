@@ -13,8 +13,8 @@ urlpatterns = patterns('characters.views',
     url(r'^new_sheet/$', 'new_sheet', name='sheet_new'),
 
     # Chronicles
-    url(r'^join_chronicle/(?P<chronicle_slug>[-\w]+)/$', 'join_chronicle', name='sheet_join_chronicle'),
-    url(r'^make_home_chronicle/(?P<chronicle_slug>[-\w]+)/$', 'make_home_chronicle', name='sheet_make_home_chronicle'),
+    url(r'^join_chronicle/(?P<target_chronicle_slug>[-\w]+)/$', 'join_chronicle', name='sheet_join_chronicle'),
+    url(r'^make_home_chronicle/(?P<target_chronicle_slug>[-\w]+)/$', 'make_home_chronicle', name='sheet_make_home_chronicle'),
 
     # Traits
     url(r'^edit_sheet_traitlist/(?P<sheet_slug>[-\w]+)/(?P<traitlistname_slug>[-\w]+)/$', 'edit_traitlist', name='sheet_edit_traitlist'),

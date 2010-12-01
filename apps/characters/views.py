@@ -27,10 +27,10 @@ from xml_uploader import handle_sheet_upload, VampireExporter
 from pprint import pprint, pformat
 
 @login_required
-def upload_sheet(request, group_slug=None, bridge=None):
+def upload_sheet(request, chronicle_slug=None, bridge=None):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -60,10 +60,10 @@ def upload_sheet(request, group_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def list_sheets(request, group_slug=None, bridge=None):
+def list_sheets(request, chronicle_slug=None, bridge=None):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -93,10 +93,10 @@ def list_sheets(request, group_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
+def list_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -116,10 +116,10 @@ def list_sheet(request, sheet_slug, group_slug=None, bridge=None):
 
 @login_required
 def download_sheet(request, sheet_slug,
-                   group_slug=None, bridge=None):
+                   chronicle_slug=None, bridge=None):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -137,11 +137,11 @@ def download_sheet(request, sheet_slug,
 
 @login_required
 def delete_sheet(request, sheet_slug,
-                 group_slug=None, bridge=None,
+                 chronicle_slug=None, bridge=None,
                  **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -214,11 +214,11 @@ def trait_change_ajax_success(request, sheet, traitlistname, group):
 
 @login_required
 def reorder_traitlist(request, sheet_slug, traitlistname_slug,
-                      group_slug=None, bridge=None,
+                      chronicle_slug=None, bridge=None,
                       **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -269,11 +269,11 @@ def reorder_traitlist(request, sheet_slug, traitlistname_slug,
 
 @login_required
 def edit_traitlist(request, sheet_slug, traitlistname_slug,
-                   group_slug=None, bridge=None,
+                   chronicle_slug=None, bridge=None,
                    form_class=TraitListPropertyForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -315,11 +315,11 @@ def edit_traitlist(request, sheet_slug, traitlistname_slug,
 
 @login_required
 def edit_trait(request, sheet_slug, trait_id,
-               group_slug=None, bridge=None,
+               chronicle_slug=None, bridge=None,
                form_class=TraitForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -360,12 +360,12 @@ def edit_trait(request, sheet_slug, trait_id,
 
 @login_required
 def reload_traits(request, sheet_slug, traitlistname_slug,
-                  group_slug=None, bridge=None,
+                  chronicle_slug=None, bridge=None,
                   form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -390,11 +390,11 @@ def reload_traits(request, sheet_slug, traitlistname_slug,
 
 @login_required
 def delete_trait(request, sheet_slug, trait_id,
-                 group_slug=None, bridge=None,
+                 chronicle_slug=None, bridge=None,
                  **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -431,12 +431,12 @@ def delete_trait(request, sheet_slug, trait_id,
 @login_required
 def new_trait(request, sheet_slug, traitlistname_slug,
               menuitem_id=None, id_segment=None,
-              group_slug=None, bridge=None,
+              chronicle_slug=None, bridge=None,
               form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -495,11 +495,11 @@ def new_trait(request, sheet_slug, traitlistname_slug,
 
 @login_required
 def history_sheet(request, sheet_slug,
-                  group_slug=None, bridge=None,
+                  chronicle_slug=None, bridge=None,
                   form_class=TraitForm, template_name="characters/history.html"):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -570,11 +570,11 @@ def history_sheet(request, sheet_slug,
 
 @login_required
 def permissions_sheet(request, sheet_slug,
-                      group_slug=None, bridge=None,
+                      chronicle_slug=None, bridge=None,
                       template_name="characters/permissions.html"):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -625,11 +625,11 @@ def experience_entry_change_ajax_success(request, sheet, entry, group):
 
 @login_required
 def reload_entry(request, sheet_slug, entry_id,
-                 group_slug=None, bridge=None,
+                 chronicle_slug=None, bridge=None,
                  form_class=TraitForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -655,11 +655,11 @@ def reload_entry(request, sheet_slug, entry_id,
 
 @login_required
 def reload_entries(request, sheet_slug,
-                   group_slug=None, bridge=None,
+                   chronicle_slug=None, bridge=None,
                    form_class=TraitForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -686,11 +686,11 @@ def reload_entries(request, sheet_slug,
 def experience_entry_action(request, sheet_slug, entry_id=None,
                             action_description="", object_description="Experience Entry",
                             post_url="", action=None,
-                            group_slug=None, bridge=None,
+                            chronicle_slug=None, bridge=None,
                             form_class=ExperienceEntryForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -736,7 +736,7 @@ def experience_entry_action(request, sheet_slug, entry_id=None,
 @login_required
 def new_experience_entry(request, sheet_slug, entry_id=None,
                          action_description="New",
-                         group_slug=None, bridge=None,
+                         chronicle_slug=None, bridge=None,
                          form_class=ExperienceEntryForm, **kwargs):
     def local_action(form, sheet):
         sheet.add_experience_entry(form.save(commit=False))
@@ -753,11 +753,11 @@ def new_experience_entry(request, sheet_slug, entry_id=None,
 @login_required
 def add_recent_expenditures(request, sheet_slug,
                             action_description="Recent Expenditures", object_description="Experience Entry",
-                            group_slug=None, bridge=None,
+                            chronicle_slug=None, bridge=None,
                             form_class=ExperienceEntryForm, **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -952,7 +952,7 @@ def add_recent_expenditures(request, sheet_slug,
 @login_required
 def edit_experience_entry(request, sheet_slug, entry_id,
                           action_description="Edit",
-                          group_slug=None, bridge=None,
+                          chronicle_slug=None, bridge=None,
                           form_class=ExperienceEntryForm, **kwargs):
     def local_action(form, sheet):
         entry = form.save()
@@ -983,11 +983,11 @@ def edit_experience_entry(request, sheet_slug, entry_id,
 
 @login_required
 def delete_experience_entry(request, sheet_slug, entry_id,
-                            group_slug=None, bridge=None,
+                            chronicle_slug=None, bridge=None,
                             **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -1028,12 +1028,12 @@ def delete_experience_entry(request, sheet_slug, entry_id,
     }, context_instance=RequestContext(request))
 
 @login_required
-def join_chronicle(request, chronicle_slug,
-                   group_slug=None, bridge=None,
+def join_chronicle(request, target_chronicle_slug,
+                   chronicle_slug=None, bridge=None,
                    **kwargs):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -1045,7 +1045,7 @@ def join_chronicle(request, chronicle_slug,
         sheets = Sheet.objects.all()
         sheets = sheets.filter(player__exact=request.user)
 
-    chronicle = get_object_or_404(Chronicle, slug=chronicle_slug)
+    chronicle = get_object_or_404(Chronicle, slug=target_chronicle_slug)
     chronicle_sheets = chronicle.get_sheets_for_user(request.user)
 
     set_sheets_in_chronicle = set(s.id for s in chronicle_sheets)
@@ -1084,8 +1084,8 @@ def join_chronicle(request, chronicle_slug,
     }, context_instance=RequestContext(request))
 
 @login_required
-def make_home_chronicle(request, chronicle_slug,
-                        group_slug=None, bridge=None,
+def make_home_chronicle(request, target_chronicle_slug,
+                        chronicle_slug=None, bridge=None,
                         **kwargs):
     raise Http404
 
@@ -1101,11 +1101,11 @@ def new_vampire_sheet(request, form, group=None):
 
 @login_required
 def new_sheet(request,
-              group_slug=None, bridge=None,
+              chronicle_slug=None, bridge=None,
               form_class=NewSheetForm, template_name="characters/new_sheet.html"):
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:
@@ -1209,12 +1209,12 @@ def show_menus(request,
 
 @login_required
 def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
-                        group_slug=None, bridge=None,
+                        chronicle_slug=None, bridge=None,
                         form_class=TraitForm, **kwargs):
     traitlistname = get_object_or_404(TraitListName, slug=traitlistname_slug)
     if bridge is not None:
         try:
-            group = bridge.get_group(group_slug)
+            group = bridge.get_group(chronicle_slug)
         except ObjectDoesNotExist:
             raise Http404
     else:

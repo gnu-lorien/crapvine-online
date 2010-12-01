@@ -157,7 +157,7 @@ class Sheet(models.Model):
 
     object_id = models.IntegerField(null=True)
     content_type = models.ForeignKey(ContentType, null=True)
-    group = generic.GenericForeignKey("object_id", "content_type")
+    group = generic.GenericForeignKey("content_type", "object_id")
 
     class Meta:
         unique_together = (("player", "name"))
@@ -348,6 +348,14 @@ class Sheet(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())
         super(Sheet, self).save(*args, **kwargs)
+
+    def get_absolute_url(self, group=None):
+        kwargs = {"id": self.id}
+        # We check for attachment of a group. This way if the Task object
+        # is not attached to the group the application continues to function.
+        if group:
+            return group.content_bridge.reverse("list_sheet", group, kwargs)
+        return reverse("list_sheet", kwargs=kwargs)
 
 class VampireSheet(Sheet):
     nature = models.CharField(max_length=128, blank=True)

@@ -22,7 +22,7 @@ class Chronicle(Group):
         return ChronicleMember.objects.filter(chronicle=self, user=user).count() > 0
 
     def get_url_kwargs(self):
-        return {'group_slug': self.slug}
+        return {'chronicle_slug': self.slug}
 
     def get_sheets_for_user(self, user):
         if not self.user_is_member(user):
