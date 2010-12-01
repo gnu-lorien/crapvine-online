@@ -3,8 +3,8 @@
     {% for entry_id in entry_ids %}
     $("#experience_entry_{{entry_id}}").load("{% url sheet_reload_experience_entry sheet.slug entry_id %}", function() {
         $('#experience_entry_{{entry_id}}').find('a[rel*=facebox]').facebox({
-            loadingImage: '{{ STATIC_URL }}pinax/images/facebox/loading.gif',
-            closeImage: '{{ STATIC_URL }}pinax/images/facebox/closelabel.gif'
+            loadingImage: '{{ STATIC_URL }}pinax/img/facebox/loading.gif',
+            closeImage: '{{ STATIC_URL }}pinax/img/facebox/closelabel.gif'
         });
     });
     {% endfor %}

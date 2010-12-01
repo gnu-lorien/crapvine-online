@@ -2,8 +2,8 @@
     jQuery(document).trigger('close.facebox');
     $("#experience_entries").load("{% url sheet_reload_experience_entries sheet.slug %}", function() {
         $('#experience_entries').find('a[rel*=facebox]').facebox({
-            loadingImage: '{{ STATIC_URL }}pinax/images/facebox/loading.gif',
-            closeImage: '{{ STATIC_URL }}pinax/images/facebox/closelabel.gif'
+            loadingImage: '{{ STATIC_URL }}pinax/img/facebox/loading.gif',
+            closeImage: '{{ STATIC_URL }}pinax/img/facebox/closelabel.gif'
         });
     });
 </script>
