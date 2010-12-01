@@ -132,6 +132,18 @@ class AttributedListModel(Attributed):
 	def on_iter_parent(self, node):
 		return None
 
+	# Commands added to replace missing portions from gtk model
+	def row_inserted(self, path, iter):
+		pass
+	def row_changed(self, path, iter):
+		pass
+	def row_deleted(self, path):
+		pass
+	def rows_reordered(self, my_tuple, path, new_indices):
+		pass
+	def get_iter(self, path):
+		return None
+
 class GEX(object):
 	def __init__(self):
 		self.filename = None
