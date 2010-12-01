@@ -9,10 +9,14 @@ crash.
 
 {% load i18n %}
 {% load group_tags %}
+{% load characters_extras %}
 
 {% block body_class %}characters{% endblock %}
 
 {% block subnav %}
+{% if sheet %}
+<div class="clearfix">
+{% endif %}
     {% if user.is_authenticated %}
         <ul>
             <li><a href="{% groupurl sheet_upload group %}">{% trans "Upload Sheet" %}</a></li>
@@ -22,4 +26,22 @@ crash.
     {% else %}
         &nbsp;
     {% endif %}
+{% if sheet %}
+&nbsp;</div>
+<style>
+#subsubnav {
+    background: lightgray;
+}
+
+#subsubnav h3 {
+    float: left;
+    font-size: inherit;
+    margin-left: 181px;
+    padding-left: 10px;
+}
+</style>
+<div id="subsubnav" class="clearfix">
+{% sheet_list_item sheet %}
+&nbsp;</div>
+{% endif %}
 {% endblock %}

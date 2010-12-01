@@ -7,35 +7,6 @@
 
 {% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
 
-{% block subnav_base %}
-<div class="clearfix">
-    {% if user.is_authenticated %}
-        <ul>
-            <li><a href="{% groupurl sheet_upload group %}">{% trans "Upload Sheet" %}</a></li>
-            <li><a href="{% groupurl sheets_list group %}">{% trans "List Sheets" %}</a></li>
-            <li><a href="{% groupurl sheet_new group %}">{% trans "New Sheet" %}</a></li>
-        </ul>
-    {% else %}
-        &nbsp;
-    {% endif %}
-&nbsp;</div>
-<style>
-#subsubnav {
-    background: lightgray;
-}
-
-#subsubnav h3 {
-    float: left;
-    font-size: inherit;
-    margin-left: 181px;
-    padding-left: 10px;
-}
-</style>
-<div id="subsubnav" class="clearfix">
-{% sheet_list_item sheet %}
-&nbsp;</div>
-{% endblock %}
-
 {% block body %}
 <table width="" border="0" bgcolor="white">
 <tbody>
