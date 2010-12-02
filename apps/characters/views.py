@@ -26,15 +26,34 @@ from xml_uploader import handle_sheet_upload, VampireExporter
 
 from pprint import pprint, pformat
 
-@login_required
-def upload_sheet(request, chronicle_slug=None, bridge=None):
-    if bridge is not None:
-        try:
-            group = bridge.get_group(chronicle_slug)
-        except ObjectDoesNotExist:
-            raise Http404
+def group_and_bridge(request):
+    """
+    Given the request we can depend on the GroupMiddleware to provide the
+    group and bridge.
+    """
+    
+    # be group aware
+    group = getattr(request, "group", None)
+    if group:
+        bridge = request.bridge
     else:
-        group = None
+        bridge = None
+    
+    return group, bridge
+
+
+def group_context(group, bridge):
+    # @@@ use bridge
+    ctx = {
+        "group": group,
+    }
+    if group:
+        ctx["group_base"] = bridge.group_base_template()
+    return ctx
+
+@login_required
+def upload_sheet(request):
+    group, bridge = group_and_bridge(request)
 
     if request.method == 'POST':
         form = SheetUploadForm(request.POST, request.FILES)
@@ -54,10 +73,13 @@ def upload_sheet(request, chronicle_slug=None, bridge=None):
             return HttpResponseRedirect(redirect_to)
     else:
         form = SheetUploadForm()
+    ctx = group_context(group, bridge)
+    ctx.update({
+        'form': form
+    })
     return render_to_response(
         'characters/upload_sheet.html',
-        {'form':form, 'group':group},
-        context_instance=RequestContext(request))
+        RequestContext(request, ctx))
 
 @login_required
 def list_sheets(request, chronicle_slug=None, bridge=None):
