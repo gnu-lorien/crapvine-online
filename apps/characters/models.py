@@ -656,6 +656,8 @@ def track_changed_trait(sender, instance, **kwargs):
                                               newer_trait_form=instance)
     if len(old_changed) > 0:
         old_changed = old_changed[0]
+        if old_changed.value == instance.value:
+            return
         create_kwargs = {
             'sheet':         old_changed.sheet,
             'name':          old_changed.name,
@@ -668,6 +670,8 @@ def track_changed_trait(sender, instance, **kwargs):
         old_changed.delete()
     else:
         orig_trait = Trait.objects.get(id=instance.id)
+        if orig_trait.value == instance.value:
+            return
         create_kwargs = {
             'sheet': orig_trait.sheet,
             'name': orig_trait.name,
