@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime, timedelta
+import logging
 
 from django.db import models
 from django.conf import settings
@@ -159,6 +160,8 @@ class Sheet(models.Model):
     content_type = models.ForeignKey(ContentType, null=True)
     group = generic.GenericForeignKey("content_type", "object_id")
 
+    uploading = models.BooleanField(default=False)
+
     class Meta:
         unique_together = (("player", "name"))
 
@@ -283,7 +286,7 @@ class Sheet(models.Model):
 
     def add_experience_entry(self, entry):
         try:
-            last_experience_entry = self.experience_entries.reverse()[0]
+            last_experience_entry = self.experience_entries.all().reverse()[0]
         except IndexError:
             last_experience_entry = None
         self._calculate_earned_unspent_from_last(entry, last_experience_entry)
@@ -610,14 +613,100 @@ class Trait(models.Model):
 
         return 'NOCING'
 
-class DeletedTrait(models.Model):
-    sheet = models.ForeignKey(Sheet, related_name='deleted_traits')
-    object_id = models.TextField()
+class ChangedTrait(models.Model):
+    sheet = models.ForeignKey(Sheet, related_name='changed_traits')
     date = models.DateTimeField(auto_now_add=True)
 
+    name = models.CharField(max_length=128)
+    note = models.CharField(max_length=128, default='', blank=True)
+    value = models.IntegerField(default=1)
+
+    traitlistname = models.ForeignKey(TraitListName)
+
+    newer_trait_form = models.ForeignKey(Trait, related_name="changes", null=True)
+    added = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['date']
+
+def track_added_trait(sender, instance, created, **kwargs):
+    if not created:
+        return
+    if instance.sheet.uploading:
+        return
+    create_kwargs = {
+        'sheet':         instance.sheet,
+        'name':          instance.name,
+        'note':          instance.note,
+        'value':         instance.value,
+        'traitlistname': instance.traitlistname,
+        'added': True,
+        'newer_trait_form': instance
+    }
+    ChangedTrait.objects.create(**create_kwargs)
+
+import logging
+
+def track_changed_trait(sender, instance, **kwargs):
+    if instance.id is None:
+        return
+    if instance.sheet.uploading:
+        return
+    old_changed = ChangedTrait.objects.filter(sheet=instance.sheet,
+                                              newer_trait_form=instance)
+    if len(old_changed) > 0:
+        old_changed = old_changed[0]
+        create_kwargs = {
+            'sheet':         old_changed.sheet,
+            'name':          old_changed.name,
+            'note':          old_changed.note,
+            'value':         old_changed.value,
+            'traitlistname': old_changed.traitlistname,
+            'added':         old_changed.added,
+            'newer_trait_form': instance
+        }
+        old_changed.delete()
+    else:
+        orig_trait = Trait.objects.get(id=instance.id)
+        create_kwargs = {
+            'sheet': orig_trait.sheet,
+            'name': orig_trait.name,
+            'note': orig_trait.note,
+            'value': orig_trait.value,
+            'traitlistname': orig_trait.traitlistname,
+            'newer_trait_form': instance
+        }
+    ChangedTrait.objects.create(**create_kwargs)
+
 def track_deleted_trait(sender, instance, **kwargs):
-    DeletedTrait.objects.create(sheet=instance.sheet,
-                                object_id=unicode(instance.pk))
+    if instance.sheet.uploading:
+        return
+    other_inst = ChangedTrait.objects.filter(sheet=instance.sheet,
+                                             newer_trait_form=instance)
+
+    if len(other_inst) > 0:
+        other_inst = other_inst[0]
+        create_delete = not other_inst.added
+    else:
+        create_delete = True
+        other_inst = None
+    if create_delete:
+        create_kwargs = {
+            'sheet':         instance.sheet,
+            'name':          instance.name,
+            'note':          instance.note,
+            'value':         instance.value,
+            'traitlistname': instance.traitlistname,
+            'added': False,
+            'newer_trait_form': None
+        }
+        ChangedTrait.objects.create(**create_kwargs)
+
+    if other_inst is not None:
+        other_inst.delete()
+
+models.signals.pre_save.connect(track_changed_trait, Trait)
+models.signals.post_save.connect(track_added_trait, Trait)
 models.signals.post_delete.connect(track_deleted_trait, Trait)
 
 CREATURE_TYPES = [

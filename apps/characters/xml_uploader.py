@@ -161,6 +161,7 @@ class VampireLoader(ContentHandler):
             map_dates(VAMPIRE_TAG_DATES, my_attrs)
 
             my_attrs['player'] = self.__user
+            my_attrs['uploading'] = True
             my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
             v = VampireSheet.objects.create(**my_attrs)
             #v.read_attributes(attrs)
