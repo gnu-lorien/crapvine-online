@@ -11,6 +11,7 @@ urlpatterns = patterns('characters.views',
     url(r'^delete_sheet/(?P<sheet_slug>[-\w]+)/$', 'delete_sheet', name='sheet_delete'),
     url(r'^edit_vampire_sheet_attributes/(?P<sheet_slug>[-\w]+)/$', 'edit_vampire_sheet_attributes', name='sheet_vampire_edit_attributes'),
     url(r'^new_sheet/$', 'new_sheet', name='sheet_new'),
+    url(r'^experience_sheet/(?P<sheet_slug>[-\w]+)/$', 'experience_sheet', name='sheet_experience'),
 
     # Chronicles
     url(r'^join_chronicle/(?P<target_chronicle_slug>[-\w]+)/$', 'join_chronicle', name='sheet_join_chronicle'),

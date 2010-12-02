@@ -1197,3 +1197,25 @@ def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
     #    'group': group,
     #    'traitlistname': traitlistname,
     #}, context_instance=RequestContext(request))
+
+@login_required
+def experience_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(chronicle_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    sheet = get_object_or_404(Sheet, slug=sheet_slug)
+    if not can_fullview_sheet(request, sheet):
+        return permission_denied(request)
+
+    ee = sheet.experience_entries.all().order_by('date')
+    return render_to_response(
+        'characters/experience_sheet.html',
+        {'sheet':sheet,
+         'group':group,
+         'experience_entries':ee},
+        context_instance=RequestContext(request))
