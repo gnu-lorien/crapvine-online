@@ -1,5 +1,7 @@
 {% load characters_extras %}
+{% if not is_ajax %}
 <table border="0" id="experience_entries">
+{% endif %}
 <tr>
     <th></th>
     <th></th>
@@ -11,4 +13,6 @@
     <th>U</th>
 </tr>
 {% include "characters/_experience_entries.html" %}
+{% if not is_ajax %}
 </table>
+{% endif %}

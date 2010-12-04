@@ -636,7 +636,7 @@ def permissions_sheet(request, sheet_slug,
 
 def experience_entry_change_ajax_success(request, sheet, entry, group):
     if not request.is_ajax():
-        return HttpResponseRedirect(reverse("sheet_list", args=[sheet.slug]))
+        return HttpResponseRedirect(reverse("sheet_experience", args=[sheet.slug]))
     else:
         if entry is None:
             return render_to_response("characters/list_sheet_experience_entries_ajax_success.html", {
@@ -704,11 +704,12 @@ def reload_entries(request, sheet_slug,
     if not can_edit_sheet(request, sheet):
         return permission_denied(request)
 
-    template_name = "characters/_experience_entries.html"
+    template_name = "characters/experience_entries.html"
     return render_to_response(template_name, {
         'sheet': sheet,
         'group': group,
         'experience_entries': entries,
+        'is_ajax': request.is_ajax,
     }, context_instance=RequestContext(request))
 
 def experience_entry_action(request, sheet_slug, entry_id=None,
