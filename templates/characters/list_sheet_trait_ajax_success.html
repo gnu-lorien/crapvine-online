@@ -6,5 +6,5 @@
             closeImage: '{{ STATIC_URL }}pinax/img/facebox/closelabel.gif'
         });
     });
-    $("#hatorade").load("{% url sheet_add_recent_expenditures sheet.slug %}")
+    $("#recent_expenditures_pane").load("{% url sheet_show_recent_expenditures sheet.slug %}")
 </script>

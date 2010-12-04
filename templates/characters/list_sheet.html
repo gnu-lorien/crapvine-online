@@ -8,8 +8,7 @@
 {% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
 
 {% block body %}
-<div id="hatorade">
-Hey there!
+<div id="recent_expenditures_pane">
 </div>
 <table width="" border="0" bgcolor="white">
 <tbody>
@@ -168,7 +167,6 @@ Hey there!
 {% block extra_body %}
 <script type="text/javascript">
     jQuery(document).ready(function($) {
-        $("#hatorade").load("{% url sheet_add_recent_expenditures sheet.slug %}")
         function itemResponseFunction() {
             var myHref= $(this).attr('href');
             jQuery.facebox(function() {

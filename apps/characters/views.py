@@ -779,6 +779,47 @@ def new_experience_entry(request, sheet_slug, entry_id=None,
         form_class=form_class,
         **kwargs)
 
+def _get_recent_expenditures_entry(sheet):
+    entry = ExperienceEntry()
+    changed_traits = ChangedTrait.objects.filter(sheet=sheet)
+    final_reason_str = u''
+    changed = []
+    deleted = []
+    for ct in changed_traits:
+        if ct.newer_trait_form:
+            changed.append(ct)
+        else:
+            deleted.append(ct)
+
+    for name, items, getval in [(u'Purchased ', changed, lambda x: x.newer_trait_form.value), (u'Removed ', deleted, lambda x: x.value)]:
+        if len(items) > 0:
+            final_reason_str += name
+            strs = [ct.name + u' x' + unicode(getval(ct)) for ct in items]
+            final_reason_str += u', '.join(strs)
+            final_reason_str += u'. '
+
+    entry.change = 0
+    for ct in changed:
+        if ct.added:
+            entry.change += ct.newer_trait_form.value
+        else:
+            entry.change += ct.newer_trait_form.value - ct.value
+    for ct in deleted:
+        entry.change -= ct.value
+
+    if entry.change < 0:
+        entry.change *= -1
+        entry.change_type = 4
+    elif entry.change > 0:
+        entry.change_type = 3
+    else:
+        entry.change_type = 6
+        
+    entry.reason = final_reason_str.strip()
+    from datetime import datetime
+    entry.date = datetime.now()
+    return entry
+
 @login_required
 def add_recent_expenditures(request, sheet_slug,
                             action_description="Recent Expenditures", object_description="Experience Entry",
@@ -813,8 +854,8 @@ def add_recent_expenditures(request, sheet_slug,
         form = form_class(request.POST)
         pprint(request.POST)
         form.is_valid()
-        pprint(form.cleaned_data)
-        pprint(form.errors)
+        #pprint(form.cleaned_data)
+        #pprint(form.errors)
         if form.is_valid():
             print "Valid?"
             sheet.add_experience_entry(form.save(commit=False))
@@ -823,43 +864,7 @@ def add_recent_expenditures(request, sheet_slug,
         else:
             print "Invalid?"
     else:
-        entry = ExperienceEntry()
-        changed_traits = ChangedTrait.objects.filter(sheet=sheet)
-        final_reason_str = u''
-        changed = []
-        deleted = []
-        for ct in changed_traits:
-            if ct.newer_trait_form:
-                changed.append(ct)
-            else:
-                deleted.append(ct)
-
-        for name, items, getval in [(u'Purchased ', changed, lambda x: x.newer_trait_form.value), (u'Removed ', deleted, lambda x: x.value)]:
-            if len(items) > 0:
-                final_reason_str += name
-                strs = [ct.name + u' x' + unicode(getval(ct)) for ct in items]
-                final_reason_str += u', '.join(strs)
-                final_reason_str += u'. '
-
-        entry.change = 0
-        for ct in changed:
-            if ct.added:
-                entry.change += ct.newer_trait_form.value
-            else:
-                entry.change += ct.newer_trait_form.value - ct.value
-        for ct in deleted:
-            entry.change -= ct.value
-
-        if entry.change < 0:
-            entry.change *= -1
-            entry.change_type = 4
-        elif entry.change > 0:
-            entry.change_type = 3
-        else:
-            entry.change_type = 6
-            
-        entry.reason = final_reason_str.strip()
-
+        entry =  _get_recent_expenditures_entry(sheet)
         form = form_class(None, instance=entry)
 
     return render_to_response(template_name, {
@@ -1220,3 +1225,31 @@ def experience_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
          'group':group,
          'experience_entries':ee},
         context_instance=RequestContext(request))
+
+@login_required
+def show_recent_expenditures(request, sheet_slug,
+                             form_class=ExperienceEntryForm, **kwargs):
+    group, bridge = group_and_bridge(request)
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
+
+    # Check all of the various sheet editing permissions
+    if not can_edit_sheet(request, sheet):
+        return permission_denied(request)
+
+    entry =  _get_recent_expenditures_entry(sheet)
+    form = form_class(None, instance=entry)
+
+    ctx = group_context(group, bridge)
+    ctx.update({
+        'sheet': sheet,
+        'form': form,
+        'reason': entry.reason,
+        'post_url': reverse('sheet_add_recent_expenditures', args=[sheet_slug])
+    })
+    return render_to_response(
+        'characters/sheet_show_recent_purchases.html',
+        RequestContext(request, ctx))
