@@ -317,7 +317,7 @@ class Sheet(models.Model):
         elif 4 == entry.change_type:
             entry.unspent = previous_entry.unspent + entry.change
         elif 1 == entry.change_type:
-            entry.earned = previous_entry.earned - entry.earned
+            entry.earned = previous_entry.earned - entry.change
         elif 2 == entry.change_type:
             entry.earned = entry.change
         elif 5 == entry.change_type:
