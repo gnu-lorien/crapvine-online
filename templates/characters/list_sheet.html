@@ -167,6 +167,7 @@
 {% block extra_body %}
 <script type="text/javascript">
     jQuery(document).ready(function($) {
+        $("#recent_expenditures_pane").load("{% url sheet_show_recent_expenditures sheet.slug %}")
         function itemResponseFunction() {
             var myHref= $(this).attr('href');
             jQuery.facebox(function() {

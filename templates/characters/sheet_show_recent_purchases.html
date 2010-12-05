@@ -1,3 +1,4 @@
+{% if reason %}
 <form method="POST" action="{{post_url}}">
 {% csrf_token %}
     <fieldset class="inlineLabels">
@@ -11,3 +12,4 @@
         <input type="submit" value="Add Recent to Experience History" />
     </fieldset>
 </form>
+{% endif %}
