@@ -13,16 +13,16 @@ def read_date(f):
     return convert_date(struct.unpack("<d", f.read(8))[0])
 
 def convert_date(vbt):
-    offset = vbt - days_offset
-    just_days = math.floor(offset)
-    seconds = 86400 * (offset % 1)
-    fv = (just_days * 60 * 60 * 24) + seconds
+    base_vb = datetime.datetime(1899, 12, 30, 0, 0, 0, 0)
+    just_days = math.floor(vbt)
+    seconds = 86400 * (vbt % 1)
+    td = datetime.timedelta(days=just_days, seconds=seconds)
     #print "days:", just_days, "seconds:", seconds
+    t = base_vb + td
     try:
-        t = datetime.datetime.utcfromtimestamp(fv)
+        return t.strftime("%m/%d/%Y %I:%M:%S %p")
     except ValueError:
-        t = datetime.datetime.utcfromtimestamp(0)
-    return t.strftime("%m/%d/%Y %I:%M:%S %p")
+        return t.time().strftime("%I:%M:%S %p")
 
 def read_string(f):
     n = read_length(f)
@@ -100,7 +100,7 @@ def read_vampire(f):
         experience_entries.append({
             'date': read_date(f),
             'change': read_single(f),
-            'changeType': read_long(f),
+            'type': read_long(f),
             'reason': read_string(f),
             'earned': read_single(f),
             'unspent': read_single(f),
@@ -224,6 +224,7 @@ def handle_sheet_upload(uploaded_file, user):
 
         current_vampire.biography = c['biography']
         current_vampire.notes = c['notes']
+        current_vampire.update_experience_total()
         current_vampire.save()
         ret.vampires[current_vampire.name] = current_vampire
     return ret
