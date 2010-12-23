@@ -57,7 +57,7 @@ class Attributed(object):
 		if date.hour == date.minute == date.second == 0:
 			return date.strftime("%m/%d/%Y")
 		else:
-			return date.strftime("%m/%d/%Y %H:%M:%S %p")
+			return date.strftime("%m/%d/%Y %I:%M:%S %p")
 
 	def get_attrs_xml(self, include_defaults=False):
 		if include_defaults:

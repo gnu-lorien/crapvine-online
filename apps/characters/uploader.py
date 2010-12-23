@@ -38,10 +38,11 @@ VAMPIRE_TAG_RENAMES = {
     'startdate'    : 'start_date',
     'lastmodified' : 'last_modified',
     'id'           : 'id_text',
-    'aurabonus'    : 'aura',
-    'socialmax'    : 'physicalmax',
-    'mentalmax'    : 'physicalmax',
 }
+VAMPIRE_TAG_OVERRIDES = {
+    'aurabonus'    : 'aura',
+}
+VAMPIRE_TAG_REMOVES = ('socialmax', 'mentalmax')
 VAMPIRE_TAG_DEFAULTS = {
     'tempconscience' : 'conscience', 
     'tempselfcontrol': 'selfcontrol',
@@ -68,6 +69,13 @@ def create_base_vampire(attrs, user):
     my_attrs = dict(attrs)
     map_attributes(VAMPIRE_TAG_RENAMES, my_attrs)
     map_dates(VAMPIRE_TAG_DATES, my_attrs)
+    for key, value in VAMPIRE_TAG_OVERRIDES.iteritems():
+        if key in my_attrs:
+            my_attrs[value] = my_attrs[key]
+            del my_attrs[key]
+    for key in VAMPIRE_TAG_REMOVES:
+        if key in my_attrs:
+            del my_attrs[key]
     for key, value in VAMPIRE_TAG_DEFAULTS.iteritems():
         if key not in my_attrs:
             if value in my_attrs:

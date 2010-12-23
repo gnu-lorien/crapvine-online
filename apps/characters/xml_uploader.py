@@ -13,52 +13,6 @@ from reversion import revision
 
 from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
 
-def translate_date(date):
-    if isinstance(date, basestring):
-        try:
-            dt = datetime.strptime(date, "%m/%d/%Y %H:%M:%S %p")
-        except ValueError:
-            try:
-                dt = datetime.strptime(date, "%m/%d/%Y")
-            except ValueError:
-                dt = datetime.strptime(date, "%H:%M:%S %p")
-
-        return dt
-    else:
-        if date.hour == date.minute == date.second == 0:
-            return date.strftime("%m/%d/%Y")
-        else:
-            return date.strftime("%m/%d/%Y %H:%M:%S %p")
-
-    raise TypeError("Expected either a string or datetime.datetime")
-
-def map_attributes(attributes_map, attrs):
-    for key, remap in attributes_map.iteritems():
-        if key in attrs:
-            attrs[remap] = attrs.pop(key)
-
-def map_dates(dates, attrs):
-    for key in attrs.iterkeys():
-        if key in dates:
-            attrs[key] = translate_date(attrs[key])
-
-VAMPIRE_TAG_RENAMES = {
-    'startdate'    : 'start_date',
-    'lastmodified' : 'last_modified',
-    'id'           : 'id_text',
-}
-VAMPIRE_TAG_DATES = ('start_date', 'last_modified')
-
-ENTRY_TAG_RENAMES = {'type':'change_type'}
-ENTRY_TAG_DATES = ['date']
-
-TRAIT_TAG_RENAMES = { 'val' : 'value' }
-
-TRAITLIST_TAG_RENAMES = {
-    'abc':'sorted',
-    'display': 'display_preference',
-}
-
 from crapvine.types.vampire import Vampire as CrapvineVampire
 from crapvine.xml.trait import TraitList as CrapvineTraitList
 from crapvine.xml.trait import Trait as CrapvineTrait
@@ -67,17 +21,24 @@ from crapvine.xml.experience import ExperienceEntry as CrapvineExperienceEntry
 
 class VampireExporter():
     def __init__(self, vampire_sheet):
+        from uploader import VAMPIRE_TAG_DATES, VAMPIRE_TAG_RENAMES
+        from uploader import TRAIT_TAG_RENAMES
+        from uploader import TRAITLIST_TAG_RENAMES
+        from uploader import ENTRY_TAG_DATES, ENTRY_TAG_RENAMES
+        from uploader import translate_date, map_attributes
+
         self.sheet = vampire_sheet
 
         vamp_attrs = dict((k, str(v)) for k,v in self.sheet.__dict__.iteritems())
         vamp_attrs.update((k, str(v)) for k,v in self.sheet.vampiresheet.__dict__.iteritems())
         vamp_attrs['player'] = self.sheet.player.username
         vamp_attrs['npc'] = 'yes' if self.sheet.npc else 'no'
+        vamp_attrs['name'] = self.sheet.name
         for date_attribute in VAMPIRE_TAG_DATES:
             vamp_attrs[date_attribute] = translate_date(getattr(self.sheet, date_attribute))
         reversed_map = dict((v, k) for k, v in VAMPIRE_TAG_RENAMES.iteritems())
         map_attributes(reversed_map, vamp_attrs)
-        pprint(vamp_attrs)
+        #pprint(vamp_attrs)
         self.vampire = CrapvineVampire()
         self.vampire.read_attributes(vamp_attrs)
         #pprint(self.vampire.startdate)
