@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/tabs.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/topics.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/wiki.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/jquery.autocomplete.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/characters.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.7.custom.css" />
     {% block extra_head %}{% endblock %}
 {% endblock %}
 
@@ -100,3 +100,5 @@
     </script>
     {% block extra_body %}{% endblock %}
 {% endblock %}
+
+{% block jquery_src %}{{ STATIC_URL }}pinax/js/jquery-1.4.4.min.js{% endblock %}
