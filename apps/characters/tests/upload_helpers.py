@@ -13,7 +13,9 @@ def upload_sheet_for_user(sheet_file, user):
     for app_fixture in get_fixture_path_gen():
         sheet_file_fp = os.path.join(app_fixture, sheet_file)
         if os.path.exists(sheet_file_fp):
-            if is_binary(sheet_file_fp):
+            with open(sheet_file_fp, 'rb') as fp:
+                binary = is_binary(fp)
+            if binary:
                 with open(sheet_file_fp, 'rb') as fp:
                     bin_handle_sheet_upload(fp, user)
             else:

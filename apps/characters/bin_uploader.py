@@ -147,18 +147,16 @@ def read_vampire(f):
 
     return vampire
 
-def is_binary(uploaded_fp):
-    with open(uploaded_fp, 'rb') as f:
-        binary_header_n = f.read(2)
-        binary_header_n = struct.unpack("<h", binary_header_n)[0]
-        if binary_header_n != 4:
+def is_binary(f):
+    binary_header_n = f.read(2)
+    binary_header_n = struct.unpack("<h", binary_header_n)[0]
+    if binary_header_n != 4:
+        return False
+    if binary_header_n > 0:
+        binary_header = f.read(binary_header_n)
+        binary_header = struct.unpack("<%ds" % binary_header_n, binary_header)[0]
+        if binary_header != 'GVBE':
             return False
-        if binary_header_n > 0:
-            binary_header = f.read(binary_header_n)
-            binary_header = struct.unpack("<%ds" % binary_header_n, binary_header)[0]
-            if binary_header != 'GVBE':
-                return False
-            #print binary_header
     return True
 
 def base_read(f):
@@ -206,6 +204,10 @@ def base_read(f):
 @revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
     creatures = base_read(uploaded_file)
+    class BinUploadResponse(object):
+        pass
+    ret = BinUploadResponse()
+    ret.vampires = {}
     for c in creatures:
         # Stuck on vampies for now
         current_vampire = create_base_vampire(c['attrs'], user)
@@ -223,3 +225,5 @@ def handle_sheet_upload(uploaded_file, user):
         current_vampire.biography = c['biography']
         current_vampire.notes = c['notes']
         current_vampire.save()
+        ret.vampires[current_vampire.name] = current_vampire
+    return ret

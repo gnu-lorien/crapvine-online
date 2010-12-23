@@ -1,17 +1,17 @@
 from django.test import TestCase
+from django.test.client import Client
 from django.contrib.auth.models import User
-from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user
-from characters.models import Sheet, VampireSheet, ExperienceEntry
+from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user, get_fixture_path_gen
+from characters.models import Sheet, VampireSheet
 
 from ..xml_uploader import handle_sheet_upload, VampireExporter
 
 import StringIO
-
 from copy import deepcopy
-
 from itertools import izip
-
 from datetime import datetime
+
+import os
 
 def compare_sheets(self, left, right):
     # Vampire base attributes
@@ -68,6 +68,43 @@ def compare_sheets(self, left, right):
         self.assertEquals(l.unspent,     r.unspent)
         self.assertEquals(l.date,        r.date)
 
+class ChronicleUpload(TestCase):
+    fixtures = ['players']
+
+    def testUploadChronicle(self):
+        c = Client()
+        self.assertTrue(c.login(username='Carma', password='lorien'))
+        
+        loadfn = 'chronicle_camarilla_five_xml.gex'
+        for app_fixture in get_fixture_path_gen():
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'r') as f:
+                    c.post("/characters/upload_sheet/",
+                           {'title': 'whocares',
+                            'file': f,
+                            'action': 'upload'})
+        response = c.get("/characters/list_sheet/carma-adam-st-charles/")
+        self.assertEqual(response.status_code, 200, "Can't access XML sheets")
+
+        c = Client()
+        self.assertTrue(c.login(username='Kritn', password='lorien'))
+        loadfn = 'chronicle_camarilla_five_bin.gex'
+        for app_fixture in get_fixture_path_gen():
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'rb') as f:
+                    c.post("/characters/upload_sheet/",
+                           {'title': 'whocares',
+                            'file': f,
+                            'action': 'upload'})
+        response = c.get("/characters/list_sheet/kritn-adam-st-charles/")
+        self.assertEqual(response.status_code, 200, "Can't access binary sheets")
+
+        xlist = User.objects.get(username__exact='Carma').personal_characters.order_by('name')
+        blist = User.objects.get(username__exact='Kritn').personal_characters.order_by('name')
+        self.assertNotEqual(len(xlist), 0)
+        self.assertNotEqual(len(blist), 0)
+        for xv, bv in izip(xlist, blist):
+            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
 class ChronicleCompare(TestCase):
     fixtures = ['players']

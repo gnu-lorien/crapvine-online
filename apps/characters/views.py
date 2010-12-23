@@ -22,7 +22,8 @@ from chronicles.models import Chronicle, ChronicleMember
 from reversion.models import Version, DeletedVersion
 from django.contrib.contenttypes.models import ContentType
 
-from xml_uploader import handle_sheet_upload, VampireExporter
+from xml_uploader import handle_sheet_upload as handle_sheet_upload_xml, VampireExporter
+from bin_uploader import handle_sheet_upload as handle_sheet_upload_bin, is_binary
 
 from pprint import pprint, pformat
 
@@ -58,7 +59,12 @@ def upload_sheet(request):
     if request.method == 'POST':
         form = SheetUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            cl = handle_sheet_upload(request.FILES['file'], request.user)
+            if is_binary(request.FILES['file']):
+                uploader = handle_sheet_upload_bin
+            else:
+                uploader = handle_sheet_upload_xml
+            request.FILES['file'].seek(0)
+            cl = uploader(request.FILES['file'], request.user)
             for name, vs in cl.vampires.iteritems():
                 vs.uploading = False
             sheet_permission = SheetPermission(request.user)
