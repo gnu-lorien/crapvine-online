@@ -87,7 +87,7 @@ def read_vampire(f):
        'npc': read_int(f),
        'lastmodified': read_date(f),
     }
-    print "Reading", vampire['attrs']['name']
+    #print "Reading", vampire['attrs']['name']
 
     # Experience
     vampire['experience'] = {
@@ -158,7 +158,7 @@ def is_binary(uploaded_fp):
             binary_header = struct.unpack("<%ds" % binary_header_n, binary_header)[0]
             if binary_header != 'GVBE':
                 return False
-            print binary_header
+            #print binary_header
     return True
 
 def base_read(f):
@@ -169,41 +169,31 @@ def base_read(f):
         binary_header = struct.unpack("<%ds" % binary_header_n, binary_header)[0]
     else:
         binary_header = ''
-    print binary_header
+    #print binary_header
     version = f.read(8)
     version = struct.unpack('<d', version)
-    print version
+    #print version
 
     has_calendar = read_has(f)
-    if not has_calendar:
-        print "Doesn't have calendar"
-    else:
-        print "Has calendar"
+    if has_calendar:
         raise RuntimeError("Can't yet parse or ignore the calendar")
 
     has_apr_settings = read_has(f)
-    if not has_apr_settings:
-        print "Doesn't have APR"
-    else:
-        print "Has APR"
+    if has_apr_settings:
         raise RuntimeError("Can't yet parse or ignore apr settings")
 
     xp_awards_n = read_length(f)
-    if xp_awards_n == 0:
-        print "Doesn't have XP awards"
-    else:
-        print "Has XP Awards"
+    if xp_awards_n != 0:
         raise RuntimeError("Can't yet parse or ignore xp awards")
 
     template_settings_n = read_length(f)
-    if template_settings_n == 0:
-        print "Doesn't have template settings"
-    else:
-        print "Has template settings"
+    if template_settings_n != 0:
         raise RuntimeError("Can't yet parse or ignore template settings")
 
-    print "Not sure what these are or how I check the numbers in the file..."
-    print read_int(f)
+    unknown_n = read_length(f)
+    if unknown_n != 0:
+        raise RuntimeError("Can't parse or ignore unknown section")
+
     creature_count = read_int(f)
     creatures = []
     for i in xrange(creature_count):

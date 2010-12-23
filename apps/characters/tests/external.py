@@ -92,7 +92,6 @@ class ChronicleCompare(TestCase):
         self.assertNotEqual(len(xlist), 0)
         self.assertNotEqual(len(blist), 0)
         for xv, bv in izip(self.userx.personal_characters.order_by('name'), self.userb.personal_characters.order_by('name')):
-            print xv.name, bv.name
             compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
 
