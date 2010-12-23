@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <grapevine version="3">
-  <vampire name="Adam St. Charles" nature="Elitist" demeanor="Gambler" clan="Toreador" sect="Camarilla" generation="11" blood="12" willpower="5" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/5/2003 5:53:01 AM" narrator="Shuniqua Rodriguez" npc="yes" lastmodified="8/7/2003 1:36:32 AM">
-    <experience unspent="0" earned="0"/>
+  <vampire name="Adam St. Charles" nature="Elitist" demeanor="Gambler" clan="Toreador" sect="Camarilla" generation="11" blood="12" willpower="5" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/5/2003 5:53:01 AM" narrator="Shuniqua Rodriguez" npc="yes" lastmodified="12/23/2010 1:53:50 PM">
+    <experience unspent="-2" earned="0">
+      <entry date="12:00:00 AM" change="1" type="3" reason="oeaeu" earned="0" unspent="-1"/>
+      <entry date="12/23/2010" change="1" type="3" earned="0" unspent="-2"/>
+    </experience>
     <traitlist name="Physical" abc="yes" display="1">
       <trait name="Energetic"/>
       <trait name="Stalwart" val="3"/>
