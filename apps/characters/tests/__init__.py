@@ -10,7 +10,7 @@ from pprint import pprint
 import os
 
 from django.db.models import get_apps
-from xml_uploader import handle_sheet_upload, VampireExporter
+from ..xml_uploader import handle_sheet_upload, VampireExporter
 
 from crapvine.xml.experience import ExperienceEntry as CrapvineExperienceEntry
 from copy import deepcopy
