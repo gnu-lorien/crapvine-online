@@ -1,6 +1,6 @@
 from __future__ import with_statement
 from experience import ExperienceEntriesTestCase
-from external import ExportTestCase, ImportTestCase
+from external import ExportTestCase, ImportTestCase, ChronicleCompare
 
 from django.test import TestCase
 from django.test.client import Client

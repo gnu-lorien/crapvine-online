@@ -16,5 +16,23 @@
             "email": "aoeu@aoeu.com", 
             "date_joined": "2010-02-21 20:26:10"
         }
+    },
+    {
+        "pk": 10, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "Carma", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2010-02-21 20:26:10", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$ee6fc$92a868735d9dadaac5ac08575110c5b37f79ad6a", 
+            "email": "aoeu@aoeu.com", 
+            "date_joined": "2010-02-21 20:26:10"
+        }
     }
 ]

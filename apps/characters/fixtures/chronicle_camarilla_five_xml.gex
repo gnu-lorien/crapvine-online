@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+<grapevine version="3">
+  <vampire name="Adam St. Charles" nature="Elitist" demeanor="Gambler" clan="Toreador" sect="Camarilla" generation="11" blood="12" willpower="5" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/5/2003 5:53:01 AM" narrator="Shuniqua Rodriguez" npc="yes" lastmodified="8/7/2003 1:36:32 AM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Energetic"/>
+      <trait name="Stalwart" val="3"/>
+      <trait name="Tough" val="2"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Alluring" val="2"/>
+      <trait name="Charming" val="3"/>
+      <trait name="Dignified" val="3"/>
+      <trait name="Manipulative" val="2"/>
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Astute" val="3"/>
+      <trait name="Reflective"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Ignorant" val="2"/>
+      <trait name="Impatient"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1">
+      <trait name="Acknowledged"/>
+      <trait name="Admired"/>
+    </traitlist>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Dodge" val="2"/>
+      <trait name="Firearms" val="2"/>
+      <trait name="Subterfuge" val="2"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1"/>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Contacts" val="2"/>
+      <trait name="Fame"/>
+      <trait name="Generation" val="2"/>
+      <trait name="Resources"/>
+      <trait name="Retainers"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5"/>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Auspex: Heightened Senses" val="3" note="basic"/>
+      <trait name="Auspex: Aura Perception" val="3" note="basic"/>
+      <trait name="Auspex: Spirit's Touch" val="6" note="int."/>
+      <trait name="Celerity: Alacrity" val="3" note="basic"/>
+      <trait name="Celerity: Swiftness" val="3" note="basic"/>
+      <trait name="Presence: Awe" val="3" note="basic"/>
+      <trait name="Presence: Dread Gaze" val="3" note="basic"/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4"/>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4"/>
+    <traitlist name="Equipment" abc="yes" display="1">
+      <trait name="Heavy Pistol" note="+2, 2 Lethal, Loud"/>
+    </traitlist>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+  <vampire name="Amber Bradbury (NPC)" nature="Survivor" demeanor="Caregiver" clan="Malkavian" sect="Camarilla" generation="10" blood="13" willpower="4" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="11/23/2000" narrator="Zoe Mora" npc="yes" lastmodified="12/23/2002 11:13:14 AM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Quick" val="2"/>
+      <trait name="Steady"/>
+      <trait name="Tough" val="2"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Alluring" val="2"/>
+      <trait name="Charming"/>
+      <trait name="Compassionate"/>
+      <trait name="Dignified"/>
+      <trait name="Elegant"/>
+      <trait name="Empathetic"/>
+      <trait name="Friendly" val="2"/>
+      <trait name="Gorgeous"/>
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Alert" val="3"/>
+      <trait name="Clever"/>
+      <trait name="Dedicated"/>
+      <trait name="Intuitive"/>
+      <trait name="Knowledgeable"/>
+      <trait name="Rational"/>
+      <trait name="Shrewd"/>
+      <trait name="Wily"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1">
+      <trait name="Clumsy"/>
+    </traitlist>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Oblivious"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1">
+      <trait name="Acknowledged"/>
+      <trait name="Influential"/>
+    </traitlist>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Academics" val="3" note="Anthropology"/>
+      <trait name="Brawl"/>
+      <trait name="Finance" val="2"/>
+      <trait name="History" val="3"/>
+      <trait name="Linguistics" note="Spanish"/>
+      <trait name="Lore: Camarilla" val="2"/>
+      <trait name="Lore: Clan"/>
+      <trait name="Lore: Kindred" val="2"/>
+      <trait name="Melee" val="3"/>
+      <trait name="Subterfuge" val="2"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1">
+      <trait name="Finance" val="3"/>
+      <trait name="Health" val="2"/>
+      <trait name="Media" val="2"/>
+      <trait name="University" val="2"/>
+    </traitlist>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Contacts"/>
+      <trait name="Herd"/>
+      <trait name="Resources" val="3"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5">
+      <trait name="Manic-Depression"/>
+    </traitlist>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Auspex: Heightened Senses" val="3" note="basic"/>
+      <trait name="Auspex: Aura Perception" val="3" note="basic"/>
+      <trait name="Auspex: Spirit's Touch" val="6" note="int."/>
+      <trait name="Dominate: Command" val="3" note="basic"/>
+      <trait name="Obfuscate: Cloak of Shadows" val="3" note="basic"/>
+      <trait name="Obfuscate: Unseen Presence" val="3" note="basic"/>
+      <trait name="Potence: Prowess" val="3" note="basic"/>
+      <trait name="Presence: Awe" val="3" note="basic"/>
+      <trait name="Presence: Dread Gaze" val="3" note="basic"/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4">
+      <trait name="Eat Food"/>
+      <trait name="Magic Resistance" val="2"/>
+    </traitlist>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4">
+      <trait name="Selective Digestion" val="2"/>
+      <trait name="Short Fuse" val="2"/>
+    </traitlist>
+    <traitlist name="Equipment" abc="yes" display="1"/>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+  <vampire name="Anthony Hannibal Richards" nature="Traditionalist" demeanor="Judge" clan="Malkavian" sect="Camarilla" generation="7" title="Primogen" blood="20" willpower="7" conscience="4" selfcontrol="2" courage="4" path="Humanity" pathtraits="3" physicalmax="16" status="Active" id="2" startdate="5/13/2003 9:46:08 AM" narrator="John Givens" npc="yes" lastmodified="5/22/2003 11:57:45 AM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Athletic" val="12"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Charismatic" val="16"/>
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Analytical" val="14"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1">
+      <trait name="Lethargic"/>
+    </traitlist>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1">
+      <trait name="Callous" val="2"/>
+      <trait name="Condescending"/>
+    </traitlist>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Deceitful"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1">
+      <trait name="Acknowledged"/>
+      <trait name="Revered"/>
+    </traitlist>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Awareness" val="3"/>
+      <trait name="Brawl" val="4"/>
+      <trait name="Dodge" val="4"/>
+      <trait name="Empathy" val="4"/>
+      <trait name="Investigation" val="3"/>
+      <trait name="Psychology" val="3"/>
+      <trait name="Stealth" val="3"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1">
+      <trait name="Church" val="7"/>
+      <trait name="Health" val="7"/>
+    </traitlist>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Allies" val="2"/>
+      <trait name="Elder Generation" val="3"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5">
+      <trait name="Bipolar Disorder" val="2" note="core"/>
+      <trait name="Obsessive-Compulsion" val="2"/>
+    </traitlist>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Auspex: Heightened Senses" val="3" note="basic"/>
+      <trait name="Auspex: Aura Perception" val="3" note="basic"/>
+      <trait name="Auspex: Spirit's Touch" val="6" note="int."/>
+      <trait name="Auspex: Telepathy" val="6" note="int."/>
+      <trait name="Dementation: Passion" val="3" note="basic"/>
+      <trait name="Dementation: The Haunting" val="3" note="basic"/>
+      <trait name="Dementation: Eyes of Chaos" val="6" note="int."/>
+      <trait name="Dementation: Voice of Madness" val="6" note="int."/>
+      <trait name="Dementation: Total Insanity" val="9" note="adv."/>
+      <trait name="Dementation: The Call" val="12" note="elder"/>
+      <trait name="Dementation: Restructure" val="15" note="master"/>
+      <trait name="Obfuscate: Cloak of Shadows" val="3" note="basic"/>
+      <trait name="Obfuscate: Unseen Presence" val="3" note="basic"/>
+      <trait name="Obfuscate: Mask of a Thousand Faces" val="6" note="int."/>
+      <trait name="Obfuscate: Vanish from the Mind's Eye" val="6" note="int."/>
+      <trait name="Obfuscate: Cloak the Gathering" val="9" note="adv."/>
+      <trait name="Obfuscate: Soul Mask" val="12" note="elder"/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4">
+      <trait name="Enchanting Voice" val="2"/>
+      <trait name="Natural Leader"/>
+      <trait name="Prestigious Sire"/>
+    </traitlist>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4">
+      <trait name="Eerie Presence" val="2"/>
+      <trait name="Weak Sense" val="2" note="sight"/>
+    </traitlist>
+    <traitlist name="Equipment" abc="yes" display="1"/>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+  <vampire name="Art McCormik" nature="Bon Vivant" demeanor="Architect" clan="Gangrel" sect="Camarilla" generation="11" blood="12" willpower="4" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="4" physicalmax="11" status="Active" startdate="8/24/2002" narrator="Zoe Mora" npc="yes" lastmodified="9/12/2003 12:28:42 PM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Brawny" val="3"/>
+      <trait name="Dexterous"/>
+      <trait name="Quick"/>
+      <trait name="Tireless"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Friendly"/>
+      <trait name="Magnetic"/>
+      <trait name="Witty"/>
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Alert" val="2"/>
+      <trait name="Creative"/>
+      <trait name="Insightful"/>
+      <trait name="Knowledgeable"/>
+      <trait name="Observant" val="2"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1">
+      <trait name="Dull"/>
+      <trait name="Shy"/>
+      <trait name="Tactless"/>
+    </traitlist>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Impatient"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1"/>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Animal Ken" note="FRree -Gangrel"/>
+      <trait name="Brawl" val="3"/>
+      <trait name="Computer"/>
+      <trait name="Dodge" val="2"/>
+      <trait name="Repair"/>
+      <trait name="Security"/>
+      <trait name="Survival" note="Free - Gangrel"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1">
+      <trait name="Bureaucracy" val="2"/>
+    </traitlist>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Mentor" val="3"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1">
+      <trait name="Feral Sniffing" note="Gangrel Beast Traits"/>
+    </traitlist>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5"/>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Fortitude: Endurance" val="3" note="basic"/>
+      <trait name="Fortitude: Mettle" val="3" note="basic"/>
+      <trait name="Protean: Eyes of the Beast" val="3" note="basic"/>
+      <trait name="Protean: Feral Claws" val="3" note="basic"/>
+      <trait name="Protean: Earth Meld" val="6" note="int."/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4">
+      <trait name="Blush of Health" val="2"/>
+      <trait name="Eat Food"/>
+      <trait name="Iron Will" val="3"/>
+    </traitlist>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4">
+      <trait name="Dark Fate" val="5"/>
+    </traitlist>
+    <traitlist name="Equipment" abc="yes" display="1"/>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+  <vampire name="Camarilla Brujah" nature="Rebel" demeanor="Survivor" clan="Brujah" sect="Camarilla" generation="12" blood="11" willpower="2" conscience="3" selfcontrol="4" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="5/16/2003 12:21:42 PM" narrator="Zoe Mora" npc="yes" lastmodified="5/16/2003 12:25:37 PM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Brawny" val="2"/>
+      <trait name="Quick" val="4"/>
+      <trait name="Tough"/>
+      <trait name="Vigorous"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Charismatic" val="2"/>
+      <trait name="Commanding"/>
+      <trait name="Dignified"/>
+      <trait name="Elegant" val="2"/>
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Alert" val="2"/>
+      <trait name="Cunning"/>
+      <trait name="Dedicated"/>
+      <trait name="Discerning"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Violent"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1"/>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Dodge"/>
+      <trait name="Etiquette"/>
+      <trait name="Expression"/>
+      <trait name="Firearms" val="2"/>
+      <trait name="History"/>
+      <trait name="Law" val="2"/>
+      <trait name="Lore: Hunter"/>
+      <trait name="Streetwise"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1"/>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Allies"/>
+      <trait name="Resources"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5"/>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Celerity: Alacrity" val="3" note="basic"/>
+      <trait name="Celerity: Swiftness" val="3" note="basic"/>
+      <trait name="Celerity: Rapidity" val="6" note="int."/>
+      <trait name="Presence: Awe" val="3" note="basic"/>
+      <trait name="Presence: Dread Gaze" val="3" note="basic"/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4">
+      <trait name="Common Sense"/>
+    </traitlist>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4"/>
+    <traitlist name="Equipment" abc="yes" display="1">
+      <trait name="Ballistic Vest" note="+0, 2 Armor Levels, Heavy"/>
+      <trait name="Club" note="+2, 1 Bashing, Clumsy"/>
+    </traitlist>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+    <notes>
+      <![CDATA[You are a brujah, part William Wallace part street thug. With the powers of strength, speed and the ability to manipulate emotion you are the perfect warrior poet. Phoenix has been under attack and a call to arms has been issued. With clan before sect the brujah came running. Seek out Samuel Krieg who will lead you against the Sabbat a depraved sect of vampires seeking to enslave human kind. Whether you destroy the newborn vampires or lead them against their brothers remains unseen]]>
+    </notes>
+  </vampire>
+</grapevine>

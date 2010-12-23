@@ -1,11 +1,100 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user
+from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user
 from characters.models import Sheet, VampireSheet, ExperienceEntry
 
 from ..xml_uploader import handle_sheet_upload, VampireExporter
 
 import StringIO
+
+from copy import deepcopy
+
+from itertools import izip
+
+from datetime import datetime
+
+def compare_sheets(self, left, right):
+    # Vampire base attributes
+    self.assertEquals(left.nature, right.nature)
+    self.assertEquals(left.demeanor, right.demeanor)
+    self.assertEquals(left.blood, right.blood)
+    self.assertEquals(left.clan, right.clan)
+    self.assertEquals(left.conscience, right.conscience)
+    self.assertEquals(left.courage, right.courage)
+    self.assertEquals(left.generation, right.generation)
+    self.assertEquals(left.path, right.path)
+    self.assertEquals(left.pathtraits, right.pathtraits)
+    self.assertEquals(left.physicalmax, right.physicalmax)
+    self.assertEquals(left.sect, right.sect)
+    self.assertEquals(left.selfcontrol, right.selfcontrol)
+    self.assertEquals(left.willpower, right.willpower)
+    self.assertEquals(left.title, right.title)
+    self.assertEquals(left.aura, right.aura)
+    self.assertEquals(left.coterie, right.coterie)
+    self.assertEquals(left.id_text, right.id_text)
+    self.assertEquals(left.sire, right.sire)
+    self.assertEquals(left.tempcourage, right.tempcourage)
+    self.assertEquals(left.tempselfcontrol, right.tempselfcontrol)
+    self.assertEquals(left.tempwillpower, right.tempwillpower)
+    self.assertEquals(left.tempblood, right.tempblood)
+    self.assertEquals(left.tempconscience, right.tempconscience)
+    self.assertEquals(left.temppathtraits, right.temppathtraits)
+
+    # Sheet base attributes
+    self.assertEquals(left.home_chronicle, right.home_chronicle)
+    self.assertEquals(left.start_date, right.start_date)
+    self.assertEquals(left.last_modified, right.last_modified)
+    self.assertEquals(left.npc, right.npc)
+    self.assertEquals(left.notes, right.notes)
+    self.assertEquals(left.biography, right.biography)
+    self.assertEquals(left.status, right.status)
+    self.assertEquals(left.experience_unspent, right.experience_unspent)
+    self.assertEquals(left.experience_earned, right.experience_earned)
+
+    left_traits = left.traits.all().order_by('traitlistname__name', 'order')
+    right_traits = right.traits.all().order_by('traitlistname__name', 'order')
+    for l, r in zip(left_traits, right_traits):
+        self.assertEquals(l.value, r.value)
+        self.assertEquals(l.note,  r.note)
+        self.assertEquals(l.name,  r.name)
+
+    left_entries = left.experience_entries.all()
+    right_entries = right.experience_entries.all()
+    for l, r in zip(left_entries, right_entries):
+        self.assertEquals(l.reason,      r.reason)
+        self.assertEquals(l.change,      r.change)
+        self.assertEquals(l.change_type, r.change_type)
+        self.assertEquals(l.earned,      r.earned)
+        self.assertEquals(l.unspent,     r.unspent)
+        self.assertEquals(l.date,        r.date)
+
+
+class ChronicleCompare(TestCase):
+    fixtures = ['players']
+
+    def setUp(self):
+        self.userx = User.objects.get(username__exact='Andre')
+        self.userb = User.objects.get(username__exact='Carma')
+
+        xml_start = datetime.now()
+        upload_chronicle_for_user('chronicle_camarilla_five_xml.gex', self.userx)
+        xml_end = datetime.now()
+        print "XML Timing", xml_end - xml_start
+
+        bin_start = datetime.now()
+        upload_chronicle_for_user('chronicle_camarilla_five_bin.gex', self.userb)
+        bin_end = datetime.now()
+        print "Bin Timing", bin_end - bin_start
+
+    def testEquivalence(self):
+        xlist = self.userx.personal_characters.order_by('name')
+        blist = self.userb.personal_characters.order_by('name')
+        self.assertNotEqual(len(xlist), 0)
+        self.assertNotEqual(len(blist), 0)
+        for xv, bv in izip(self.userx.personal_characters.order_by('name'), self.userb.personal_characters.order_by('name')):
+            print xv.name, bv.name
+            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
+
 
 class ExportTestCase(TestCase):
     fixtures = ['players']
@@ -172,7 +261,7 @@ class ImportTestCase(TestCase):
     def assertSheetExists(self, sheet_name):
         Sheet.objects.get(name__exact=sheet_name)
 
-    def assertSheetExists(self, sheet_name):
+    def assertSheetDoesNotExist(self, sheet_name):
         self.assertRaises(Sheet.DoesNotExist, Sheet.objects.get(name__exact=sheet_name))
 
     def testChronicleAll(self):

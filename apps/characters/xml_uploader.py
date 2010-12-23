@@ -1,20 +1,17 @@
-from xml.sax.saxutils import quoteattr, unescape
+from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
-from dateutil.parser import parse
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from xml.sax import ContentHandler
-from xml.sax.saxutils import unescape, escape
 
 from minimock import Mock
 
-from characters.models import Trait, TraitListProperty, Sheet, VampireSheet
 from pprint import pprint
 
-from django.db import IntegrityError
-
 from reversion import revision
+
+from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
 
 def translate_date(date):
     if isinstance(date, basestring):
@@ -143,7 +140,7 @@ class VampireLoader(ContentHandler):
         self.current_notes = ''
 
         self.current_experience = None
-        self.last_entry = None
+        self.previous_entry = None
 
     def add_vampire(self, vamp):
         vamp.update_experience_total()
@@ -156,22 +153,13 @@ class VampireLoader(ContentHandler):
         if name == 'vampire':
             if not attrs.has_key('name'):
                 return
-            my_attrs = dict(attrs)
-            map_attributes(VAMPIRE_TAG_RENAMES, my_attrs)
-            map_dates(VAMPIRE_TAG_DATES, my_attrs)
-
-            my_attrs['player'] = self.__user
-            my_attrs['uploading'] = True
-            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
-            v = VampireSheet.objects.create(**my_attrs)
-            #v.read_attributes(attrs)
-            self.current_vampire = v
+            self.current_vampire = create_base_vampire(attrs, self.__user)
 
         elif name == 'experience':
             if self.current_experience:
                 raise IOError('Experience encountered while still reading traitlist')
             exp = Mock('Experience')#Experience()
-            exp.read_attributes(attrs)
+            #exp.read_attributes(attrs)
             self.current_experience = exp
             #if self.current_vampire:
             #    self.current_vampire.add_experience(exp)
@@ -179,23 +167,7 @@ class VampireLoader(ContentHandler):
         elif name == 'entry':
             if not self.current_experience:
                 raise IOError('Entry without bounding Experience')
-            from pprint import pprint
-            my_attrs = dict(attrs)
-            map_attributes(ENTRY_TAG_RENAMES, my_attrs)
-            map_dates(ENTRY_TAG_DATES, my_attrs)
-            if self.last_entry is not None:
-                #print self.last_entry.date
-                if self.last_entry.date >= my_attrs['date']:
-                    #print my_attrs['date']
-                    my_attrs['date'] = self.last_entry.date + timedelta(seconds=1)
-            try:
-                my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
-                exp = self.current_vampire.experience_entries.create(**my_attrs)
-            except IntegrityError, e:
-                pprint({'name':name, 'attrs':attrs, 'my_attrs':my_attrs})
-                raise e
-
-            self.last_entry = exp
+            self.previous_entry = read_experience_entry(attrs, self.current_vampire, self.previous_entry)
 
         elif name == 'biography':
             self.reading_biography = True
@@ -206,10 +178,7 @@ class VampireLoader(ContentHandler):
         elif name == 'traitlist':
             if self.current_traitlist:
                 raise IOError('TraitList encountered while still reading traitlist')
-            my_attrs = dict(attrs)
-            map_attributes(TRAITLIST_TAG_RENAMES, my_attrs)
-            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
-            self.current_vampire.add_traitlist_properties(**my_attrs)
+            read_traitlist_properties(attrs, self.current_vampire)
             self.current_traitlist = attrs
             #if self.current_vampire:
             #    self.current_vampire.add_traitlist(tl)
@@ -217,19 +186,7 @@ class VampireLoader(ContentHandler):
         elif name == 'trait':
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
-            my_attrs = dict(attrs)
-            map_attributes(TRAIT_TAG_RENAMES, my_attrs)
-            if 'value' in my_attrs:
-                try:
-                    # TODO Remember this when handling the menu items
-                    # Some things have strange values like "2 or 4" and you need
-                    # to pick them before setting them in a sheet
-                    int(my_attrs['value'])
-                except ValueError:
-                    my_attrs['value'] = 999999
-            my_attrs['display_preference'] = self.current_traitlist['display']
-            my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
-            self.current_vampire.add_trait(self.current_traitlist['name'], my_attrs)
+            read_trait(attrs, self.current_traitlist, self.current_vampire)
 
     def endElement(self, name):
         if name == 'vampire':
@@ -329,7 +286,7 @@ class ChronicleLoader(ContentHandler):
 
         if name == 'grapevine':
             chron = Mock('Chronicle')#Chronicle()
-            chron.read_attributes(attrs)
+            #chron.read_attributes(attrs)
             self.chronicle = chron
 
         elif name == 'usualplace':
@@ -413,7 +370,6 @@ class ChronicleLoader(ContentHandler):
         raise exception
 
 #from crapvine.xml.chronicle_loader import ChronicleLoader
-
 @revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
     chronicle_loader = ChronicleLoader(user)
