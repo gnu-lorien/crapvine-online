@@ -7,6 +7,17 @@
 
 {% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
 
+{% block extra_head %}
+<style>
+#experience_entries td {
+border: 1px solid black;
+text-align: center;
+margin: 2px;
+padding: 2px;
+};
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="traitlist_header">
     <u><b>Experience</b></u>
