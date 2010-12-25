@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
+import simplejson
+
 from authority.views import permission_denied
 from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet, can_list_sheet
 
@@ -1129,7 +1131,13 @@ def show_menu(request, id_segment,
         parent = menus[-2]
         parent_url = reverse('menu_show', args=['/'.join([str(m.id) for m in menus[:-1]])])
 
-    menu_items = MenuItem.objects.filter(parent__id=menu.id).order_by('order')
+    if 'format' in request.GET and request.GET['format'] == 'json':
+        menu_items = MenuItem.objects.filter(parent__id=menu.id, name__icontains=request.GET['term'])
+        jsonret = simplejson.dumps([mi.name for mi in menu_items])
+        print "Returning some json", jsonret
+        return HttpResponse(jsonret, mimetype='application/json')
+    else:
+        menu_items = MenuItem.objects.filter(parent__id=menu.id).order_by('order')
 
     previous_url = reverse('menu_show', args=[id_segment])
     under_sheet = False
