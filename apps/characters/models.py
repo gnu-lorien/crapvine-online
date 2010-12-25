@@ -177,20 +177,19 @@ class Sheet(models.Model):
     def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
         overwrite = kwargs.get('overwrite', True)
         #print "Adding traitlist property with overwrite", overwrite
-        try:
-            traitlist_name_obj = TraitListName.objects.get(name=kwargs['name'])
-        except TraitListName.DoesNotExist:
-            traitlist_name_obj = TraitListName.objects.create(name=kwargs['name'], slug=slugify(kwargs['name']))
+        traitlist_name_obj, tl_created = TraitListName.objects.get_or_create(
+                name=kwargs['name'],
+                defaults={"slug":slugify(kwargs['name'])})
         del kwargs['name']
-        if kwargs.has_key('overwrite'):
+        if 'overwrite' in kwargs:
             del kwargs['overwrite']
-        try:
-            existing_property = self.traitlistproperty_set.get(name=traitlist_name_obj)
+        n_property, created = self.traitlistproperty_set.get_or_create(
+                name=traitlist_name_obj,
+                defaults=kwargs)
+        if created is False:
             for key, value in kwargs.iteritems():
-                setattr(existing_property, key, value)
-            existing_property.save()
-        except TraitListProperty.DoesNotExist:
-            self.traitlistproperty_set.create(name=traitlist_name_obj, **kwargs)
+                setattr(n_property, key, value)
+            n_property.save()
 
     def get_traitlist_property(self, traitlistname):
         #print "get_traitlist_property", traitlistname.name
@@ -208,11 +207,12 @@ class Sheet(models.Model):
             traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         except TraitListName.DoesNotExist:
             traitlist_name_obj = TraitListName.objects.create(name=traitlist_name, slug=slugify(traitlist_name))
-        try:
-            previous_last_order = self.traits.all().order_by('-order')[0].order
-            trait_attrs['order'] = previous_last_order + 1
-        except IndexError:
-            trait_attrs['order'] = 0
+        if "order" not in trait_attrs:
+            try:
+                previous_last_order = self.traits.filter(traitlistname=traitlist_name_obj).only('order').values_list('order', flat=True).order_by('-order')[0]
+                trait_attrs['order'] = previous_last_order + 1
+            except IndexError:
+                trait_attrs['order'] = 0
         self.traits.create(traitlistname=traitlist_name_obj, **trait_attrs)
 
     def insert_trait(self, traitlist_name, trait_attrs, order):

@@ -89,6 +89,7 @@ class VampireLoader(ContentHandler):
 
         self.vampires = {}
         self.current_vampire = None
+        self.order = 0
 
         self.in_cdata = False
 
@@ -107,7 +108,6 @@ class VampireLoader(ContentHandler):
         vamp.update_experience_total()
         vamp.save()
         vamp.add_default_traitlist_properties()
-        vamp.save()
         self.vampires[vamp.name] = vamp
 
     def startElement(self, name, attrs):
@@ -115,6 +115,7 @@ class VampireLoader(ContentHandler):
             if not attrs.has_key('name'):
                 return
             self.current_vampire = create_base_vampire(attrs, self.__user)
+            self.order = 0
 
         elif name == 'experience':
             if self.current_experience:
@@ -147,7 +148,8 @@ class VampireLoader(ContentHandler):
         elif name == 'trait':
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
-            read_trait(attrs, self.current_traitlist, self.current_vampire)
+            self.order += 1
+            read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
 
     def endElement(self, name):
         if name == 'vampire':

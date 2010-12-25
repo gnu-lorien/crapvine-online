@@ -108,7 +108,7 @@ def read_traitlist_properties(attrs, current_vampire):
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     current_vampire.add_traitlist_properties(**my_attrs)
 
-def read_trait(attrs, current_traitlist, current_vampire):
+def read_trait(attrs, current_traitlist, current_vampire, order=None):
     my_attrs = dict(attrs)
     map_attributes(TRAIT_TAG_RENAMES, my_attrs)
     if 'value' in my_attrs:
@@ -121,6 +121,8 @@ def read_trait(attrs, current_traitlist, current_vampire):
             my_attrs['value'] = 999999
     my_attrs['display_preference'] = current_traitlist['display']
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
+    if order is not None:
+        my_attrs['order'] = order
     current_vampire.add_trait(current_traitlist['name'], my_attrs)
 
 

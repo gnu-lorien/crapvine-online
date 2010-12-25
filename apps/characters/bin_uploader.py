@@ -219,8 +219,8 @@ def handle_sheet_upload(uploaded_file, user):
             traits = tl['list']
             del tl['list']
             read_traitlist_properties(tl, current_vampire)
-            for t in traits:
-                read_trait(t, tl, current_vampire)
+            for i, t in enumerate(traits):
+                read_trait(t, tl, current_vampire, i)
 
         current_vampire.biography = c['biography']
         current_vampire.notes = c['notes']
