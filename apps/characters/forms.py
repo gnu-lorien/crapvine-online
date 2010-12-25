@@ -10,7 +10,7 @@ class SheetUploadForm(forms.Form):
 class VampireSheetAttributesForm(forms.ModelForm):
     class Meta:
         model = VampireSheet
-        exclude = ("last_modified", "experience_unspent", "experience_earned", "object_id", "content_type", "traits", "experience_entries")
+        exclude = ("last_modified", "experience_unspent", "experience_earned", "object_id", "content_type", "traits", "experience_entries", "uploading", "slug", "player", "name")
 
 class TraitListPropertyForm(forms.ModelForm):
     class Meta:

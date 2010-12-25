@@ -1131,7 +1131,7 @@ def show_menu(request, id_segment,
         parent = menus[-2]
         parent_url = reverse('menu_show', args=['/'.join([str(m.id) for m in menus[:-1]])])
 
-    if 'format' in request.GET and request.GET['format'] == 'json':
+    if request.is_ajax() and 'format' in request.GET and request.GET['format'] == 'json':
         menu_items = MenuItem.objects.filter(parent__id=menu.id, name__icontains=request.GET['term'])
         jsonret = simplejson.dumps([mi.name for mi in menu_items])
         print "Returning some json", jsonret
