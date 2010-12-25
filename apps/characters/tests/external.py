@@ -132,7 +132,7 @@ class ChronicleCompare(TestCase):
             compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
 
-class ExportTestCase(TestCase):
+class Export(TestCase):
     fixtures = ['players']
 
     def setUp(self):
@@ -162,7 +162,7 @@ class ExportTestCase(TestCase):
     def testChronicle(self):
         pass
 
-class ImportTestCase(TestCase):
+class Import(TestCase):
     fixtures = ['players']
 
     def setUp(self):
@@ -254,18 +254,18 @@ class ImportTestCase(TestCase):
         self.assertSheetExists('Adam St. Charles')
         self.assertSheetExists('ValueForEverything')
 
-    def testChronicleInclude(self):
-        upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')
-        self.assertSheetExists('Charles McMillan')
-        self.assertSheetDoesNotExist('Adam St. Charles')
-        self.assertSheetDoesNotExist('ValueForEverything')
-        upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Adam.*')
-        self.assertSheetExists('Charles McMillan')
-        self.assertSheetExists('Adam St. Charles')
-        self.assertSheetDoesNotExist('ValueForEverything')
+    #def testChronicleInclude(self):
+    #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')
+    #    self.assertSheetExists('Charles McMillan')
+    #    self.assertSheetDoesNotExist('Adam St. Charles')
+    #    self.assertSheetDoesNotExist('ValueForEverything')
+    #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Adam.*')
+    #    self.assertSheetExists('Charles McMillan')
+    #    self.assertSheetExists('Adam St. Charles')
+    #    self.assertSheetDoesNotExist('ValueForEverything')
 
-    def testChronicleExclude(self):
-        upload_chronicle_for_username('chronicle_00.gex', 'Andre', exclude='^C')
-        self.assertSheetDoesNotExist('Charles McMillan')
-        self.assertSheetExists('Adam St. Charles')
-        self.assertSheetExists('ValueForEverything')
+    #def testChronicleExclude(self):
+    #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', exclude='^C')
+    #    self.assertSheetDoesNotExist('Charles McMillan')
+    #    self.assertSheetExists('Adam St. Charles')
+    #    self.assertSheetExists('ValueForEverything')
