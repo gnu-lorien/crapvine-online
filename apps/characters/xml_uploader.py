@@ -235,6 +235,7 @@ class ChronicleLoader(ContentHandler):
         return None
 
     def startElement(self, name, attrs):
+        #print "starting element", name, self.reading_creature
         if self.reading_creature:
             if self.creatures[self.reading_creature]:
                 self.creatures[self.reading_creature].startElement(name, attrs)
@@ -246,7 +247,7 @@ class ChronicleLoader(ContentHandler):
             return
 
         if name == 'grapevine':
-            chron = Mock('Chronicle')#Chronicle()
+            chron = {} #Mock('Chronicle')#Chronicle()
             #chron.read_attributes(attrs)
             self.chronicle = chron
 
@@ -257,19 +258,19 @@ class ChronicleLoader(ContentHandler):
             self.reading_description = True
 
     def endElement(self, name):
-        if self.reading_creature:
-            if self.creatures[self.reading_creature]:
-                self.creatures[self.reading_creature].endElement(name)
-            return
         if name in self.creatures_elements:
             assert self.reading_creature
             self.reading_creature = ''
             if self.creatures[name]:
                 self.creatures[name].endElement(name)
             return
+        if self.reading_creature:
+            if self.creatures[self.reading_creature]:
+                self.creatures[self.reading_creature].endElement(name)
+            return
 
         if name == 'grapevine':
-            assert self.chronicle
+            pass
 
         elif name == 'usualplace':
             assert self.reading_usualplace
