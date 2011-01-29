@@ -548,6 +548,10 @@ class Trait(models.Model):
         else:
             return ''
 
+    def is_negative(self):
+        tlp = TraitListProperty.objects.get(sheet=self.sheet, name=self.traitlistname)
+        return tlp.negative
+
     def __unicode__(self):
         show_note = self.__show_note()
         show_val  = self.__show_val()
