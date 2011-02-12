@@ -113,17 +113,29 @@ class ChronicleCompare(TestCase):
         self.userx = User.objects.get(username__exact='Andre')
         self.userb = User.objects.get(username__exact='Carma')
 
+    def loadChrons(self, xfn, bfn):
         xml_start = datetime.now()
-        upload_chronicle_for_user('chronicle_camarilla_five_xml.gex', self.userx)
+        upload_chronicle_for_user(xfn, self.userx)
         xml_end = datetime.now()
         print "XML Timing", xml_end - xml_start
 
         bin_start = datetime.now()
-        upload_chronicle_for_user('chronicle_camarilla_five_bin.gex', self.userb)
+        upload_chronicle_for_user(bfn, self.userb)
         bin_end = datetime.now()
         print "Bin Timing", bin_end - bin_start
 
-    def testEquivalence(self):
+    def testEquivalenceLarge(self):
+        self.loadChrons('chronicle_camarilla_large_xml.gex', 'chronicle_camarilla_large_bin.gex')
+        xlist = self.userx.personal_characters.order_by('name')
+        blist = self.userb.personal_characters.order_by('name')
+        self.assertNotEqual(len(xlist), 0)
+        self.assertNotEqual(len(blist), 0)
+        for xv, bv in izip(self.userx.personal_characters.order_by('name'), self.userb.personal_characters.order_by('name')):
+            print "Comparing", xv.name
+            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
+
+    def testEquivalenceFive(self):
+        self.loadChrons('chronicle_camarilla_five_xml.gex', 'chronicle_camarilla_five_bin.gex')
         xlist = self.userx.personal_characters.order_by('name')
         blist = self.userb.personal_characters.order_by('name')
         self.assertNotEqual(len(xlist), 0)
