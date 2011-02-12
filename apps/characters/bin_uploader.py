@@ -143,7 +143,9 @@ def read_vampire(f):
         raise RuntimeError("Can't parse and or skip boons")
 
     vampire['biography'] = read_string(f)
+    vampire['biography'] = vampire['biography'].replace('\r\n', '\n')
     vampire['notes'] = read_string(f)
+    vampire['notes'] = vampire['notes'].replace('\r\n', '\n')
 
     return vampire
 
