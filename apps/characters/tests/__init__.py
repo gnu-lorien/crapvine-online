@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from experience import ExperienceEntriesTestCase
+from experience import ExperienceEntriesTestCase, RecentExpenditures
 from external import Export, Import, ChronicleCompare, ChronicleUpload
 
 from django.test import TestCase

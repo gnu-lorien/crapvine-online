@@ -1,8 +1,104 @@
 from django.test import TestCase
-from characters.models import Sheet
+from characters.models import Sheet, Trait, ChangedTrait
 from upload_helpers import upload_sheet_for_username
 
 from pprint import pprint
+
+class RecentExpenditures(TestCase):
+    fixtures = ['players']
+
+    def setUp(self):
+        upload_sheet_for_username('mcmillan.gex', 'Andre')
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.sheet.uploading = False
+        self.sheet.save()
+
+    def _assertREName(self, words):
+        e = self.sheet.get_recent_expenditures_entry()
+        self.assertEqual(words, e.reason)
+
+    def assertEE(self, reason, change=None, change_type=None):
+        e = self.sheet.get_recent_expenditures_entry()
+        self.assertEqual(reason, e.reason)
+        if change is not None:
+            self.assertEqual(change, e.change, "%f != %f for expected |%s|" % (change, e.change, reason))
+        if change_type is not None:
+            self.assertEqual(change_type, e.change_type, "%f != %f for expected |%s|" % (change_type, e.change_type, reason))
+
+    def testBasic(self):
+        t = self.sheet.traits.get(name='Law')
+        t.value = 4
+        t.save()
+        self.assertEE(u'Purchased Law x2.', 2, 3)
+
+        t.value = 3
+        t.save()
+        self.assertEE(u'Purchased Law.', 1, 3)
+
+        t.value = 2
+        t.save()
+        self.assertEE(u'', 0, 6)
+
+        t.value = 1
+        t.save()
+        self.assertEE(u'Removed Law.', 1, 4)
+
+    def testRemove(self):
+        t = self.sheet.traits.get(name='Law')
+        self.assertEqual(2, t.value)
+        t.value = 3
+        t.save()
+        t.delete()
+        self.assertEE(u'Removed Law x2.', 2, 4)
+
+    def testAddDeleteBalance(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles'})
+        self.assertEE(u'Purchased Cockles.', 1, 3)
+
+        t = self.sheet.traits.get(name='Cockles')
+        t.delete()
+        self.assertEE(u'', 0, 6)
+
+    def testAddChangeDelete(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3})
+        self.assertEE(u'Purchased Cockles x3.', 3, 3)
+
+        t = self.sheet.traits.get(name='Cockles')
+        t.value = 2
+        t.save()
+        self.assertEE(u'Purchased Cockles x2.', 2, 3)
+
+        t.value = 4
+        t.save()
+        self.assertEE(u'Purchased Cockles x4.', 4, 3)
+
+        t.delete()
+        self.assertEE(u'', 0, 6)
+
+    def testAnotherBalance(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3})
+        self.assertEE(u'Purchased Cockles x3.', 3, 3)
+
+        t = self.sheet.traits.get(name='Cockles')
+        t.value = 2
+        t.save()
+        self.assertEE(u'Purchased Cockles x2.', 2, 3)
+
+        t = self.sheet.traits.get(name='Law')
+        t.delete()
+        self.assertEE(u'Purchased Cockles x2. Removed Law x2.', 0, 6)
+
+    def testDisplay5(self):
+        self.sheet.add_trait('Disciplines', {'name': 'Dementation: Passion', 'note': 'basic', 'display_preference': 5, 'value': 4})
+        self.assertEE(u'Purchased Dementation: Passion.', 4, 3)
+
+        t = self.sheet.traits.get(name='Auspex: Telepathy')
+        t.delete()
+        self.assertEE(u'Purchased Dementation: Passion. Removed Auspex: Telepathy.', 2, 4)
+
+    def testDisplayNotes(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3, 'note':'recce'})
+        self.assertEE(u'Purchased Cockles x3 (recce).', 3, 3)
 
 class ExperienceEntriesTestCase(TestCase):
     fixtures = ['players']
