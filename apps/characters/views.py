@@ -787,74 +787,6 @@ def new_experience_entry(request, sheet_slug, entry_id=None,
         form_class=form_class,
         **kwargs)
 
-def _get_recent_expenditures_entry(sheet):
-    entry = ExperienceEntry()
-    changed_traits = ChangedTrait.objects.filter(sheet=sheet)
-    final_reason_str = u''
-    changed = []
-    removed = []
-    for ct in changed_traits:
-        if ct.newer_trait_form:
-            changed.append(ct)
-        else:
-            removed.append(ct)
-
-    entry.change = 0
-    def get_trait_change_display(trait, display_val):
-        if display_val == 1:
-            return trait.name
-        else:
-            return trait.name + u' x' + unicode(display_val)
-
-    strs = []
-    while len(changed) > 0:
-        t = changed.pop(0)
-        if t.added:
-            change_val = t.newer_trait_form.value
-        else:
-            change_val = t.newer_trait_form.value - t.value
-            if change_val < 0:
-                removed.append(t)
-                continue
-        entry.change += change_val
-        strs.append(get_trait_change_display(t, change_val))
-    if len(strs) > 0:
-        final_reason_str += u'Purchased '
-        final_reason_str += u', '.join(strs)
-        final_reason_str += u'. '
-
-    if len(removed) > 0:
-        strs = []
-        for t in removed:
-            if t.newer_trait_form:
-                change_val = t.newer_trait_form.value - t.value
-            else:
-                change_val = t.value * -1
-            entry.change += change_val
-            strs.append(get_trait_change_display(t, abs(change_val)))
-        final_reason_str += u'Removed '
-        final_reason_str += u', '.join(strs)
-        final_reason_str += u'. '
-    #for name, items, getval in [(u'Purchased ', changed, lambda x: x.newer_trait_form.value), (u'Removed ', deleted, lambda x: x.value)]:
-    #    if len(items) > 0:
-    #        final_reason_str += name
-    #        strs = [ct.name + u' x' + unicode(getval(ct)) for ct in items]
-    #        final_reason_str += u', '.join(strs)
-    #        final_reason_str += u'. '
-
-    if entry.change < 0:
-        entry.change *= -1
-        entry.change_type = 4
-    elif entry.change > 0:
-        entry.change_type = 3
-    else:
-        entry.change_type = 6
-        
-    entry.reason = final_reason_str.strip()
-    from datetime import datetime
-    entry.date = datetime.now()
-    return entry
-
 @login_required
 def add_recent_expenditures(request, sheet_slug,
                             action_description="Recent Expenditures", object_description="Experience Entry",
@@ -899,7 +831,7 @@ def add_recent_expenditures(request, sheet_slug,
         else:
             print "Invalid?"
     else:
-        entry =  _get_recent_expenditures_entry(sheet)
+        entry =  sheet.get_recent_expenditures_entry()
         form = form_class(None, instance=entry)
 
     return render_to_response(template_name, {
@@ -1281,7 +1213,7 @@ def show_recent_expenditures(request, sheet_slug,
     if not can_edit_sheet(request, sheet):
         return permission_denied(request)
 
-    entry =  _get_recent_expenditures_entry(sheet)
+    entry =  sheet.get_recent_expenditures_entry()
     form = form_class(None, instance=entry)
 
     ctx = group_context(group, bridge)

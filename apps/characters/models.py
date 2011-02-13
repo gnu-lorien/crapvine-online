@@ -364,6 +364,76 @@ class Sheet(models.Model):
             return group.content_bridge.reverse("list_sheet", group, kwargs)
         return reverse("list_sheet", kwargs=kwargs)
 
+    def get_recent_expenditures_entry(self):
+        entry = ExperienceEntry()
+        changed_traits = self.changed_traits.all()#ChangedTrait.objects.filter(sheet=self)
+        logging.debug('get_recent_expenditures top %s' % pformat(changed_traits))
+        final_reason_str = u''
+        changed = []
+        removed = []
+        for ct in changed_traits:
+            try:
+                Trait.objects.get(id=ct.newer_trait_form)
+                changed.append(ct)
+            except Trait.DoesNotExist:
+                removed.append(ct)
+
+        entry.change = 0
+        def get_trait_change_display(trait, display_val):
+            if display_val == 1:
+                return trait.name
+            else:
+                if trait.show_note():
+                    return trait.name + u' x' + unicode(display_val) + u' (' + trait.note + u')'
+                else:
+                    return trait.name + u' x' + unicode(display_val)
+
+        strs = []
+        while len(changed) > 0:
+            t = changed.pop(0)
+            ntf = Trait.objects.get(id=t.newer_trait_form)
+            if t.added:
+                change_val = ntf.value
+            else:
+                change_val = ntf.value - t.value
+                if change_val < 0:
+                    removed.append(t)
+                    continue
+            entry.change += change_val
+            strs.append(get_trait_change_display(t, change_val))
+        if len(strs) > 0:
+            final_reason_str += u'Purchased '
+            final_reason_str += u', '.join(strs)
+            final_reason_str += u'. '
+
+        if len(removed) > 0:
+            strs = []
+            for t in removed:
+                try:
+                    ntf = Trait.objects.get(id=t.newer_trait_form)
+                    change_val = ntf.value - t.value
+                except Trait.DoesNotExist:
+                    change_val = t.value * -1
+                entry.change += change_val
+                strs.append(get_trait_change_display(t, abs(change_val)))
+            final_reason_str += u'Removed '
+            final_reason_str += u', '.join(strs)
+            final_reason_str += u'. '
+
+        if entry.change < 0:
+            entry.change *= -1
+            entry.change_type = 4
+        elif entry.change > 0:
+            entry.change_type = 3
+        else:
+            entry.change_type = 6
+            
+        entry.reason = final_reason_str.strip()
+        from datetime import datetime
+        entry.date = datetime.now()
+        logging.debug('get_recent_expenditures bottom %s' % pformat(changed_traits))
+        return entry
+
 class VampireSheet(Sheet):
     nature = models.CharField(max_length=128, blank=True)
     demeanor = models.CharField(max_length=128, blank=True)
