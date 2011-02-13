@@ -1,6 +1,10 @@
 # coding=utf-8
 from datetime import datetime, timedelta
 import logging
+# Only need this when debugging
+#import sys
+#logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
+from pprint import pformat
 
 from django.db import models
 from django.conf import settings
@@ -627,11 +631,26 @@ class ChangedTrait(models.Model):
 
     traitlistname = models.ForeignKey(TraitListName)
 
-    newer_trait_form = models.ForeignKey(Trait, related_name="changes", null=True)
+    newer_trait_form = models.PositiveIntegerField(null=True)#models.ForeignKey(Trait, related_name="changes", null=True)
     added = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['date']
+
+    def show_note(self):
+        return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
+
+    def __unicode__(self):
+        from pprint import pformat
+        return pformat(
+        {'sheet': self.sheet.name,
+         'date':pformat(self.date),
+         'name':self.name,
+         'note':self.note,
+         'value':self.value,
+         'traitlistname':self.traitlistname.name,
+         'newer_trait_form':pformat(self.newer_trait_form),
+         'added': self.added})
 
 def track_added_trait(sender, instance, created, **kwargs):
     if not created:
@@ -645,11 +664,10 @@ def track_added_trait(sender, instance, created, **kwargs):
         'value':         instance.value,
         'traitlistname': instance.traitlistname,
         'added': True,
-        'newer_trait_form': instance
+        'newer_trait_form': instance.id
     }
+    logging.debug('track_added_trait %s' % pformat(create_kwargs))
     ChangedTrait.objects.create(**create_kwargs)
-
-import logging
 
 def track_changed_trait(sender, instance, **kwargs):
     if instance.id is None:
@@ -657,10 +675,13 @@ def track_changed_trait(sender, instance, **kwargs):
     if instance.sheet.uploading:
         return
     old_changed = ChangedTrait.objects.filter(sheet=instance.sheet,
-                                              newer_trait_form=instance)
+                                              newer_trait_form=instance.id)
+    logging.debug('track_changed_trait in')
     if len(old_changed) > 0:
         old_changed = old_changed[0]
         if old_changed.value == instance.value:
+            logging.debug('track_changed_trait Original trait and instance match, so delete the change history')
+            old_changed.delete()
             return
         create_kwargs = {
             'sheet':         old_changed.sheet,
@@ -669,7 +690,7 @@ def track_changed_trait(sender, instance, **kwargs):
             'value':         old_changed.value,
             'traitlistname': old_changed.traitlistname,
             'added':         old_changed.added,
-            'newer_trait_form': instance
+            'newer_trait_form': instance.id
         }
         old_changed.delete()
     else:
@@ -682,29 +703,36 @@ def track_changed_trait(sender, instance, **kwargs):
             'note': orig_trait.note,
             'value': orig_trait.value,
             'traitlistname': orig_trait.traitlistname,
-            'newer_trait_form': instance
+            'newer_trait_form': instance.id
         }
+    logging.debug('track_changed_trait %s' % pformat(create_kwargs))
     ChangedTrait.objects.create(**create_kwargs)
 
 def track_deleted_trait(sender, instance, **kwargs):
     if instance.sheet.uploading:
         return
     other_inst = ChangedTrait.objects.filter(sheet=instance.sheet,
-                                             newer_trait_form=instance)
+                                             newer_trait_form=instance.id)
+
+    logging.debug('track_deleted_trait inst %s other_inst %s' % (pformat(instance), pformat(other_inst)))
 
     if len(other_inst) > 0:
         other_inst = other_inst[0]
         create_delete = not other_inst.added
+        create_instance = other_inst
+        logging.debug('track_deleted_trait have another inst that was added? %r and creating delete? %r' % (other_inst, create_delete))
     else:
         create_delete = True
+        create_instance = instance
         other_inst = None
+        logging.debug('track_deleted_trait have no other inst that was added? %r and creating delete? %r' % (other_inst, create_delete))
     if create_delete:
         create_kwargs = {
-            'sheet':         instance.sheet,
-            'name':          instance.name,
-            'note':          instance.note,
-            'value':         instance.value,
-            'traitlistname': instance.traitlistname,
+            'sheet':         create_instance.sheet,
+            'name':          create_instance.name,
+            'note':          create_instance.note,
+            'value':         create_instance.value,
+            'traitlistname': create_instance.traitlistname,
             'added': False,
             'newer_trait_form': None
         }
@@ -715,7 +743,7 @@ def track_deleted_trait(sender, instance, **kwargs):
 
 models.signals.pre_save.connect(track_changed_trait, Trait)
 models.signals.post_save.connect(track_added_trait, Trait)
-models.signals.post_delete.connect(track_deleted_trait, Trait)
+models.signals.pre_delete.connect(track_deleted_trait, Trait)
 
 CREATURE_TYPES = [
     (0, "Mortal"),
@@ -750,7 +778,6 @@ class Menu(models.Model):
     display_preference = models.PositiveSmallIntegerField(default=0, choices=DISPLAY_PREFERENCES)
 
     def __unicode__(self):
-        from pprint import pformat
         return pformat(self.__dict__)
 
     @classmethod
