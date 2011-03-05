@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load analytics %}
 
+{% block head_title_base %}Crapvine Online : {% block head_title %}{% endblock %}{% endblock %}
+
 {% block extra_head_base %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/site_tabs.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}pinax/css/avatar.css" />
