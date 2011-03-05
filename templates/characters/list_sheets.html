@@ -6,10 +6,53 @@
 
 {% block head_title %}{% blocktrans %}List Character Sheets{% endblocktrans %}{% endblock %}
 
+{% block extra_head %}
+<style>
+#sheets_list th {
+border: none;
+border-bottom: 2px dotted black;
+}
+
+#sheets_list td {
+border: none;
+border-bottom: 1px dashed black;
+}
+
+#sheets_list td.sheets_list_40 {
+text-align:left;
+width:40%;
+}
+
+#sheets_list td.sheets_list_20 {
+text-align:center;
+width:40%;
+}
+
+#sheets_list td.sheets_list_10 {
+text-align:center;
+width:40%;
+}
+
+</style>
+{% endblock %}
+
 {% block body %}
-    <table>
+    <table id="sheets_list" border="2" cellpadding="2" cellspacing="10" width="100%">
+        <tr>
+            <th>Name</th>
+            <th>Clan</th>
+            <th>Sect</th>
+            <th>NPC?</th>
+            <th>Play Status</th>
+        </tr>
     {% for sheet in sheets %}
-        {% sheet_list_item sheet %}
+        <tr bgcolor="{% cycle 'aliceblue' 'white' %}">
+            <td class="sheets_list_40" width="40%" align="left"><a href="{% url sheet_list sheet.slug %}">{{sheet.name}}</a></td>
+            <td class="sheets_list_20" width="20%" align="center">{{sheet.vampiresheet.clan}}</td>
+            <td class="sheets_list_20" width="20%" align="center">{{sheet.vampiresheet.sect}}</td>
+            <td class="sheets_list_10" width="10%" align="center">{{sheet.npc}}</td>
+            <td class="sheets_list_10" width="10%" align="center">{{sheet.status}}</td>
+        </tr>
     {% endfor %}
     </table>
 
