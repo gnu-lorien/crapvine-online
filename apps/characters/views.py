@@ -21,7 +21,7 @@ from django.forms.formsets import formset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem, ChangedTrait
 from chronicles.models import Chronicle, ChronicleMember
 
-from reversion.models import Version, DeletedVersion
+from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
 
 from xml_uploader import handle_sheet_upload as handle_sheet_upload_xml, VampireExporter
@@ -585,11 +585,11 @@ def history_sheet(request, sheet_slug,
             if versions_map[key][1](version, obj):
                 bucket_string = "updated"
                 tl.append((version.revision.date_created, version.revision.user, obj, bucket_string, version.object_id))
-        dversions = DeletedVersion.objects.filter(content_type=ContentType.objects.get_for_model(versions_map[key][0]))
+        dversions = []
         print "printing dversions"
         pprint(dversions)
         print "print all deleted versions"
-        print ", ".join([unicode(dv) for dv in DeletedVersion.objects.all()])
+        print ""
         for dversion in dversions:
             obj = Version.objects.get_deleted_object(dversion).object_version.object
             if versions_map[key][1](dversion, obj):
