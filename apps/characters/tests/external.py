@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user, get_fixture_path_gen
-from characters.models import Sheet, VampireSheet
+from characters.models import Sheet, VampireSheet, Trait
 
 from ..xml_uploader import handle_sheet_upload, VampireExporter
 
@@ -180,6 +180,32 @@ class Import(TestCase):
     def setUp(self):
         self.user = User.objects.get(username__exact='Andre')
 
+    def testUpdated(self):
+        upload_sheet_for_user('mcmillan.gex', self.user)
+
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        the_first_id = self.sheet.id
+
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Commanding').value, 2)
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Diplomatic').value, 4)
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'man')
+        self.sheet.get_traits('Social').get(name='Charming')
+        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits('Social').get(name='Douching'))
+        self.sheet.get_traits('Social').get(name='Elegant')
+
+        upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.assertEqual(self.sheet.id, the_first_id)
+
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Commanding').value, 1)
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Diplomatic').value, 5)
+        self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'douche')
+        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Charming'))
+        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Elegant'))
+
+        print self.user.personal_characters.all()
+        print Sheet.objects.all()
+        
     def testMcMillan(self):
         upload_sheet_for_user('mcmillan.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
