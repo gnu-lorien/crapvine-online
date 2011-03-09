@@ -187,6 +187,7 @@ class Import(TestCase):
         traits = self.sheet.get_traitlist(category)
         self.assertEqual(len(args), len(traits))
         for argtrait, sheettrait in izip(args, traits):
+            #print 'argtrait', argtrait, 'sheettrait', sheettrait
             self.assertEqual(argtrait[0], sheettrait.name)
             self.assertEqual(argtrait[1], sheettrait.value)
             self.assertEqual(argtrait[2], sheettrait.note)
@@ -237,8 +238,8 @@ class Import(TestCase):
         self.assertEqual(self.sheet.get_traits('Social').get(name='Commanding').value, 1)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Diplomatic').value, 5)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'douche')
-        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Charming'))
-        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Elegant'))
+        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits('Social').get(name='Charming'))
+        self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits('Social').get(name='Elegant'))
         self.__assertOrderedTraits('Health Levels',
             ('Torpor', 4, 'balls'),
             ('Wounded', 2, ''),
