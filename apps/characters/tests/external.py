@@ -208,6 +208,9 @@ class Import(TestCase):
             ('Torpor', 1, ''))
         self.assertEqual(self.sheet.vampiresheet.coterie, 'The White Handkerchief')
         self.assertEqual(self.sheet.npc, False)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Physical').sorted, True)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Social').display_preference, 1)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Mental').negative, True)
 
         upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
@@ -226,6 +229,9 @@ class Import(TestCase):
             ('Incapacitated', 1, 'eatit'))
         self.assertEqual(self.sheet.vampiresheet.coterie, 'Noterie')
         self.assertEqual(self.sheet.npc, True)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Physical').sorted, False)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Social').display_preference, 2)
+        self.assertEqual(self.sheet.get_traitlist_property('Negative Mental').negative, False)
 
         print self.user.personal_characters.all()
         print Sheet.objects.all()
