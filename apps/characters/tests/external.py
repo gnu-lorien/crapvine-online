@@ -3,6 +3,7 @@ from django.test.client import Client
 from django.contrib.auth.models import User
 from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user, get_fixture_path_gen
 from characters.models import Sheet, VampireSheet, Trait
+from django.db import IntegrityError
 
 from ..xml_uploader import handle_sheet_upload, VampireExporter
 
@@ -12,6 +13,8 @@ from itertools import izip
 from datetime import datetime
 
 import os
+
+from pprint import pprint
 
 def compare_sheets(self, left, right):
     # Vampire base attributes
@@ -189,6 +192,18 @@ class Import(TestCase):
             self.assertEqual(argtrait[2], sheettrait.note)
 
     def testUpdated(self):
+        #from django.conf import settings
+        #from django.db import connection
+
+        #settings.DEBUG = True
+        #connection.queries = []
+
+        #TODO: Add code to watch how much reversion's tables explode over these operations
+        from reversion.models import Version
+        print "Number of versions", len(Version.objects.all())
+
+        #TODO: Test upload that would update a character owned by somebody else
+
         upload_sheet_for_user('mcmillan.gex', self.user)
 
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
@@ -211,6 +226,9 @@ class Import(TestCase):
         self.assertEqual(self.sheet.get_traitlist_property('Negative Physical').sorted, True)
         self.assertEqual(self.sheet.get_traitlist_property('Negative Social').display_preference, 1)
         self.assertEqual(self.sheet.get_traitlist_property('Negative Mental').negative, True)
+
+        #pprint(connection.queries)
+        print "Number of versions", len(Version.objects.all())
 
         upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
