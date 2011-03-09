@@ -180,6 +180,14 @@ class Import(TestCase):
     def setUp(self):
         self.user = User.objects.get(username__exact='Andre')
 
+    def __assertOrderedTraits(self, category, *args):
+        traits = self.sheet.get_traitlist(category)
+        self.assertEqual(len(args), len(traits))
+        for argtrait, sheettrait in izip(args, traits):
+            self.assertEqual(argtrait[0], sheettrait.name)
+            self.assertEqual(argtrait[1], sheettrait.value)
+            self.assertEqual(argtrait[2], sheettrait.note)
+
     def testUpdated(self):
         upload_sheet_for_user('mcmillan.gex', self.user)
 
@@ -192,6 +200,12 @@ class Import(TestCase):
         self.sheet.get_traits('Social').get(name='Charming')
         self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits('Social').get(name='Douching'))
         self.sheet.get_traits('Social').get(name='Elegant')
+        self.__assertOrderedTraits('Health Levels',
+            ('Healthy', 3, ''),
+            ('Bruised', 3, ''),
+            ('Wounded', 2, ''),
+            ('Incapacitated', 1, ''),
+            ('Torpor', 1, ''))
 
         upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
@@ -202,6 +216,13 @@ class Import(TestCase):
         self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'douche')
         self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Charming'))
         self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Elegant'))
+
+        self.__assertOrderedTraits('Health Levels',
+            ('Torpor', 4, 'balls'),
+            ('Wounded', 2, ''),
+            ('Bruised', 1, ''),
+            ('Healthy', 3, ''),
+            ('Incapacitated', 1, 'eatit'))
 
         print self.user.personal_characters.all()
         print Sheet.objects.all()
