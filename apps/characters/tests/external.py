@@ -206,6 +206,8 @@ class Import(TestCase):
             ('Wounded', 2, ''),
             ('Incapacitated', 1, ''),
             ('Torpor', 1, ''))
+        self.assertEqual(self.sheet.vampiresheet.coterie, 'The White Handkerchief')
+        self.assertEqual(self.sheet.npc, False)
 
         upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
@@ -216,13 +218,14 @@ class Import(TestCase):
         self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'douche')
         self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Charming'))
         self.assertRaises(Trait.DoesNotExist, lambda: self.sheet.get_traits().get(name='Elegant'))
-
         self.__assertOrderedTraits('Health Levels',
             ('Torpor', 4, 'balls'),
             ('Wounded', 2, ''),
             ('Bruised', 1, ''),
             ('Healthy', 3, ''),
             ('Incapacitated', 1, 'eatit'))
+        self.assertEqual(self.sheet.vampiresheet.coterie, 'Noterie')
+        self.assertEqual(self.sheet.npc, True)
 
         print self.user.personal_characters.all()
         print Sheet.objects.all()
