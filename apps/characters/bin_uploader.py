@@ -2,6 +2,9 @@ import struct
 from reversion import revision
 
 from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
+from uploader import update_base_vampire, update_experience_entry, update_traitlist_properties, update_trait, cull_traits
+
+from characters.models import VampireSheet
 
 import datetime
 import math
@@ -216,17 +219,34 @@ def handle_sheet_upload(uploaded_file, user):
     ret.vampires = {}
     for c in creatures:
         # Stuck on vampies for now
-        current_vampire = create_base_vampire(c['attrs'], user)
+        try:
+            v = VampireSheet.objects.get(name__exact=c['attrs']['name'], player=user)
+            print "Found?", c['attrs']['name']
+            current_vampire = update_base_vampire(c['attrs'], user, v)
+            updating = True
+        except VampireSheet.DoesNotExist:
+            updating = False
+            print "Creating base?"
+            current_vampire = create_base_vampire(c['attrs'], user)
         previous_entry = None
         for ee in c['experience_entries']:
-            previous_entry = read_experience_entry(ee, current_vampire, previous_entry)
+            if updating:
+                update_experience_entry(ee, current_vampire)
+            else:
+                previous_entry = read_experience_entry(ee, current_vampire, previous_entry)
 
         for tl in c['trait_lists']:
             traits = tl['list']
             del tl['list']
-            read_traitlist_properties(tl, current_vampire)
+            if updating:
+                update_traitlist_properties(tl, current_vampire)
+            else:
+                read_traitlist_properties(tl, current_vampire)
             for i, t in enumerate(traits):
-                read_trait(t, tl, current_vampire, i)
+                if updating:
+                    update_trait(t, tl, current_vampire, i)
+                else:
+                    read_trait(t, tl, current_vampire, i)
 
         current_vampire.biography = c['biography']
         current_vampire.notes = c['notes']
