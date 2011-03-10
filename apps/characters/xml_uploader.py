@@ -120,8 +120,7 @@ class VampireLoader(ContentHandler):
             if not attrs.has_key('name'):
                 return
             try:
-                vampire = VampireSheet.objects.get(name__exact=attrs['name'])
-                self.current_vampire = update_base_vampire(attrs, self.__user, vampire)
+                self.current_vampire = update_base_vampire(attrs, self.__user, VampireSheet.objects.get(name__exact=attrs['name'], player=self.__user))
                 self.updating = True
             except VampireSheet.DoesNotExist:
                 self.current_vampire = create_base_vampire(attrs, self.__user)
