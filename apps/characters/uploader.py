@@ -161,8 +161,6 @@ def get_traitlist_properties_dict(attrs, current_vampire):
 def update_traitlist_properties(attrs, current_vampire):
     my_attrs = get_traitlist_properties_dict(attrs, current_vampire)
     my_attrs['overwrite'] = True
-    if my_attrs['name'] == 'Negative Physical':
-        pprint(my_attrs)
     current_vampire.add_traitlist_properties(**my_attrs)
 
 def read_traitlist_properties(attrs, current_vampire):
