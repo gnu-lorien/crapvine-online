@@ -1,4 +1,7 @@
 from __future__ import with_statement
+from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
+from apps.crapvine.xml.trait import TraitList
 from experience import ExperienceEntriesTestCase, RecentExpenditures
 from external import Export, Import, ChronicleCompare, ChronicleUpload
 
@@ -7,6 +10,8 @@ from django.test.client import Client
 from characters.models import Trait, Sheet, TraitListName, VampireSheet, ExperienceEntry
 from chronicles.models import Chronicle
 from django.contrib.auth.models import User
+
+from upload_helpers import upload_sheet_for_user
 
 from pprint import pprint
 
@@ -99,20 +104,14 @@ class PageViewPermissionsTestCase(TestCase):
 
 
 class CharactersTestCase(TestCase):
-    def _build_trait(self, name, value, note):
-        return Trait.objects.create(name=name, value=value, note=note)
-
     def _build_traitlist(self, name, sheet, traits):
-        trait_objs = [self._build_trait(*args) for args in traits]
-        traitlist_name = TraitListName.objects.get(name__exact=name)
-        for i, trait in enumerate(trait_objs):
-            TraitList.objects.create(sheet=sheet, trait=trait, display_order=i, name=traitlist_name)
-        return trait_objs
+        for t in traits:
+            sheet.add_trait(name, {'name':t[0], 'value':t[1], 'note':t[2]})
 
     def _build_traitlist_randomize(self, name, sheet, traits):
         import random
         random.shuffle(traits)
-        return self._build_traitlist(name, sheet, traits)
+        self._build_traitlist(name, sheet, traits)
 
 class SheetTestCase(CharactersTestCase):
     fixtures = ['players']
@@ -122,56 +121,40 @@ class SheetTestCase(CharactersTestCase):
     def _assertNamedTraitNotInList(self, trait_name, traitlist_name):
         self.failIf(trait_name in [trait.name for trait in self.sheet.get_traitlist(traitlist_name)])
 
-
     def setUp(self):
-        self.andrew_player = User.objects.get(username__exact='Andre')
+        self.user = User.objects.get(username__exact='Andre')
         self.sheet = Sheet.objects.create(
             name='Michele',
-            player=self.andrew_player)
-        self.trait = Trait.objects.create(name='Vivox')
-        self.tl = TraitList.objects.create(sheet=self.sheet, trait=self.trait, display_order=1, name=TraitListName.objects.get(name__exact='Physical'))
+            player=self.user)
 
     def testCreateTraitList(self):
-        tl = self._build_traitlist_randomize('Social', self.sheet,[
-            ('dummy', 3, ''),
-            ('aoeu', 2, 'frilel'),
-            ('nothing', 5, 'hate')])
+        self._build_traitlist_randomize('Social', self.sheet,[
+            ['dummy', 3, ''],
+            ['aoeu', 2, 'frilel'],
+            ['nothing', 5, 'hate']])
         self._assertNamedTraitNotInList('Vivox', 'Social')
         self._assertNamedTraitInList('dummy', 'Social')
         self._assertNamedTraitInList('aoeu', 'Social')
         self._assertNamedTraitInList('nothing', 'Social')
 
     def testStrangeTraitValues(self):
-        t = Trait.objects.create(name='Weird ness', value='1 or 2')
-        t = Trait.objects.create(name='Weird ness', value='1-2')
+        self.assertRaises(ValueError, lambda: self.sheet.add_trait('Social', {'name':'Weird ness', 'value':'1 or 2'}))
+        self.assertRaises(ValueError, lambda: self.sheet.add_trait('Social', {'name':'Weird har', 'value':'1-2'}))
 
     def testAddingTraits(self):
-        #self.sheet.add_trait('Mental', 'Determined')
-        #self.sheet.add_trait('Mental', 'Insidious', value=2)
-        #self.sheet.add_trait('Mental', 'Perceptive', value=5, note='Cars')
-        t = Trait.objects.create(name='Fuckness')
-        self.sheet.add_trait('Mental', t)
-        #pprint(dir(self.sheet.get_traitlist('Mental')))
-        #self.sheet.get_traitlist('Mental')[0].display_order
-
-        #self._assertNamedTraitInList('Determined', 'Mental')
-        #self._assertNamedTraitInList('Insidious', 'Mental')
-        #self._assertNamedTraitInList('Perceptive', 'Mental')
+        self.sheet.add_trait('Mental', {'name': 'Fuckness'})
         self._assertNamedTraitInList('Fuckness', 'Mental')
 
     def testInsertTraits(self):
-        t = Trait.objects.create(name='Fuckness')
-        self.sheet.add_trait('Mental', t)
-        t = Trait.objects.create(name='Preloaded')
-        self.sheet.insert_trait('Mental', t, 0)
+        self.sheet.add_trait('Mental', {'name':'Fuckness'})
+        self.sheet.insert_trait('Mental', {'name':'Preloaded'}, 0)
         self.assertEquals('Preloaded', self.sheet.get_traitlist('Mental')[0].name)
         self.assertEquals('Fuckness', self.sheet.get_traitlist('Mental')[1].name)
 
     def testReorderTraitlist(self):
         names = ['a', 'b', 'c', 'd', 'e']
         for name in names:
-            t = Trait.objects.create(name=name)
-            self.sheet.add_trait('Mental', t)
+            self.sheet.add_trait('Mental', {'name':name})
 
         self.sheet.reorder_traits('Mental', names)
         traitlist = self.sheet.get_traitlist('Mental')
@@ -186,13 +169,12 @@ class SheetTestCase(CharactersTestCase):
             self.assertEquals(names[i], traitlist[i].name)
 
     def testTraitRules(self):
-        try:
-            t1 = Trait.objects.create(name='CockSmap')
-            self.sheet.add_trait('Mental', t1)
-            self.sheet.add_trait('Social', t1)
-        except ValidationError:
-            return
-        raise AssertionError
+        self.sheet.add_trait('Mental', {'name':'CockSmap'})
+        self.assertRaises(IntegrityError, lambda: self.sheet.add_trait('Mental', {'name':'CockSmap'}))
+
+        upload_sheet_for_user('mcmillan.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.assertRaises(IntegrityError, lambda: self.sheet.add_trait('Social', {'name': 'Commanding', 'value':2, 'note': ''}))
 
     def testAddExperienceEntry(self):
         entry = ExperienceEntry.objects.create(reason="Test reason",
@@ -210,7 +192,7 @@ class VampireSheetTestCase(SheetTestCase):
         SheetTestCase.setUp(self)
         self.vampire = VampireSheet.objects.create(
             name='BloodNess',
-            player=self.andrew_player,
+            player=self.user,
             blood=10,
             conscience=4,
             courage=2,
