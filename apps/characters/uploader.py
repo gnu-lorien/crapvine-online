@@ -6,16 +6,17 @@ from django.db import IntegrityError
 
 def translate_date(date):
     if isinstance(date, basestring):
-        date_translation_lambdas = [
-            lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"),
-            lambda data: datetime.strptime(date, "%m/%d/%Y"),
-            lambda data: datetime.strptime(date, "%I:%M:%S %p"),
-            lambda date: datetime.strptime(date, "%m/%d/%Y %H:%M:%S %p"),
+        date_translation_strings = [
+            "%m/%d/%Y %I:%M:%S %p",
+            "%m/%d/%Y",
+            "%I:%M:%S %p",
+            "%m/%d/%Y %H:%M:%S %p",
         ]
         dt = None
-        for dtl in date_translation_lambdas:
+        for format in date_translation_strings:
             try:
-                dt = dtl(date)
+                dt = datetime.strptime(date, format)
+                break
             except ValueError:
                 pass
 
@@ -130,6 +131,13 @@ def read_trait(attrs, current_traitlist, current_vampire, order=None):
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     if order is not None:
         my_attrs['order'] = order
-    current_vampire.add_trait(current_traitlist['name'], my_attrs)
+    try:
+        current_vampire.add_trait(current_traitlist['name'], my_attrs)
+    except IntegrityError, e:
+        if e.args[0] == "columns sheet_id, traitlistname_id, name are not unique":
+            # While we don't, Grapevine supports non-unique names in atomic traitlists
+            # Just pass until we come up with a better way to report errors and
+            # warnings in this code
+            pass
 
 

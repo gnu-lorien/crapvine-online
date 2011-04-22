@@ -150,14 +150,7 @@ class VampireLoader(ContentHandler):
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
             self.order += 1
-            try:
-                read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
-            except IntegrityError, e:
-                if e.message == "columns sheet_id, traitlistname_id, name are not unique":
-                    # While we don't, Grapevine supports non-unique names in atomic traitlists
-                    # Just pass until we come up with a better way to report errors and
-                    # warnings in this code
-                    pass
+            read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
 
     def endElement(self, name):
         if name == 'vampire':

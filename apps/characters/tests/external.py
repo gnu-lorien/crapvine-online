@@ -269,9 +269,17 @@ class Import(TestCase):
     def testWeirdSandra(self):
         upload_sheet_for_user('sandra_weird_dates', 'Andre')
 
-    def testWeirdAssertion(self):
+    def testPythonDatetimeBug(self):
         from ..uploader import translate_date
         self.assertRaises(ValueError, lambda: translate_date("rrererre"))
+        dt = translate_date("5/1/2004")
+        print dt
+        self.assertEqual(dt, datetime(2004, 5, 1, 0, 0, 0))
+        print dt.strftime("%m/%d/%Y %I:%M:%S %p")
+        self.assertEqual(
+            datetime.strptime("05/01/2004 12:00:00 AM", "%m/%d/%Y %I:%M:%S %p"),
+            datetime.strptime("05/01/2004", "%m/%d/%Y"))
+        self.assertEqual(dt, translate_date(dt.strftime("%m/%d/%Y %I:%M:%S %p")))
 
     #def testChronicleInclude(self):
     #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')

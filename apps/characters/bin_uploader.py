@@ -20,9 +20,13 @@ def convert_date(vbt):
     #print "days:", just_days, "seconds:", seconds
     t = base_vb + td
     try:
-        return t.strftime("%m/%d/%Y %I:%M:%S %p")
+        if seconds == 0:
+            time_string = t.strftime("%m/%d/%Y")
+        else:
+            time_string = t.strftime("%m/%d/%Y %I:%M:%S %p")
     except ValueError:
-        return t.time().strftime("%I:%M:%S %p")
+        time_string = t.time().strftime("%I:%M:%S %p")
+    return time_string
 
 def read_string(f):
     n = read_length(f)
