@@ -609,6 +609,7 @@ class Trait(models.Model):
 
     class Meta:
         ordering = ['order']
+        unique_together = (("sheet", "traitlistname", "name"),)
 
     def __show_note(self):
         return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
