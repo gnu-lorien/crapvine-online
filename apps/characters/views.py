@@ -1145,10 +1145,13 @@ def new_trait_from_menu(request, sheet_slug, traitlistname_slug, id_segment,
         send_segment = id_segment[1:]
     else:
         try:
-            if sheet.vampiresheet:
-                desired_menu = Menu.get_menu_for_traitlistname(traitlistname, VampireSheet)
-        except ObjectDoesNotExist:
-            desired_menu = Menu.get_menu_for_traitlistname(traitlistname)
+            try:
+                if sheet.vampiresheet:
+                    desired_menu = Menu.get_menu_for_traitlistname(traitlistname, VampireSheet)
+            except ObjectDoesNotExist:
+                desired_menu = Menu.get_menu_for_traitlistname(traitlistname)
+        except Menu.DoesNotExist:
+            return new_trait(request, sheet_slug, traitlistname_slug, chronicle_slug=chronicle_slug, bridge=bridge, **kwargs)
         print desired_menu.name
         send_segment = "%d" % desired_menu.id
 
