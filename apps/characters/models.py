@@ -179,8 +179,14 @@ class Sheet(models.Model):
         return self.traits.filter(traitlistname__name=name).order_by('order')
 
     def add_traitlist_properties(self, **kwargs):# name, sorted, atomic, negative, display_preference):
+        """Updates the properties of a traitlist"""
         overwrite = kwargs.get('overwrite', True)
-        #print "Adding traitlist property with overwrite", overwrite
+        def fix_bool_kwargs(key, kwargs):
+            if key in kwargs:
+                if isinstance(kwargs[key], basestring):
+                    kwargs[key] = True if kwargs[key] == 'yes' else False
+        for k in ['sorted', 'atomic', 'negative']:
+            fix_bool_kwargs(k, kwargs)
         traitlist_name_obj, tl_created = TraitListName.objects.get_or_create(
                 name=kwargs['name'],
                 defaults={"slug":slugify(kwargs['name'])})
@@ -190,10 +196,14 @@ class Sheet(models.Model):
         n_property, created = self.traitlistproperty_set.get_or_create(
                 name=traitlist_name_obj,
                 defaults=kwargs)
-        if created is False:
+        if created is False and overwrite is True:
+            changed = False
             for key, value in kwargs.iteritems():
-                setattr(n_property, key, value)
-            n_property.save()
+                if getattr(n_property, key) != value:
+                    changed = True
+                    setattr(n_property, key, value)
+            if changed:
+                n_property.save()
 
     def get_traitlist_property(self, traitlistname):
         if isinstance(traitlistname, basestring):
