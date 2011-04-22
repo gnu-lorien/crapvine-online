@@ -226,10 +226,11 @@ class Sheet(models.Model):
         self.traits.create(traitlistname=traitlist_name_obj, **trait_attrs)
 
     def insert_trait(self, traitlist_name, trait_attrs, order):
-        for trait in self.traits.filter(orde__gte=order):
+        for trait in self.traits.filter(order__gte=order):
             trait.order = trait.order + 1
+            trait.save()
         trait_attrs['order'] = order
-        self.traits.create(**trait_attrs)
+        self.traits.create(traitlistname=self._get_traitlist_name_obj(traitlist_name), **trait_attrs)
 
     def _cascade_experience_expenditure_change(self, prev_entry, next_entry):
         #print "_cascade_experience_expenditure_change"
