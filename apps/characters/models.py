@@ -232,6 +232,23 @@ class Sheet(models.Model):
         trait_attrs['order'] = order
         self.traits.create(traitlistname=self._get_traitlist_name_obj(traitlist_name), **trait_attrs)
 
+    def reorder_traits(self, traitlist_name, trait_names):
+        """Reorders a traitlist to match the order given
+
+        Should fail if the list doesn't exactly match having the traits named
+        """
+        tl = self.get_traitlist(traitlist_name)
+        order_mapping = {}
+        for i, tn in enumerate(trait_names):
+            order_mapping[tn] = i
+        for t in tl:
+            if t.name not in trait_names:
+                raise AttributeError("Reordering traitlist include the same members as the original traitlist. %s not found" % t.name)
+            t.order = order_mapping[t.name]
+
+        for t in tl:
+            t.save()
+
     def _cascade_experience_expenditure_change(self, prev_entry, next_entry):
         #print "_cascade_experience_expenditure_change"
         if next_entry is None and prev_entry is None:
