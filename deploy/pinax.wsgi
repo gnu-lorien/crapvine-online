@@ -13,11 +13,11 @@ sys.path.insert(0, '/home/ourianet/public_html')
 sys.path.insert(0, '/home/ourianet/public_html/virtfs/lib/python2.6/site-packages')
 sys.path.insert(0, '/home/ourianet/public_html/virtfs/lib/python2.6')
 
-sys.path.insert(0, '/home/ourianet/public_html/testpinax')
-sys.path.insert(0, '/home/ourianet/public_html/testpinax/apps')
+sys.path.insert(0, '/home/ourianet/public_html/test-crapvine-online')
+sys.path.insert(0, '/home/ourianet/public_html/test-crapvine-online/apps')
 
 from django.conf import settings
-os.environ["DJANGO_SETTINGS_MODULE"] = "testpinax.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "test-crapvine-online.settings"
 
 
 from django.core.handlers.wsgi import WSGIHandler
