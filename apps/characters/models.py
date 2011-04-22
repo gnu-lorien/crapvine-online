@@ -196,8 +196,10 @@ class Sheet(models.Model):
             n_property.save()
 
     def get_traitlist_property(self, traitlistname):
-        #print "get_traitlist_property", traitlistname.name
-        return self.traitlistproperty_set.get(name=traitlistname)
+        if isinstance(traitlistname, basestring):
+            return self.traitlistproperty_set.get(name__name=traitlistname)
+        else:
+            return self.traitlistproperty_set.get(name=traitlistname)
 
     def get_traitlist_properties(self):
         return self.traitlistproperty_set.all()
