@@ -208,11 +208,15 @@ class Sheet(models.Model):
         traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         return self.traits.filter(traitlistname=traitlist_name_obj)
 
-    def add_trait(self, traitlist_name, trait_attrs):
+    def _get_traitlist_name_obj(self, traitlist_name):
         try:
             traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         except TraitListName.DoesNotExist:
             traitlist_name_obj = TraitListName.objects.create(name=traitlist_name, slug=slugify(traitlist_name))
+        return traitlist_name_obj
+
+    def add_trait(self, traitlist_name, trait_attrs):
+        traitlist_name_obj = self._get_traitlist_name_obj(traitlist_name)
         if "order" not in trait_attrs:
             try:
                 previous_last_order = self.traits.filter(traitlistname=traitlist_name_obj).only('order').values_list('order', flat=True).order_by('-order')[0]
