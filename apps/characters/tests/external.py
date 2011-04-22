@@ -177,7 +177,7 @@ class Export(TestCase):
     def testChronicle(self):
         pass
 
-class Import(TestCase):
+class Update(TestCase):
     fixtures = ['players']
 
     def setUp(self):
@@ -192,7 +192,7 @@ class Import(TestCase):
             self.assertEqual(argtrait[1], sheettrait.value)
             self.assertEqual(argtrait[2], sheettrait.note)
 
-    def testUpdated(self):
+    def testXML(self):
         #from django.conf import settings
         #from django.db import connection
 
@@ -254,6 +254,12 @@ class Import(TestCase):
 
         print self.user.personal_characters.all()
         print Sheet.objects.all()
+
+class Import(TestCase):
+    fixtures = ['players']
+
+    def setUp(self):
+        self.user = User.objects.get(username__exact='Andre')
         
     def testMcMillan(self):
         upload_sheet_for_user('mcmillan.gex', self.user)

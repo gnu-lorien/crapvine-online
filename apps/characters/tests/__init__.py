@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from apps.characters.tests.upload_helpers import upload_sheet_for_username
 from apps.crapvine.xml.trait import TraitList
 from experience import ExperienceEntriesTestCase, RecentExpenditures
-from external import Export, Import, ChronicleCompare, ChronicleUpload
+from external import Export, Update, Import, ChronicleCompare, ChronicleUpload
 
 from django.test import TestCase
 from django.test.client import Client
