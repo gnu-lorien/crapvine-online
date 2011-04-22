@@ -2,6 +2,7 @@ from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
 from datetime import datetime
+from django.db import IntegrityError
 
 from xml.sax import ContentHandler
 
@@ -149,7 +150,14 @@ class VampireLoader(ContentHandler):
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
             self.order += 1
-            read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
+            try:
+                read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
+            except IntegrityError, e:
+                if e.message == "columns sheet_id, traitlistname_id, name are not unique":
+                    # While we don't, Grapevine supports non-unique names in atomic traitlists
+                    # Just pass until we come up with a better way to report errors and
+                    # warnings in this code
+                    pass
 
     def endElement(self, name):
         if name == 'vampire':
