@@ -192,24 +192,7 @@ class Update(TestCase):
             self.assertEqual(argtrait[1], sheettrait.value)
             self.assertEqual(argtrait[2], sheettrait.note)
 
-    def testXML(self):
-        #from django.conf import settings
-        #from django.db import connection
-
-        #settings.DEBUG = True
-        #connection.queries = []
-
-        #TODO: Add code to watch how much reversion's tables explode over these operations
-        from reversion.models import Version
-        print "Number of versions", len(Version.objects.all())
-
-        #TODO: Test upload that would update a character owned by somebody else
-
-        upload_sheet_for_user('mcmillan.gex', self.user)
-
-        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
-        the_first_id = self.sheet.id
-
+    def __baseMcMillanAsserts(self):
         self.assertEqual(self.sheet.get_traits('Social').get(name='Commanding').value, 2)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Diplomatic').value, 4)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'man')
@@ -228,13 +211,7 @@ class Update(TestCase):
         self.assertEqual(self.sheet.get_traitlist_property('Negative Social').display_preference, 1)
         self.assertEqual(self.sheet.get_traitlist_property('Negative Mental').negative, True)
 
-        #pprint(connection.queries)
-        print "Number of versions", len(Version.objects.all())
-
-        upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
-        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
-        self.assertEqual(self.sheet.id, the_first_id)
-
+    def __changedMcMillanAsserts(self):
         self.assertEqual(self.sheet.get_traits('Social').get(name='Commanding').value, 1)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Diplomatic').value, 5)
         self.assertEqual(self.sheet.get_traits('Social').get(name='Persuasive').note, 'douche')
@@ -252,6 +229,61 @@ class Update(TestCase):
         self.assertEqual(self.sheet.get_traitlist_property('Negative Social').display_preference, 2)
         self.assertEqual(self.sheet.get_traitlist_property('Negative Mental').negative, False)
 
+    def testXML(self):
+        #from django.conf import settings
+        #from django.db import connection
+
+        #settings.DEBUG = True
+        #connection.queries = []
+
+        #TODO: Add code to watch how much reversion's tables explode over these operations
+        from reversion.models import Version
+        print "Number of versions", len(Version.objects.all())
+
+        #TODO: Test upload that would update a character owned by somebody else
+
+        upload_sheet_for_user('mcmillan.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        the_first_id = self.sheet.id
+        self.__baseMcMillanAsserts()
+
+        #pprint(connection.queries)
+        print "Number of versions", len(Version.objects.all())
+
+        upload_sheet_for_user('mcmillan_minor_changes.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.assertEqual(self.sheet.id, the_first_id)
+
+        self.assertEqual(1, len(self.user.personal_characters.all()))
+        print self.user.personal_characters.all()
+        print Sheet.objects.all()
+
+    def testBin(self):
+        #from django.conf import settings
+        #from django.db import connection
+
+        #settings.DEBUG = True
+        #connection.queries = []
+
+        #TODO: Add code to watch how much reversion's tables explode over these operations
+        from reversion.models import Version
+        print "Number of versions", len(Version.objects.all())
+
+        #TODO: Test upload that would update a character owned by somebody else
+
+        upload_sheet_for_user('mcmillan.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        the_first_id = self.sheet.id
+        self.__baseMcMillanAsserts()
+
+        #pprint(connection.queries)
+        print "Number of versions", len(Version.objects.all())
+
+        upload_sheet_for_user('mcmillan_minor_changes_bin.gex', self.user)
+        self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
+        self.assertEqual(self.sheet.id, the_first_id)
+
+        self.assertEqual(1, len(self.user.personal_characters.all()))
         print self.user.personal_characters.all()
         print Sheet.objects.all()
 
