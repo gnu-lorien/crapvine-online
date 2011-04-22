@@ -266,6 +266,13 @@ class Import(TestCase):
         self.assertSheetExists('Adam St. Charles')
         self.assertSheetExists('ValueForEverything')
 
+    def testWeirdSandra(self):
+        upload_sheet_for_user('sandra_weird_dates', 'Andre')
+
+    def testWeirdAssertion(self):
+        from ..uploader import translate_date
+        self.assertRaises(ValueError, lambda: translate_date("rrererre"))
+
     #def testChronicleInclude(self):
     #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')
     #    self.assertSheetExists('Charles McMillan')

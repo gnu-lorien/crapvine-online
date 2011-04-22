@@ -6,14 +6,21 @@ from django.db import IntegrityError
 
 def translate_date(date):
     if isinstance(date, basestring):
-        try:
-            dt = datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p")
-        except ValueError:
+        date_translation_lambdas = [
+            lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"),
+            lambda data: datetime.strptime(date, "%m/%d/%Y"),
+            lambda data: datetime.strptime(date, "%I:%M:%S %p"),
+            lambda date: datetime.strptime(date, "%m/%d/%Y %H:%M:%S %p"),
+        ]
+        dt = None
+        for dtl in date_translation_lambdas:
             try:
-                dt = datetime.strptime(date, "%m/%d/%Y")
+                dt = dtl(date)
             except ValueError:
-                dt = datetime.strptime(date, "%I:%M:%S %p")
+                pass
 
+        if dt is None:
+            raise ValueError("Could not convert %s to a proper date" % date)
         return dt
     else:
         if date.hour == date.minute == date.second == 0:

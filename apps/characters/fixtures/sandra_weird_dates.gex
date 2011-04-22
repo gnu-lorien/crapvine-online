@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<grapevine version="3">
+  <vampire name="Another Sandra" status="active" player="drgnsyr" id="1" startdate="07/15/2010 18:21:12 PM" lastmodified="07/15/2010 18:21:12 PM">
+     <experience />
+     <traitlist name="Abilities" display="1" abc="yes">
+        <trait name="Animal Ken"/>
+        <trait name="Awareness"/>
+        <trait name="Crafts: Baking" val="2"/>
+        <trait name="Crafts: Drawing" val="3"/>
+        <trait name="Dodge" val="2"/>
+        <trait name="Empathy" val="2"/>
+        <trait name="Enigmas" val="2"/>
+        <trait name="Etiquette" val="3"/>
+        <trait name="Expression: Writing"/>
+        <trait name="Firedancing" val="2"/>
+        <trait name="Gambling" val="2"/>
+        <trait name="Intimidation"/>
+        <trait name="Investigation" val="2"/>
+        <trait name="Linguistics: Latin"/>
+        <trait name="Lore: Camarilla" val="3"/>
+        <trait name="Lore: Clan: Tremere"/>
+        <trait name="Lore: Faerie" val="4"/>
+        <trait name="Lore: Kindred"/>
+        <trait name="Occult" val="4"/>
+        <trait name="Performance: Acting" val="3"/>
+        <trait name="Politics"/>
+        <trait name="Streetwise" val="2"/>
+        <trait name="Subterfuge" val="3"/>
+     </traitlist>
+     <traitlist name="Backgrounds" display="1" abc="yes">
+        <trait name="Contacts"/>
+        <trait name="Generation" val="4"/>
+        <trait name="Resources" val="2"/>
+     </traitlist>
+     <traitlist name="Bonds" display="1" abc="yes"/>
+     <traitlist name="Derangements" display="5" abc="yes" atomic="yes" negative="yes">
+        <trait name="Borderline Personality Disorder"/>
+     </traitlist>
+     <traitlist name="Disciplines" display="5">
+        <trait name="Animalism: Feral Whispers" note="basic"/>
+        <trait name="Auspex: Heightened Senses" note="basic"/>
+        <trait name="Auspex: Aura Perception" note="basic"/>
+        <trait name="Auspex: Spirit's Touch" note="int."/>
+        <trait name="Auspex: Telepathy" note="int." val="6"/>
+        <trait name="Auspex: Psychic Projection" note="adv." val="9"/>
+        <trait name="Celerity: Alacrity" note="basic" val="3"/>
+        <trait name="Dominate: Command" note="basic"/>
+        <trait name="Dominate: Mesmerism" note="basic"/>
+        <trait name="Dominate: Forgetful Mind" note="int."/>
+        <trait name="Fortitude: Endurance" note="basic"/>
+        <trait name="Thaumaturgy: Green Path: Herbal Wisdom" note="basic"/>
+        <trait name="Thaumaturgy: Green Path: Season's Passing" note="basic"/>
+        <trait name="Thaumaturgy: Green Path: Dance of Vines" note="int."/>
+        <trait name="Thaumaturgy: The Green Path: Awaken the Forest Giants" note="adv." val="9"/>
+        <trait name="Thaumaturgy: The Green Path: Verdant Haven" note="int." val="6"/>
+        <trait name="Thaumaturgy: Hearth Path: Guest's Herald" note="basic"/>
+        <trait name="Thaumaturgy: Hearth Path: Master's Order" note="basic"/>
+        <trait name="Thaumaturgy: Hearth Path: Rhyme of Discord" note="int."/>
+        <trait name="Thaumaturgy: Hearth Path: Temportal" note="int."/>
+        <trait name="Thaumaturgy: Hearth Path: The Cauldron's Rede" note="adv"/>
+        <trait name="Thaumaturgy: Path of Blood: Taste for Blood" note="basic"/>
+        <trait name="Thaumaturgy: Path of Blood: Blood Rage" note="basic"/>
+        <trait name="Thaumaturgy: Path of Blood: Blood of Potency" note="int"/>
+        <trait name="Thaumaturgy: Path of Blood: Theft of Vitae" note="int"/>
+        <trait name="Thaumaturgy: Path of Blood: Cauldron of Blood" note="adv"/>
+        <trait name="Thaumaturgy: Oneiromancy: Portents" note="basic"/>
+        <trait name="Thaumaturgy: Oneiromancy: Foresee" note="basic"/>
+        <trait name="Thaumaturgy: Oneiromancy: Dreamspeak" note="int."/>
+        <trait name="Thaumaturgy: Oneiromancy: Augery" note="int."/>
+        <trait name="Thaumaturgy: Lure of Flames: Hand of Flames" note="basic"/>
+        <trait name="Thaumaturgy: Lure of Flames: Flame Bolt" note="basic"/>
+     </traitlist>
+     <traitlist name="Equipment" display="1" abc="yes"/>
+     <traitlist name="Flaws" display="4" abc="yes" atomic="yes" negative="yes">
+        <trait name="Changeling Eyes" note="bright purple irises"/>
+        <trait name="Chimerical Echo" note="brief spread of magical ability with contact" val="2"/>
+     </traitlist>
+     <traitlist name="Health Levels" display="1"/>
+     <traitlist name="Influences" display="1" abc="yes">
+        <trait name="Bureacracy"/>
+        <trait name="High Society"/>
+        <trait name="Occult" val="2"/>
+        <trait name="Police"/>
+        <trait name="Street" val="2"/>
+     </traitlist>
+     <traitlist name="Locations" display="5" abc="yes" atomic="yes"/>
+     <traitlist name="Mental" display="1" abc="yes">
+        <trait name="Attentive"/>
+        <trait name="Creative" val="2"/>
+        <trait name="Insightful" val="3"/>
+        <trait name="Intuitive" val="3"/>
+        <trait name="Determined" val="3"/>
+        <trait name="Knowledgeable"/>
+     </traitlist>
+     <traitlist name="Merits" display="4" abc="yes" atomic="yes">
+        <trait name="Faerie Affinity" val="2"/>
+        <trait name="Dual Natured" note="bought after character creation" val="3"/>
+        <trait name="Innate Magical Ability" note="permanently enchanted" val="4"/>
+     </traitlist>
+     <traitlist name="Miscellaneous" display="1"/>
+     <traitlist name="Negative Mental" display="1" abc="yes" negative="yes"/>
+     <traitlist name="Negative Physical" display="1" abc="yes" negative="yes">
+        <trait name="Puny"/>
+     </traitlist>
+     <traitlist name="Negative Social" display="1" abc="yes" negative="yes">
+        <trait name="naive"/>
+        <trait name="tactless"/>
+     </traitlist>
+     <traitlist name="Physical" display="3">
+        <trait name="Agile" val="2"/>
+        <trait name="Energetic" val="2"/>
+        <trait name="Nimble"/>
+        <trait name="Quick" val="2"/>
+        <trait name="Brawny" note="str" val="2"/>
+     </traitlist>
+     <traitlist name="Rituals" display="5" atomic="yes">
+        <trait name="Rituals, Basic: Rite of Introduction" note="basic" val="2"/>
+        <trait name="Rituals, Basic: Deflection of Wooden Doom" note="basic" val="2"/>
+        <trait name="Rituals, Basic: Sanguine Assistant" note="basic" val="2"/>
+        <trait name="Rituals, Intermediate: Pavis of the Foul Presence" note="int." val="4"/>
+        <trait name="Rituals, Intermediate: Ward versus Fae" note="adv" val="6"/>
+        <trait name="Rituals, Intermediate: Scry" note="int." val="4"/>
+        <trait name="Rituals, Intermediate: Innocence of a Child's Heart" note="int." val="4"/>
+     </traitlist>
+     <traitlist name="Social" display="1" abc="yes">
+        <trait name="Charismatic" val="2"/>
+        <trait name="Charming" val="3"/>
+        <trait name="Commanding" val="2"/>
+        <trait name="Cute" note="Gorgeous" val="4"/>
+        <trait name="Friendly" val="2"/>
+     </traitlist>
+     <traitlist name="Status" display="1" abc="yes">
+        <trait name="Admired" note="Justine Westshire"/>
+     </traitlist>
+  </vampire>
+</grapevine>
