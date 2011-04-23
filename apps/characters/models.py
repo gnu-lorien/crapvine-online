@@ -405,6 +405,8 @@ class Sheet(models.Model):
         final_reason_str = u''
         changed = []
         removed = []
+        noted = []
+        renamed = []
         for ct in changed_traits:
             try:
                 Trait.objects.get(id=ct.newer_trait_form)
@@ -414,13 +416,9 @@ class Sheet(models.Model):
 
         entry.change = 0
         def get_trait_change_display(trait, display_val):
-            if display_val == 1:
-                return trait.name
-            else:
-                if trait.show_note():
-                    return trait.name + u' x' + unicode(display_val) + u' (' + trait.note + u')'
-                else:
-                    return trait.name + u' x' + unicode(display_val)
+            value_u = u' x' + unicode(display_val) if display_val > 1 else u''
+            trait_u = u' (' + trait.note + u')' if trait.show_note() else u''
+            return trait.name + value_u + trait_u
 
         strs = []
         while len(changed) > 0:
@@ -430,11 +428,20 @@ class Sheet(models.Model):
                 change_val = ntf.value
             else:
                 change_val = ntf.value - t.value
+                non_val_differences = False
+                if ntf.note != t.note:
+                    noted.append((t, ntf))
+                    non_val_differences = True
+                if ntf.name != t.name:
+                    renamed.append((t, ntf))
+                    non_val_differences = True
+                if non_val_differences and change_val == 0:
+                    continue
                 if change_val < 0:
                     removed.append(t)
                     continue
             entry.change += change_val
-            strs.append(get_trait_change_display(t, change_val))
+            strs.append(get_trait_change_display(ntf, change_val))
         if len(strs) > 0:
             final_reason_str += u'Purchased '
             final_reason_str += u', '.join(strs)
@@ -451,6 +458,24 @@ class Sheet(models.Model):
                 entry.change += change_val
                 strs.append(get_trait_change_display(t, abs(change_val)))
             final_reason_str += u'Removed '
+            final_reason_str += u', '.join(strs)
+            final_reason_str += u'. '
+
+        if len(noted) > 0:
+            strs = []
+            for orig, new in noted:
+                orig.display_preference = 1
+                new.display_preference = 10
+                strs.append(u'{orig.name} x{orig.value} ({orig.note}) to ({new})'.format(orig=orig, new=new))
+            final_reason_str += u'Updated note '
+            final_reason_str += u', '.join(strs)
+            final_reason_str += u'. '
+
+        if len(renamed) > 0:
+            strs = []
+            for orig, new in renamed:
+                strs.append(u'{orig.name} x{orig.value} ({orig.note}) to {new.name} x{new.value} ({new.note})'.format(orig=orig, new=new))
+            final_reason_str += u'Renamed '
             final_reason_str += u', '.join(strs)
             final_reason_str += u'. '
 
@@ -550,7 +575,7 @@ class Formatter():
         self.dot_character      = dot_character
         self.display_preference = display_preference
 
-    def __show_note(self):
+    def show_note(self):
         return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
     def __show_val(self):
         return self.value >= 1
@@ -563,7 +588,7 @@ class Formatter():
             return ''
 
     def __unicode__(self):
-        show_note = self.__show_note()
+        show_note = self.show_note()
         show_val  = self.__show_val()
         tally_val = self.__tally_val()
 
@@ -645,7 +670,7 @@ class Trait(models.Model):
         ordering = ['order']
         unique_together = (("sheet", "traitlistname", "name"),)
 
-    def __show_note(self):
+    def show_note(self):
         return self.note != Trait._meta.get_field_by_name('note')[0].get_default()
     def __show_val(self):
         return self.value >= 1
@@ -662,7 +687,7 @@ class Trait(models.Model):
         return tlp.negative
 
     def __unicode__(self):
-        show_note = self.__show_note()
+        show_note = self.show_note()
         show_val  = self.__show_val()
         tally_val = self.__tally_val()
 
@@ -779,12 +804,19 @@ def track_changed_trait(sender, instance, **kwargs):
         return
     if instance.sheet.uploading:
         return
+    orig_trait = Trait.objects.get(pk=instance.id)
+    def no_tracked_changes(l, r):
+        attrs = ['name', 'value', 'note']
+        attr_results = [getattr(l, attr) == getattr(r, attr) for attr in attrs]
+        return all(attr_results)
+    if no_tracked_changes(instance, orig_trait):
+        return
     old_changed = ChangedTrait.objects.filter(sheet=instance.sheet,
                                               newer_trait_form=instance.id)
     logging.debug('track_changed_trait in')
     if len(old_changed) > 0:
         old_changed = old_changed[0]
-        if old_changed.value == instance.value:
+        if no_tracked_changes(old_changed, instance):
             logging.debug('track_changed_trait Original trait and instance match, so delete the change history')
             old_changed.delete()
             return
@@ -799,9 +831,6 @@ def track_changed_trait(sender, instance, **kwargs):
         }
         old_changed.delete()
     else:
-        orig_trait = Trait.objects.get(id=instance.id)
-        if orig_trait.value == instance.value:
-            return
         create_kwargs = {
             'sheet': orig_trait.sheet,
             'name': orig_trait.name,

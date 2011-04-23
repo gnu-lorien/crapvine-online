@@ -88,17 +88,134 @@ class RecentExpenditures(TestCase):
         t.delete()
         self.assertEE(u'Purchased Cockles x2. Removed Law x2.', 0, 6)
 
-    def testDisplay5(self):
-        self.sheet.add_trait('Disciplines', {'name': 'Dementation: Passion', 'note': 'basic', 'display_preference': 5, 'value': 4})
-        self.assertEE(u'Purchased Dementation: Passion.', 4, 3)
-
-        t = self.sheet.traits.get(name='Auspex: Telepathy')
-        t.delete()
-        self.assertEE(u'Purchased Dementation: Passion. Removed Auspex: Telepathy.', 2, 4)
+#    def testDisplay5(self):
+#        self.sheet.add_trait('Disciplines', {'name': 'Dementation: Passion', 'note': 'basic', 'display_preference': 5, 'value': 4})
+#        self.assertEE(u'Purchased Dementation: Passion.', 4, 3)
+#
+#        t = self.sheet.traits.get(name='Auspex: Telepathy')
+#        t.delete()
+#        self.assertEE(u'Purchased Dementation: Passion. Removed Auspex: Telepathy.', 2, 4)
 
     def testDisplayNotes(self):
         self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3, 'note':'recce'})
         self.assertEE(u'Purchased Cockles x3 (recce).', 3, 3)
+
+    def testDotCharacterChange(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3, 'dot_character':'OOO'})
+        a = [ct for ct in ChangedTrait.objects.all()]
+
+        self.assertEE(u'Purchased Cockles x3.', 3, 3)
+        t = self.sheet.traits.get(name='Cockles')
+        t.dot_character = 'OOOO'
+        t.save()
+        a = [ct for ct in ChangedTrait.objects.all()]
+
+        self.assertEE(u'Purchased Cockles x3.', 3, 3)
+        t.value = 4
+        t.save()
+        a = [ct for ct in ChangedTrait.objects.all()]
+
+        self.assertEE(u'Purchased Cockles x4.', 4, 3)
+        t.delete()
+        a = [ct for ct in ChangedTrait.objects.all()]
+
+        self.assertEE(u'')
+
+    def testNoteChanges(self):
+        self.sheet.add_trait('Farcicle', {'name': 'Cockles', 'value':3, 'note':'OOO'})
+        self.assertEE(u'Purchased Cockles x3 (OOO).', 3, 3)
+        t = self.sheet.traits.get(name='Cockles')
+        t.note = 'OOOO'
+        t.save()
+        t = self.sheet.traits.get(name='Cockles')
+        self.assertEqual(t.note, 'OOOO')
+        self.assertEE(u'Purchased Cockles x3 (OOOO).', 3, 3)
+        t.note = '4'
+        t.save()
+        self.assertEE(u'Purchased Cockles x3 (4).', 3, 3)
+        t.delete()
+        self.assertEE(u'')
+
+        t = self.sheet.traits.get(name='Dexterous')
+        t.note = 'reallydex'
+        t.save()
+        self.assertEE(u'Updated note Dexterous x3 (dex) to (reallydex).', 0, 6)
+        t.delete()
+        self.assertEE(u'Removed Dexterous x3 (dex).', 3, 4)
+
+    def testDoubleNoteChanges(self):
+        dt = self.sheet.traits.get(name='Dexterous')
+        dt.note = 'reallydex'
+        dt.save()
+        self.assertEE(u'Updated note Dexterous x3 (dex) to (reallydex).', 0, 6)
+
+        et = self.sheet.traits.get(name='Energetic')
+        et.note = "crap"
+        et.save()
+        self.assertEE(u'Updated note Dexterous x3 (dex) to (reallydex), Energetic x3 (misc) to (crap).', 0, 6)
+
+        et.value = 4
+        et.save()
+        self.assertEE(u'Purchased Energetic (crap). Updated note Dexterous x3 (dex) to (reallydex), Energetic x3 (misc) to (crap).', 1, 3)
+
+        dt.delete()
+        self.assertEE(u'Purchased Energetic (crap). Removed Dexterous x3 (dex). Updated note Energetic x3 (misc) to (crap).', 2, 4)
+
+    def testNameChanges(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3, 'note':'OOO'})
+        self.assertEE(u'Purchased Cockles x3 (OOO).', 3, 3)
+        t = self.sheet.traits.get(name='Cockles')
+        t.name = 'OOOO'
+        t.save()
+        self.assertEE(u'Purchased OOOO x3 (OOO).', 3, 3)
+        t.name = '4'
+        t.save()
+        self.assertEE(u'Purchased 4 x3 (OOO).', 3, 3)
+        t.delete()
+        self.assertEE(u'')
+
+        t = self.sheet.traits.get(name='Dexterous')
+        t.name = 'Douchesterous'
+        t.save()
+        self.assertEE(u'Renamed Dexterous x3 (dex) to Douchesterous x3 (dex).', 0, 6)
+        t.delete()
+        self.assertEE(u'Removed Dexterous x3 (dex).', 3, 4)
+
+    def testDoubleNameChanges(self):
+        dt = self.sheet.traits.get(name='Dexterous')
+        dt.name = 'Douchesterous'
+        dt.save()
+        self.assertEE(u'Renamed Dexterous x3 (dex) to Douchesterous x3 (dex).', 0, 6)
+
+        et = self.sheet.traits.get(name='Energetic')
+        et.name = "Energdouchous"
+        et.save()
+        self.assertEE(u'Renamed Dexterous x3 (dex) to Douchesterous x3 (dex), Energetic x3 (misc) to Energdouchous x3 (misc).', 0, 6)
+
+        et.value = 4
+        et.save()
+        self.assertEE(u'Purchased Energdouchous (misc). Renamed Dexterous x3 (dex) to Douchesterous x3 (dex), Energetic x3 (misc) to Energdouchous x4 (misc).', 1, 3)
+
+        dt.delete()
+        self.assertEE(u'Purchased Energdouchous (misc). Removed Dexterous x3 (dex). Renamed Energetic x3 (misc) to Energdouchous x4 (misc).', 2, 4)
+
+    def testNameAndNoteChanges(self):
+        dt = self.sheet.traits.get(name='Dexterous')
+        dt.note = 'reallydex'
+        dt.save()
+        self.assertEE(u'Updated note Dexterous x3 (dex) to (reallydex).', 0, 6)
+
+        et = self.sheet.traits.get(name='Energetic')
+        et.name = "Energon"
+        et.save()
+        self.assertEE(u'Updated note Dexterous x3 (dex) to (reallydex). Renamed Energetic x3 (misc) to Energon x3 (misc).', 0, 6)
+
+        et.value = 4
+        et.save()
+        self.assertEE(u'Purchased Energon (misc). Updated note Dexterous x3 (dex) to (reallydex). Renamed Energetic x3 (misc) to Energon x4 (misc).', 1, 3)
+
+        dt.delete()
+        self.assertEE(u'Purchased Energon (misc). Removed Dexterous x3 (dex). Renamed Energetic x3 (misc) to Energon x4 (misc).', 2, 4)
 
 class ExperienceEntriesTestCase(TestCase):
     fixtures = ['players']
