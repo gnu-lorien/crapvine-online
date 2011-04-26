@@ -5,6 +5,7 @@ import logging
 #import sys
 #logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
 from pprint import pformat
+from django.core.urlresolvers import reverse
 
 from django.db import models
 from django.conf import settings
@@ -391,12 +392,12 @@ class Sheet(models.Model):
         super(Sheet, self).save(*args, **kwargs)
 
     def get_absolute_url(self, group=None):
-        kwargs = {"id": self.id}
+        kwargs = {"sheet_slug": self.slug}
         # We check for attachment of a group. This way if the Task object
         # is not attached to the group the application continues to function.
         if group:
-            return group.content_bridge.reverse("list_sheet", group, kwargs)
-        return reverse("list_sheet", kwargs=kwargs)
+            return group.content_bridge.reverse("sheet_list", group, kwargs=kwargs)
+        return reverse("sheet_list", kwargs=kwargs)
 
     def get_recent_expenditures_entry(self):
         entry = ExperienceEntry()
