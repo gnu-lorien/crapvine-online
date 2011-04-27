@@ -2,20 +2,38 @@
 {% load openid_tags %}
 {% load ifsetting_tag %}
 {% load analytics %}
+{% load characters_extras %}
 
 <div class="traitlist">
 <table>
 {% for trait in traits %}
 <tr>
-<td><a href="{% url sheet_edit_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_edit.png"  height="16" width="16" alt="Edit Trait" title="Edit Trait"/></a></td>
-<td><a href="{% url sheet_delete_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_delete.png" height="16" width="16" alt="Delete Trait" title="Delete Trait"/></a></td>
-<td bgcolor="{% cycle 'aliceblue' 'white' %}">{{prepend}}{{trait}}</td>
+    {% if not printing %}
+        <td><a href="{% url sheet_edit_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_edit.png"  height="16" width="16" alt="Edit Trait" title="Edit Trait"/></a></td>
+        <td><a href="{% url sheet_delete_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_delete.png" height="16" width="16" alt="Delete Trait" title="Delete Trait"/></a></td>
+        <td bgcolor="{% cycle 'aliceblue' 'white' %}">{{prepend}}{{trait}}</td>
+    {% else %}
+        {% if tlp.display_preference == 1 %}
+            <td>{{ prepend }}{{ trait|format_trait:0 }} x{{ trait|format_trait:9 }}</td>
+            <td>{{ trait|format_trait:8 }}</td>
+            {% if trait.show_note %}
+                <td>({{ trait|format_trait:10 }})</td>
+            {% endif %}
+        {% else %}
+            <td>{{prepend}}{{trait|print_trait:tlp}}</td>
+        {% endif %}
+    {% endif %}
+
 </tr>
 {% endfor %}
 <tr>
-<td><a href="{% url sheet_new_trait_from_menu sheet.slug traitlistname.slug "" %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_add.png" height="16" width="16" alt="Add New Trait" title="Add New Trait"/></a></td>
-<td> </td>
-<td> </td>
+    {% if not printing %}
+        <td><a href="{% url sheet_new_trait_from_menu sheet.slug traitlistname.slug "" %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_add.png" height="16" width="16" alt="Add New Trait" title="Add New Trait"/></a></td>
+    {% else %}
+        <td> </td>
+    {% endif %}
+    <td> </td>
+    <td> </td>
 </tr>
 </table>
 </div>

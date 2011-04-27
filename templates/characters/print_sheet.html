@@ -1,28 +1,25 @@
-{% extends "characters/base.html" %}
-
 {% load i18n %}
 {% load uni_form_tags %}
 {% load group_tags %}
 {% load characters_extras %}
-
-{% block head_title %}{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>{% blocktrans %}Character Sheet{% endblocktrans %} - {{sheet.name}}</title>
+    </head>
+    <body>
 
 {% block body %}
-<!--
-<a href="{%  url sheet_print sheet.slug %}">
-    <img src="{{ STATIC_URL }}pinax/img/silk/icons/printer.png" alt="Printer friendly"/>
-</a>
--->
 <div id="recent_expenditures_pane">
 </div>
 <table width="" border="0" bgcolor="white">
 <tbody>
-<tr><td><a href="{% url sheet_vampire_edit_attributes sheet.slug %}">Edit Attributes</a></td></tr>
 <tr>
 <td width="240"><font color="black" size="2"><b>Name:</b>
 {{ sheet.name }}</font></td>
-<td width="235"><span class="top_info"><b>Player:</b>
-{{ sheet.player.username }}</span></td>
+<td width="235"><font color="black" size="2"><b>Player:</b>
+{{ sheet.player.username }}</font></td>
 <td width="200"><font color="black" size="2"><b>Clan:</b>
 {{ sheet.vampiresheet.clan }}</font></td>
 </tr>
@@ -168,63 +165,5 @@
 </tbody>
 </table>
 {% endblock %}
-
-{% block extra_body %}
-<script type="text/javascript">
-    jQuery(document).ready(function($) {
-        $("#recent_expenditures_pane").load("{% url sheet_show_recent_expenditures sheet.slug %}")
-        function itemResponseFunction() {
-            var myHref= $(this).attr('href');
-            jQuery.facebox(function() {
-                jQuery.get(myHref, function(data) {
-                    jQuery.facebox(data);
-                });
-            });
-            return false;
-        };
-        function menuResponseFunction() {
-            $('#grapevine_menu').load($(this).attr('href'), function(response, status, xhr) {
-                if (status == "error") {
-                    alert(xhr.status + " " + xhr.statusText);
-                } else {
-                    $('a[rel*=menu_link]').click(menuResponseFunction);
-                    $('a[rel*=menu_item_link]').click(itemResponseFunction);
-                }
-            });
-            return false;
-        };
-        $(document).bind('reveal.facebox', function() {
-            $('a[rel*=menu_link]').click(menuResponseFunction);
-            $('a[rel*=menu_item_link]').click(itemResponseFunction);
-            $("form.uniForm").submit(function() {
-                form = this;
-                jQuery.facebox(function($) {
-                    fields = jQuery(form).find("input[type='text']").filter(":enabled");
-                    params = {}
-                    fields.each(function() {
-                        params[this.name] = this.value;
-                    });
-                    fields = jQuery(form).find("select").filter(":enabled");
-                    fields.each(function() {
-                        params[this.name] = this.value;
-                    });
-                    fields = jQuery(form).find("textarea").filter(":enabled");
-                    fields.each(function() {
-                        params[this.name] = this.value;
-                    });
-                    fields = jQuery(form).find("input[type='hidden']");
-                    fields.each(function() {
-                        params[this.name] = this.value;
-                    });
-                    jQuery.post(form.getAttribute('action'), params,
-                        function(data, textStatus) {
-                            jQuery.facebox(data);
-                        }
-                    );
-                });
-                return false;
-            });
-        });
-     });
-</script>
-{% endblock %}
+</body>
+</html>

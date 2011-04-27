@@ -156,12 +156,31 @@ def list_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
     if not can_fullview_sheet(request, sheet):
         return permission_denied(request)
 
-    ee = sheet.experience_entries.all().order_by('date')
     return render_to_response(
         'characters/list_sheet.html',
         {'sheet':sheet,
+         'group':group},
+        context_instance=RequestContext(request))
+
+@login_required
+def print_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
+    if bridge is not None:
+        try:
+            group = bridge.get_group(chronicle_slug)
+        except ObjectDoesNotExist:
+            raise Http404
+    else:
+        group = None
+
+    sheet = get_object_or_404(Sheet, slug=sheet_slug)
+    if not can_fullview_sheet(request, sheet):
+        return permission_denied(request)
+
+    return render_to_response(
+        'characters/print_sheet.html',
+        {'sheet':sheet,
          'group':group,
-         'experience_entries':ee},
+         'printing':True},
         context_instance=RequestContext(request))
 
 @login_required

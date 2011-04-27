@@ -12,6 +12,8 @@ urlpatterns = patterns('characters.views',
     url(r'^edit_vampire_sheet_attributes/(?P<sheet_slug>[-\w]+)/$', 'edit_vampire_sheet_attributes', name='sheet_vampire_edit_attributes'),
     url(r'^new_sheet/$', 'new_sheet', name='sheet_new'),
     url(r'^experience_sheet/(?P<sheet_slug>[-\w]+)/$', 'experience_sheet', name='sheet_experience'),
+    url(r'^print_sheet/(?P<sheet_slug>[-\w]+)/$', 'print_sheet', name='sheet_print'),
+    #url(r'^print_sheet_settings/(?P<sheet_slug>[-\w]+)/$', 'print_sheet_settings', name='sheet_print_settings'),
 
     # Chronicles
     url(r'^join_chronicle/(?P<target_chronicle_slug>[-\w]+)/$', 'join_chronicle', name='sheet_join_chronicle'),

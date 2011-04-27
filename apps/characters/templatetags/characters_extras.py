@@ -32,20 +32,39 @@ def format_traitlist(traitlist, prepend='', autoescape=None):
     return mark_safe(result)
 format_traitlist.needs_autoescape = True
 
+@register.filter
+def print_trait(trait, tlp):
+    if tlp.display_preference == 1:
+        trait.display_preference = 2
+    return trait
+
+@register.filter
+def format_trait(trait, disp):
+    trait.display_preference = disp
+    return trait
+
 @register.inclusion_tag("characters/show_traitlist.html", takes_context=True)
 def show_traitlist(context, traitlist_name, prepend=""):
+    printing = False if 'printing' not in context else context['printing']
+    tlp = context['sheet'].get_traitlist_property(TraitListName.objects.get(name=traitlist_name))
     return {
         'traits': context['sheet'].get_traitlist(traitlist_name),
         'prepend':prepend,
         'STATIC_URL': context['STATIC_URL'],
         'sheet': context['sheet'],
         'traitlistname': TraitListName.objects.get(name=traitlist_name),
+        'printing': printing,
+        'tlp': tlp,
     }
 
 @register.inclusion_tag("characters/trait_category_header.html", takes_context=True)
 def trait_category_header(context, traitlist_name):
     tln = TraitListName.objects.get(name=traitlist_name)
-    return {'traitlistname': tln, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'],}
+    printing = False if 'printing' not in context else context['printing']
+    return {'traitlistname': tln,
+            'sheet': context['sheet'],
+            'STATIC_URL': context['STATIC_URL'],
+            'printing': printing}
 
 @register.inclusion_tag("characters/_sheet_list_item.html", takes_context=False)
 def sheet_list_item(sheet):
@@ -54,7 +73,12 @@ def sheet_list_item(sheet):
 @register.inclusion_tag("characters/trait_category.html", takes_context=True)
 def trait_category(context, traitlist_name, prepend=''):
     tln = TraitListName.objects.get(name=traitlist_name)
-    return {'traitlistname': tln, 'sheet': context['sheet'], 'STATIC_URL': context['STATIC_URL'], 'prepend':prepend}
+    printing = False if 'printing' not in context else context['printing']
+    return {'traitlistname': tln,
+            'sheet': context['sheet'],
+            'STATIC_URL': context['STATIC_URL'],
+            'prepend':prepend,
+            'printing': printing}
 
 @register.inclusion_tag("characters/experience_entries.html", takes_context=True)
 def experience_entries(context, experience_entries):
