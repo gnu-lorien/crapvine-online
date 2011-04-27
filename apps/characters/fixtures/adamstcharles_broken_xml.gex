@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<grapevine version="3">
+  <vampire name="Adam St. Charles" nature="Elitist" demeanor="Gambler" clan="Toreador" sect="Camarilla" generation="11" blood="12" willpower="5" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/5/2003 5:53:01 PM" narrator="Shuniqua Rodriguez" npc="yes" lastmodified="8/7/2003 1:36:32 PM">
+    <experience unspent="0" earned="0"/>
+    <traitlist name="Physical" abc="yes" display="1">
+      <trait name="Energetic"/>
+      <trait name="Stalwart" val="3"/>
+      <trait name="Tough" val="2"/>
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+      <trait name="Alluring" val="2"/>
+      <trait name="Charming" val="3"/>
+      <trait name="Dignified" val="3"/>
+      <trait name="Manipulative" val="2"/>
+    <traitlist name="Mental" abc="yes" display="1">
+      <trait name="Astute" val="3"/>
+      <trait name="Reflective"/>
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1">
+      <trait name="Ignorant" val="2"/>
+      <trait name="Impatient"/>
+    </traitlist>
+    <traitlist name="Status" abc="yes" display="1">
+      <trait name="Acknowledged"/>
+      <trait name="Admired"/>
+    </traitlist>
+    <traitlist name="Abilities" abc="yes" display="1">
+      <trait name="Dodge" val="2"/>
+      <trait name="Firearms" val="2"/>
+      <trait name="Subterfuge" val="2"/>
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1"/>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+      <trait name="Contacts" val="2"/>
+      <trait name="Fame"/>
+      <trait name="Generation" val="2"/>
+      <trait name="Resources"/>
+      <trait name="Retainers"/>
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+      <trait name="Healthy" val="2"/>
+      <trait name="Bruised" val="3"/>
+      <trait name="Wounded" val="2"/>
+      <trait name="Incapacitated"/>
+      <trait name="Torpor"/>
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5"/>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+      <trait name="Auspex: Heightened Senses" val="3" note="basic"/>
+      <trait name="Auspex: Aura Perception" val="3" note="basic"/>
+      <trait name="Auspex: Spirit's Touch" val="6" note="int."/>
+      <trait name="Celerity: Alacrity" val="3" note="basic"/>
+      <trait name="Celerity: Swiftness" val="3" note="basic"/>
+      <trait name="Presence: Awe" val="3" note="basic"/>
+      <trait name="Presence: Dread Gaze" val="3" note="basic"/>
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4"/>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4"/>
+    <traitlist name="Equipment" abc="yes" display="1">
+      <trait name="Heavy Pistol" note="+2, 2 Lethal, Loud"/>
+    </traitlist>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+</grapevine>
