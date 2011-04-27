@@ -1,6 +1,7 @@
 from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
+from django.db import transaction
 from datetime import datetime
 from django.db import IntegrityError
 
@@ -335,6 +336,7 @@ class ChronicleLoader(ContentHandler):
         raise exception
 
 #from crapvine.xml.chronicle_loader import ChronicleLoader
+@transaction.commit_on_success
 @revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
     chronicle_loader = ChronicleLoader(user)
