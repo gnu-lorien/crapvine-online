@@ -7,3 +7,5 @@ Created a fork of django-reversion to support better tracking of when an object 
 
 Installed django-authority
 Installed minimock
+
+Change reversion.revision to have a related name for its reference to the user. I just added "related_name='reversion_revision_set'" to fix the conflict with wakawaka

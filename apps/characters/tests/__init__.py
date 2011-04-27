@@ -1,6 +1,7 @@
 from __future__ import with_statement
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from apps.characters.tests.upload_helpers import upload_sheet_for_username
 from apps.crapvine.xml.trait import TraitList
 from experience import ExperienceEntriesTestCase, RecentExpenditures
 from external import Export, Import, ChronicleCompare, ChronicleUpload
@@ -203,12 +204,23 @@ class VampireSheetTestCase(SheetTestCase):
             willpower=3)
 
 class TraitTestCase(CharactersTestCase):
+    fixtures = ['players']
+
+    def setUp(self):
+        self.user = User.objects.get(username__exact='Andre')
+        self.sheet = Sheet.objects.create(
+            name='Michele',
+            player=self.user)
     def __myAssertEqual(self, given, expected, extra):
         try:
             self.assertEqual(given, expected)
         except Exception, e:
             pprint(extra)
             raise e
+
+    def _build_trait(self, name, value, note):
+        self.sheet.add_trait('Social', {'name':name, 'value':value, 'note': note})
+        return self.sheet.traits.get(name=name)
 
     def testDisplay(self):
         fully_tested = {
