@@ -24,7 +24,7 @@ from chronicles.models import Chronicle, ChronicleMember
 
 from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
-from apps.characters.models import FailedUpload
+from characters.models import FailedUpload
 
 from xml_uploader import handle_sheet_upload as handle_sheet_upload_xml, VampireExporter
 from bin_uploader import handle_sheet_upload as handle_sheet_upload_bin, is_binary

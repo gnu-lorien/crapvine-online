@@ -1,7 +1,7 @@
 from characters.models import Sheet, Expendable, Trait, TraitListProperty, TraitListName, VampireSheet, ExperienceEntry, Menu, MenuItem
 from django.contrib import admin
 from reversion.admin import VersionAdmin
-from apps.characters.models import FailedUpload
+from characters.models import FailedUpload
 
 class SheetAdmin(VersionAdmin):
     list_display = ['name', 'player', 'last_saved', 'npc', 'status']
