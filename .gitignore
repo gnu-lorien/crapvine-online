@@ -1,3 +1,4 @@
 *.pyc
 dev.db
 *.pyo
+my_local_deploy.sh
