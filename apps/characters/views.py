@@ -1,3 +1,4 @@
+import sys
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, get_host
 from django.template import RequestContext
@@ -23,6 +24,7 @@ from chronicles.models import Chronicle, ChronicleMember
 
 from reversion.models import Version
 from django.contrib.contenttypes.models import ContentType
+from apps.characters.models import FailedUpload
 
 from xml_uploader import handle_sheet_upload as handle_sheet_upload_xml, VampireExporter
 from bin_uploader import handle_sheet_upload as handle_sheet_upload_bin, is_binary
@@ -66,7 +68,19 @@ def upload_sheet(request):
             else:
                 uploader = handle_sheet_upload_xml
             request.FILES['file'].seek(0)
-            cl = uploader(request.FILES['file'], request.user)
+            try:
+                cl = uploader(request.FILES['file'], request.user)
+            except Exception, e:
+                request.FILES['file'].seek(0)
+                import traceback
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                FailedUpload.objects.create(
+                    file=request.FILES['file'],
+                    player=request.user,
+                    exception=e,
+                    traceback=traceback.format_exception(exc_type, exc_value, exc_traceback))
+                raise
+
             for name, vs in cl.vampires.iteritems():
                 vs.uploading = False
             sheet_permission = SheetPermission(request.user)

@@ -1,6 +1,7 @@
 from characters.models import Sheet, Expendable, Trait, TraitListProperty, TraitListName, VampireSheet, ExperienceEntry, Menu, MenuItem
 from django.contrib import admin
 from reversion.admin import VersionAdmin
+from apps.characters.models import FailedUpload
 
 class SheetAdmin(VersionAdmin):
     list_display = ['name', 'player', 'last_saved', 'npc', 'status']
@@ -47,6 +48,9 @@ class MenuItemAdmin(admin.ModelAdmin):
     def disp_menu_to_import(self, mi):
         return mi.menu_to_import.name
 
+class FailedUploadAdmin(admin.ModelAdmin):
+    list_display = ['file', 'time', 'player']
+
 admin.site.register(Sheet, SheetAdmin)
 admin.site.register(Expendable, ExpendableAdmin)
 admin.site.register(Trait, TraitAdmin)
@@ -57,3 +61,5 @@ admin.site.register(ExperienceEntry, ExperienceEntryAdmin)
 
 admin.site.register(Menu, MenuAdmin)
 admin.site.register(MenuItem, MenuItemAdmin)
+
+admin.site.register(FailedUpload, FailedUploadAdmin)

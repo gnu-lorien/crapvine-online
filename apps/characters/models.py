@@ -959,3 +959,11 @@ class MenuItem(models.Model):
             dot_character='O',
             display_preference=self.parent.display_preference)
         return formatter.__unicode__()
+
+class FailedUpload(models.Model):
+    file = models.FileField(upload_to="failed_uploads/%Y%m%d%H%M%S")
+    time = models.DateTimeField(auto_now_add=True)
+    player = models.ForeignKey(User, related_name='failed_uploads')
+    exception = models.TextField()
+    traceback = models.TextField()
+    verified = models.BooleanField(default=False)
