@@ -1,4 +1,4 @@
-from characters.models import VampireSheet, ExperienceEntry
+from characters.models import VampireSheet, ExperienceEntry, Trait, TraitListProperty
 from characters.permissions import can_edit_sheet
 
 from pprint import pprint
@@ -160,6 +160,9 @@ def get_traitlist_properties_dict(attrs, current_vampire):
 
 def update_traitlist_properties(attrs, current_vampire):
     my_attrs = get_traitlist_properties_dict(attrs, current_vampire)
+    my_attrs['overwrite'] = True
+    if my_attrs['name'] == 'Negative Physical':
+        pprint(my_attrs)
     current_vampire.add_traitlist_properties(**my_attrs)
 
 def read_traitlist_properties(attrs, current_vampire):
@@ -177,6 +180,8 @@ def get_trait_dict(attrs, current_traitlist, current_vampire, order=None):
             int(my_attrs['value'])
         except ValueError:
             my_attrs['value'] = 999999
+    else:
+        my_attrs['value'] = 1
     my_attrs['display_preference'] = current_traitlist['display']
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     if order is not None:
@@ -188,13 +193,24 @@ def update_trait(attrs, current_traitlist, current_vampire, order=None):
     if order is not None:
         my_attrs['order'] = order
     try:
-        current_vampire.add_trait(current_traitlist['name'], my_attrs)
-    except IntegrityError, e:
-        if e.args[0] == "columns sheet_id, traitlistname_id, name are not unique":
-            # While we don't, Grapevine supports non-unique names in atomic traitlists
-            # Just pass until we come up with a better way to report errors and
-            # warnings in this code
-            pass
+        t = current_vampire.get_traits(current_traitlist['name']).get(name=my_attrs['name'])
+        changed = False
+        for key, val in my_attrs.iteritems():
+            if key != 'name':
+                if getattr(t, key) != val:
+                    changed = True
+                    setattr(t, key, val)
+        if changed:
+            t.save()
+    except Trait.DoesNotExist:
+        try:
+            current_vampire.add_trait(current_traitlist['name'], my_attrs)
+        except IntegrityError, e:
+            if e.args[0] == "columns sheet_id, traitlistname_id, name are not unique":
+                # While we don't, Grapevine supports non-unique names in atomic traitlists
+                # Just pass until we come up with a better way to report errors and
+                # warnings in this code
+                pass
 
 def read_trait(attrs, current_traitlist, current_vampire, order=None):
     my_attrs = get_trait_dict(attrs, current_traitlist, current_vampire, order)
@@ -208,3 +224,9 @@ def read_trait(attrs, current_traitlist, current_vampire, order=None):
             # Just pass until we come up with a better way to report errors and
             # warnings in this code
             pass
+
+def cull_traits(current_trait_names, current_traitlist, current_vampire):
+    traits = current_vampire.get_traits(current_traitlist['name']).all()
+    for n in current_trait_names:
+        traits = traits.exclude(name=n)
+    traits.delete()

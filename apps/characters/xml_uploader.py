@@ -15,7 +15,7 @@ from pprint import pprint
 from reversion import revision
 
 from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
-from uploader import update_base_vampire, update_experience_entry, update_traitlist_properties, update_trait
+from uploader import update_base_vampire, update_experience_entry, update_traitlist_properties, update_trait, cull_traits
 
 from crapvine.types.vampire import Vampire as CrapvineVampire
 from crapvine.xml.trait import TraitList as CrapvineTraitList
@@ -158,6 +158,8 @@ class VampireLoader(ContentHandler):
             else:
                 read_traitlist_properties(attrs, self.current_vampire)
             self.current_traitlist = attrs
+            if self.updating:
+                self.current_trait_names = []
             #if self.current_vampire:
             #    self.current_vampire.add_traitlist(tl)
 
@@ -165,6 +167,8 @@ class VampireLoader(ContentHandler):
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
             self.order += 1
+            if self.updating:
+                self.current_trait_names.append(attrs['name'])
             if self.updating:
                 update_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
             else:
@@ -183,6 +187,8 @@ class VampireLoader(ContentHandler):
 
         elif name == 'traitlist':
             assert self.current_traitlist
+            if self.updating:
+                cull_traits(self.current_trait_names, self.current_traitlist, self.current_vampire)
             self.current_traitlist = None
 
         elif name == 'biography':
