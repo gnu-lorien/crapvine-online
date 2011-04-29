@@ -2,8 +2,9 @@ from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
 from django.db import transaction
-from datetime import datetime
 from django.db import IntegrityError
+from characters.models import VampireSheet, ExperienceEntry
+from datetime import datetime
 
 from xml.sax import ContentHandler
 
@@ -14,6 +15,7 @@ from pprint import pprint
 from reversion import revision
 
 from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
+from uploader import update_base_vampire, update_experience_entry, update_traitlist_properties, update_trait
 
 from crapvine.types.vampire import Vampire as CrapvineVampire
 from crapvine.xml.trait import TraitList as CrapvineTraitList
@@ -91,6 +93,7 @@ class VampireLoader(ContentHandler):
 
         self.vampires = {}
         self.current_vampire = None
+        self.updating = False
         self.order = 0
 
         self.in_cdata = False
@@ -116,7 +119,12 @@ class VampireLoader(ContentHandler):
         if name == 'vampire':
             if not attrs.has_key('name'):
                 return
-            self.current_vampire = create_base_vampire(attrs, self.__user)
+            try:
+                vampire = VampireSheet.objects.get(name__exact=attrs['name'])
+                self.current_vampire = update_base_vampire(attrs, self.__user, vampire)
+                self.updating = True
+            except VampireSheet.DoesNotExist:
+                self.current_vampire = create_base_vampire(attrs, self.__user)
             self.order = 0
 
         elif name == 'experience':
@@ -131,7 +139,10 @@ class VampireLoader(ContentHandler):
         elif name == 'entry':
             if not self.current_experience:
                 raise IOError('Entry without bounding Experience')
-            self.previous_entry = read_experience_entry(attrs, self.current_vampire, self.previous_entry)
+            if self.updating:
+                update_experience_entry(attrs, self.current_vampire)
+            else:
+                self.previous_entry = read_experience_entry(attrs, self.current_vampire, self.previous_entry)
 
         elif name == 'biography':
             self.reading_biography = True
@@ -142,7 +153,10 @@ class VampireLoader(ContentHandler):
         elif name == 'traitlist':
             if self.current_traitlist:
                 raise IOError('TraitList encountered while still reading traitlist')
-            read_traitlist_properties(attrs, self.current_vampire)
+            if self.updating:
+                update_traitlist_properties(attrs, self.current_vampire)
+            else:
+                read_traitlist_properties(attrs, self.current_vampire)
             self.current_traitlist = attrs
             #if self.current_vampire:
             #    self.current_vampire.add_traitlist(tl)
@@ -151,13 +165,17 @@ class VampireLoader(ContentHandler):
             if not self.current_traitlist:
                 raise IOError('Trait without bounding traitlist')
             self.order += 1
-            read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
+            if self.updating:
+                update_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
+            else:
+                read_trait(attrs, self.current_traitlist, self.current_vampire, self.order)
 
     def endElement(self, name):
         if name == 'vampire':
             assert self.current_vampire
             self.add_vampire(self.current_vampire)
             self.current_vampire = None
+            self.updating = False
 
         elif name == 'experience':
             assert self.current_experience
@@ -234,9 +252,12 @@ class ChronicleLoader(ContentHandler):
 
     @property
     def vampires(self):
+        ret = {}
         if self.creatures['vampire']:
-            return self.creatures['vampire'].vampires
-        return None
+            ret.update(self.creatures['vampire'].vampires)
+        if self.creature_diffs['vampire']:
+            ret.update(self.creature_diffs['vampire'].vampires)
+        return ret
 
     def startElement(self, name, attrs):
         #print "starting element", name, self.reading_creature

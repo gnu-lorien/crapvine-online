@@ -1,4 +1,5 @@
-from characters.models import VampireSheet
+from characters.models import VampireSheet, ExperienceEntry
+from characters.permissions import can_edit_sheet
 
 from pprint import pprint
 from datetime import timedelta, datetime
@@ -71,7 +72,7 @@ TRAITLIST_TAG_RENAMES = {
     'display': 'display_preference',
 }
 
-def create_base_vampire(attrs, user):
+def get_base_vampire_dict(attrs, user):
     if not attrs.has_key('name'):
         raise RuntimeError("Can't create base vampire with no name in attrs")
     my_attrs = dict(attrs)
@@ -92,9 +93,31 @@ def create_base_vampire(attrs, user):
     my_attrs['player'] = user
     my_attrs['uploading'] = True
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
+    return my_attrs
+
+def update_base_vampire(attrs, user, vampire):
+    my_attrs = get_base_vampire_dict(attrs, user)
+    class Facade(object):
+        pass
+    r = Facade()
+    r.user = user
+    if not can_edit_sheet(r, vampire):
+        return None
+    changed = False
+    for key, val in my_attrs.iteritems():
+        if key != 'name':
+            if getattr(vampire, key) != val:
+                changed = True
+                setattr(vampire, key, val)
+    if changed:
+        vampire.save()
+    return vampire
+
+def create_base_vampire(attrs, user):
+    my_attrs = get_base_vampire_dict(attrs, user)
     return VampireSheet.objects.create(**my_attrs)
 
-def read_experience_entry(attrs, current_vampire, previous_entry):
+def get_experience_entry_dict(attrs, current_vampire, previous_entry):
     my_attrs = dict(attrs)
     map_attributes(ENTRY_TAG_RENAMES, my_attrs)
     map_dates(ENTRY_TAG_DATES, my_attrs)
@@ -103,20 +126,47 @@ def read_experience_entry(attrs, current_vampire, previous_entry):
         if previous_entry.date >= my_attrs['date']:
             #print my_attrs['date']
             my_attrs['date'] = previous_entry.date + timedelta(seconds=1)
+    my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
+    return my_attrs
+
+def update_experience_entry(attrs, current_vampire):
     try:
-        my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
+        my_attrs = get_experience_entry_dict(attrs, current_vampire, None)
+        try:
+            # Try to find an entry with a matching date
+            matching_entry = current_vampire.experience_entries.get(date__exact=my_attrs['date'])
+
+            # Update matching entry
+        except ExperienceEntry.DoesNotExist:
+            # Otherwise, create a new one for this
+            return current_vampire.experience_entries.create(**my_attrs)
+    except IntegrityError, e:
+        pprint({'name':current_vampire.name, 'attrs':attrs, 'my_attrs':my_attrs})
+        raise e
+
+def read_experience_entry(attrs, current_vampire, previous_entry):
+    try:
+        my_attrs = get_experience_entry_dict(attrs, current_vampire, previous_entry)
         return current_vampire.experience_entries.create(**my_attrs)
     except IntegrityError, e:
         pprint({'name':current_vampire.name, 'attrs':attrs, 'my_attrs':my_attrs})
         raise e
 
-def read_traitlist_properties(attrs, current_vampire):
+def get_traitlist_properties_dict(attrs, current_vampire):
     my_attrs = dict(attrs)
     map_attributes(TRAITLIST_TAG_RENAMES, my_attrs)
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
+    return my_attrs
+
+def update_traitlist_properties(attrs, current_vampire):
+    my_attrs = get_traitlist_properties_dict(attrs, current_vampire)
     current_vampire.add_traitlist_properties(**my_attrs)
 
-def read_trait(attrs, current_traitlist, current_vampire, order=None):
+def read_traitlist_properties(attrs, current_vampire):
+    my_attrs = get_traitlist_properties_dict(attrs, current_vampire)
+    current_vampire.add_traitlist_properties(**my_attrs)
+
+def get_trait_dict(attrs, current_traitlist, current_vampire, order=None):
     my_attrs = dict(attrs)
     map_attributes(TRAIT_TAG_RENAMES, my_attrs)
     if 'value' in my_attrs:
@@ -131,6 +181,12 @@ def read_trait(attrs, current_traitlist, current_vampire, order=None):
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     if order is not None:
         my_attrs['order'] = order
+    return my_attrs
+
+def update_trait(attrs, current_traitlist, current_vampire, order=None):
+    my_attrs = get_trait_dict(attrs, current_traitlist, current_vampire, order)
+    if order is not None:
+        my_attrs['order'] = order
     try:
         current_vampire.add_trait(current_traitlist['name'], my_attrs)
     except IntegrityError, e:
@@ -140,4 +196,15 @@ def read_trait(attrs, current_traitlist, current_vampire, order=None):
             # warnings in this code
             pass
 
-
+def read_trait(attrs, current_traitlist, current_vampire, order=None):
+    my_attrs = get_trait_dict(attrs, current_traitlist, current_vampire, order)
+    if order is not None:
+        my_attrs['order'] = order
+    try:
+        current_vampire.add_trait(current_traitlist['name'], my_attrs)
+    except IntegrityError, e:
+        if e.args[0] == "columns sheet_id, traitlistname_id, name are not unique":
+            # While we don't, Grapevine supports non-unique names in atomic traitlists
+            # Just pass until we come up with a better way to report errors and
+            # warnings in this code
+            pass
