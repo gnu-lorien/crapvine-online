@@ -23,91 +23,87 @@
 </tr>
 <tr>
     <td>
-        <b>Vampire
-        {% if sheet.npc %}
-            NPC
-        {% endif %}
-        </b>
+        <span class="sheet_attribute_label"><b>Vampire{% if sheet.npc %} NPC{% endif %}</b></span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Player:</b></span>
+        <span class="sheet_attribute_label"><b>Player:</b></span>
         <span class="sheet_attribute_value">{{ sheet.player.username }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Experience Unspent:</b></span>
+        <span class="sheet_attribute_label"><b>Experience Unspent:</b></span>
         <span class="sheet_attribute_value">{{ sheet.experience_unspent }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Date Printed:</b></span>
+        <span class="sheet_attribute_label"><b>Date Printed:</b></span>
         <span class="sheet_attribute_value">{% now "m/d/Y" %}</span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Character ID:</b></span>
+        <span class="sheet_attribute_label"><b>Character ID:</b></span>
         <span class="sheet_attribute_value">{{ sheet.pk }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Total Experience Earned:</b></span>
+        <span class="sheet_attribute_label"><b>Total Experience Earned:</b></span>
         <span class="sheet_attribute_value">{{ sheet.experience_earned }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Last Modified:</b></span>
+        <span class="sheet_attribute_label"><b>Last Modified:</b></span>
         <span class="sheet_attribute_value">{{ sheet.last_saved|date:"m/d/Y" }}</span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Status:</b></span>
+        <span class="sheet_attribute_label"><b>Status:</b></span>
         <span class="sheet_attribute_value">{{ sheet.status }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Narrator:</b></span>
+        <span class="sheet_attribute_label"><b>Narrator:</b></span>
         <span class="sheet_attribute_value">{{ sheet.narrator }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Starting Date:</b></span>
+        <span class="sheet_attribute_label"><b>Starting Date:</b></span>
         <span class="sheet_attribute_value">{{ sheet.start_date|date:"m/d/Y" }}</span>
     </td>
 </tr>
 <tr><td colspan="3">&nbsp;</td></tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Clan:</b></span>
+        <span class="sheet_attribute_label"><b>Clan:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.clan }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Generation:</b></span>
+        <span class="sheet_attribute_label"><b>Generation:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.generation }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Nature:</b></span>
+        <span class="sheet_attribute_label"><b>Nature:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.nature }}</span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Sect:</b></span>
+        <span class="sheet_attribute_label"><b>Sect:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.sect }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Title:</b></span>
+        <span class="sheet_attribute_label"><b>Title:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.title }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Demeanor:</b></span>
+        <span class="sheet_attribute_label"><b>Demeanor:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.demeanor }}</span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Coterie:</b></span>
+        <span class="sheet_attribute_label"><b>Coterie:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.coterie }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Sire:</b></span>
+        <span class="sheet_attribute_label"><b>Sire:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.sire }}</span>
     </td>
     <td width="33%"></td>
@@ -115,29 +111,29 @@
 <tr><td colspan="3">&nbsp;</td></tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Blood:</b></span>
+        <span class="sheet_attribute_label"><b>Blood:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.blood }} {{ sheet.vampiresheet.blood|tally }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Morality Path:</b></span>
+        <span class="sheet_attribute_label"><b>Morality Path:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.path }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Aura:</b></span>
+        <span class="sheet_attribute_label"><b>Aura:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.aura }}</span>
     </td>
 </tr>
 <tr>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Willpower:</b></span>
+        <span class="sheet_attribute_label"><b>Willpower:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.blood }} {{ sheet.vampiresheet.blood|tally }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Morality Traits:</b></span>
+        <span class="sheet_attribute_label"><b>Morality Traits:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.pathtraits }} {{ sheet.vampiresheet.pathtraits|tally }}</span>
     </td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Self-control/Instinct:</b></span>
+        <span class="sheet_attribute_label"><b>Self-control/Instinct:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.selfcontrol }} {{ sheet.vampiresheet.selfcontrol|tally }}</span>
     </td>
 </tr>
@@ -145,7 +141,7 @@
     <td width="33%"></td>
     <td width="33%"></td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Conscience/Convinction:</b></span>
+        <span class="sheet_attribute_label"><b>Conscience/Convinction:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.conscience }} {{ sheet.vampiresheet.conscience|tally }}</span>
     </td>
 </tr>
@@ -153,7 +149,7 @@
     <td width="33%"></td>
     <td width="33%"></td>
     <td width="33%">
-        <span class="sheet_atttribute_label"><b>Courage:</b></span>
+        <span class="sheet_attribute_label"><b>Courage:</b></span>
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.courage }} {{ sheet.vampiresheet.courage|tally }}</span>
     </td>
 </tr>
