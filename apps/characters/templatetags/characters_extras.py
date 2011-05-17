@@ -43,6 +43,10 @@ def format_trait(trait, disp):
     trait.display_preference = disp
     return trait
 
+@register.filter
+def tally(value):
+    return "O" * value
+
 @register.inclusion_tag("characters/show_traitlist.html", takes_context=True)
 def show_traitlist(context, traitlist_name, prepend=""):
     printing = False if 'printing' not in context else context['printing']

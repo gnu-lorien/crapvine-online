@@ -1,12 +1,13 @@
 {% load characters_extras %}
-
-<u><b>{{traitlistname.name}}</b></u>
 {% if not printing %}
+<u><b>{{traitlistname.name}}</b></u>
 <a href="{% url sheet_edit_traitlist sheet.slug traitlistname.slug %}" rel="facebox">
     <img src="{{ STATIC_URL }}pinax/img/silk/icons/report_edit.png" height="16" width="16" alt="Edit Trait Category Display Properties" title="Edit Trait Category Display Properties"/>
 </a>
 <a href="{% url sheet_reorder_traitlist sheet.slug traitlistname.slug %}">
     <img src="{{ STATIC_URL }}pinax/img/silk/icons/shape_handles.png" height="16" width="16" alt="Reorder traits" title="Reorder traits"/>
 </a>
-{% endif %}
 ({{sheet|get_trait_count:traitlistname.name}})
+{% else %}
+<u><b>{{sheet|get_trait_count:traitlistname.name}} {{traitlistname.name}} Traits:</b></u>
+{% endif %}

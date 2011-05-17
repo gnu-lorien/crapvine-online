@@ -5,7 +5,7 @@
 {% load characters_extras %}
 
 <div class="traitlist">
-<table>
+<table{% if printing %} width="100%"{% endif %}>
 {% for trait in traits %}
 <tr>
     {% if not printing %}
@@ -14,11 +14,12 @@
         <td bgcolor="{% cycle 'aliceblue' 'white' %}">{{prepend}}{{trait}}</td>
     {% else %}
         {% if tlp.display_preference == 1 %}
-            <td>{{ prepend }}{{ trait|format_trait:0 }} x{{ trait|format_trait:9 }}</td>
-            <td>{{ trait|format_trait:8 }}</td>
+            <td class="trait_dots">{{ trait|format_trait:8 }}</td>
+            <td><span class="trait_name">{{ prepend }}{{ trait|format_trait:0 }} </span><span class="trait_value">x{{ trait|format_trait:9 }}</span>
             {% if trait.show_note %}
-                <td>({{ trait|format_trait:10 }})</td>
+                <span class="trait_note">({{ trait|format_trait:10 }})</span>
             {% endif %}
+            </td>
         {% else %}
             <td>{{prepend}}{{trait|print_trait:tlp}}</td>
         {% endif %}
