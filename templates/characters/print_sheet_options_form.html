@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load uni_form_tags %}
+
+<form class="uniForm" id="print_sheet_options_form" method="POST" action="{% url sheet_print sheet.slug %}">
+{% csrf_token %}
+    <fieldset class="inlineLabels">
+        {{ form|as_uni_form }}
+        <div class="form_block">
+            <input type="hidden" name="action" value="sheet_print" />
+            <input type="submit" value="{% trans 'Print' %}"/>
+        </div>
+    </fieldset>
+</form>

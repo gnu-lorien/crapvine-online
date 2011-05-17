@@ -1,0 +1,27 @@
+{% extends "characters/print_sheet.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+{% load group_tags %}
+{% load characters_extras %}
+
+{% block thirdrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Abilities" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Disciplines" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+{% endblock %}

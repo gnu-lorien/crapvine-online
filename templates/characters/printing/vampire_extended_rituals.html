@@ -1,0 +1,32 @@
+{% extends "characters/print_sheet.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+{% load group_tags %}
+{% load characters_extras %}
+
+{% block fourthrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Rituals" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+{% endblock %}
+
+{% block sixthrow %}
+<tr>
+<td width="33%" valign="top">
+{% trait_category "Derangements" %}
+</td>
+<td width="33%" valign="top">
+{% trait_category "Bonds" %}
+</td>
+<td width="33%" valign="top">
+{% trait_category "Status" %}
+</td>
+</tr>
+{% endblock %}

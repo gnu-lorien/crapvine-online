@@ -1,0 +1,157 @@
+{% extends "characters/print_sheet.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+{% load group_tags %}
+{% load characters_extras %}
+
+{% block attributes %}
+<tr>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Clan:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.clan }}</span>
+    </td>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Generation:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.generation }}</span>
+    </td>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Nature:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.nature }}</span>
+    </td>
+</tr>
+<tr>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Sect:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.sect }}</span>
+    </td>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Title:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.title }}</span>
+    </td>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Demeanor:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.demeanor }}</span>
+    </td>
+</tr>
+<tr>
+    <td width="66%" colspan="2">
+        <span class="sheet_attribute_label"><b>{{ sheet.vampiresheet.path }}:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.pathtraits }} {{ sheet.vampiresheet.pathtraits|tally }}</span>
+    </td>
+    <td width="33%">
+        <span class="sheet_attribute_label"><b>Aura:</b></span>
+        <span class="sheet_attribute_value">{{ sheet.vampiresheet.aura }}</span>
+    </td>
+</tr>
+{% endblock %}
+{% block attributes_to_traitlist_spacer %}
+{% endblock %}
+
+{% block firstrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="33%" valign="top">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <span class="sheet_attribute_label"><b>B:</b></span>
+                            <span class="sheet_attribute_value">{{ sheet.vampiresheet.blood }} {{ sheet.vampiresheet.blood|tally }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="sheet_attribute_label"><b>W:</b></span>
+                            <span class="sheet_attribute_value">{{ sheet.vampiresheet.blood }} {{ sheet.vampiresheet.blood|tally }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="sheet_attribute_label"><b>S/I:</b></span>
+                            <span class="sheet_attribute_value">{{ sheet.vampiresheet.selfcontrol }} {{ sheet.vampiresheet.selfcontrol|tally }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="sheet_attribute_label"><b>C/C:</b></span>
+                            <span class="sheet_attribute_value">{{ sheet.vampiresheet.conscience }} {{ sheet.vampiresheet.conscience|tally }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="sheet_attribute_label"><b>C:</b></span>
+                            <span class="sheet_attribute_value">{{ sheet.vampiresheet.courage }} {{ sheet.vampiresheet.courage|tally }}</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="33%" valign="top">
+                {% trait_category "Equipment" %}
+            </td>
+            <td width="33%" valign="top">
+                {% trait_category "Health Levels" %}
+            </td>
+        </table>
+    </td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Physical" %}
+</td></tr>
+</table>
+</td>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Social" %}
+</td></tr>
+</table>
+</td>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Mental" %}
+</td></tr>
+</table>
+</td>
+</tr>
+{% endblock %}
+
+{% block thirdrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Abilities" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Disciplines" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+{% endblock %}
+
+{% block fourthrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Rituals" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+{% endblock %}
+
+{% block eigthrow %}
+{% endblock %}

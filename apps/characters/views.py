@@ -1,7 +1,7 @@
 import sys
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, get_host
-from django.template import RequestContext
+from django.template import RequestContext, TemplateDoesNotExist
 from django.db.models import Q
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -16,7 +16,8 @@ import simplejson
 from authority.views import permission_denied
 from characters.permissions import SheetPermission, can_edit_sheet, can_delete_sheet, can_history_sheet, can_fullview_sheet, can_list_sheet
 
-from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm, DisplayOrderForm, ExperienceEntryForm, NewSheetForm
+from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitForm, TraitListPropertyForm,\
+    DisplayOrderForm, ExperienceEntryForm, NewSheetForm, PrintOptionsForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem, ChangedTrait
@@ -163,7 +164,8 @@ def list_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
         context_instance=RequestContext(request))
 
 @login_required
-def print_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
+def print_sheet(request, sheet_slug, chronicle_slug=None, bridge=None,
+                form_class=PrintOptionsForm):
     if bridge is not None:
         try:
             group = bridge.get_group(chronicle_slug)
@@ -176,9 +178,26 @@ def print_sheet(request, sheet_slug, chronicle_slug=None, bridge=None):
     if not can_fullview_sheet(request, sheet):
         return permission_denied(request)
 
+    form = form_class(request.POST or None)
+    pprint(form.errors)
+    if form.is_valid() and request.method == "POST":
+        try:
+            return render_to_response(
+                'characters/printing/vampire_{}.html'.format(form.cleaned_data['template']),
+                {'sheet':sheet,
+                 'group':group,
+                 'printing':True,
+                 'options':form.cleaned_data},
+                context_instance=RequestContext(request))
+        except TemplateDoesNotExist:
+            if 'template' not in form.errors:
+                form.errors['template'] = []
+            form.errors['template'].append(u'Chosen printing template does not exist')
+
     return render_to_response(
-        'characters/print_sheet.html',
-        {'sheet':sheet,
+        'characters/print_sheet_options.html',
+        {'form':form,
+         'sheet':sheet,
          'group':group,
          'printing':True},
         context_instance=RequestContext(request))

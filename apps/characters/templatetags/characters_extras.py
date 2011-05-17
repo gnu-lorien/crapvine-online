@@ -48,7 +48,7 @@ def tally(value):
     return "O" * value
 
 @register.inclusion_tag("characters/show_traitlist.html", takes_context=True)
-def show_traitlist(context, traitlist_name, prepend=""):
+def show_traitlist(context, traitlist_name, prepend="", style='default'):
     printing = False if 'printing' not in context else context['printing']
     tlp = context['sheet'].get_traitlist_property(TraitListName.objects.get(name=traitlist_name))
     return {
@@ -59,6 +59,7 @@ def show_traitlist(context, traitlist_name, prepend=""):
         'traitlistname': TraitListName.objects.get(name=traitlist_name),
         'printing': printing,
         'tlp': tlp,
+        'style':style,
     }
 
 @register.inclusion_tag("characters/trait_category_header.html", takes_context=True)
@@ -75,14 +76,15 @@ def sheet_list_item(sheet):
     return {'sheet':sheet}
 
 @register.inclusion_tag("characters/trait_category.html", takes_context=True)
-def trait_category(context, traitlist_name, prepend=''):
+def trait_category(context, traitlist_name, prepend='', style='default'):
     tln = TraitListName.objects.get(name=traitlist_name)
     printing = False if 'printing' not in context else context['printing']
     return {'traitlistname': tln,
             'sheet': context['sheet'],
             'STATIC_URL': context['STATIC_URL'],
             'prepend':prepend,
-            'printing': printing}
+            'printing': printing,
+            'style': style}
 
 @register.inclusion_tag("characters/experience_entries.html", takes_context=True)
 def experience_entries(context, experience_entries):

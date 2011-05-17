@@ -1,0 +1,68 @@
+{% extends "characters/print_sheet.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+{% load group_tags %}
+{% load characters_extras %}
+
+{% block firstrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="50%" valign="top">
+                {% trait_category "Equipment" %}
+            </td>
+            <td width="50%" valign="top">
+                {% trait_category "Health Levels" %}
+            </td>
+        </table>
+    </td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Physical" %}
+</td></tr>
+</table>
+</td>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Social" %}
+</td></tr>
+</table>
+</td>
+<td width="33%" valign="top">
+<table width="100%">
+<tr><td>
+{% trait_category "Mental" %}
+</td></tr>
+</table>
+</td>
+</tr>
+{% endblock %}
+
+{% block thirdrow %}
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Abilities" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td colspan="3">
+        <table width="100%">
+            <td width="100%">
+                {% trait_category "Disciplines" "" "do_by_three" %}
+            </td>
+        </table>
+    </td>
+</tr>
+{% endblock %}
+
+{% block eigthrow %}
+{% endblock %}

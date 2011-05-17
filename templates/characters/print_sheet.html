@@ -12,10 +12,9 @@
     <body>
 
 {% block body %}
-<div id="recent_expenditures_pane">
-</div>
 <table width="" border="0" bgcolor="white"  style="width:6.5in; max-width:6.5in;">
 <tbody>
+{% block attributes %}
 <tr>
     <td colspan="3">
         <span class="sheet_name"><b>{{ sheet.name }}</b></span>
@@ -153,7 +152,11 @@
         <span class="sheet_attribute_value">{{ sheet.vampiresheet.courage }} {{ sheet.vampiresheet.courage|tally }}</span>
     </td>
 </tr>
+{% endblock %}
+{% block attributes_to_traitlist_spacer %}
 <tr><td colspan="3">&nbsp;</td></tr>
+{% endblock %}
+{% block firstrow %}
 <tr>
 <td width="33%" valign="top">
 <table width="100%">
@@ -177,6 +180,8 @@
 </table>
 </td>
 </tr>
+{% endblock %}
+{% block secondrow %}
 <tr>
 <td width="33%" valign="top">
 <table width="100%">
@@ -200,6 +205,8 @@
 </table>
 </td>
 </tr>
+{% endblock %}
+{% block thirdrow %}
 <tr>
     <td colspan="3">
         <table width="100%">
@@ -212,6 +219,8 @@
         </table>
     </td>
 </tr>
+{% endblock %}
+{% block fourthrow %}
 <tr>
     <td colspan="3">
         <table width="100%">
@@ -224,6 +233,8 @@
         </table>
     </td>
 </tr>
+{% endblock %}
+{% block fifthrow %}
 <tr>
 <td width="33%" valign="top">
 {% trait_category "Backgrounds" %}
@@ -235,6 +246,8 @@
 {% trait_category "Miscellaneous" %}
 </td>
 </tr>
+{% endblock %}
+{% block sixthrow %}
 <tr>
 <td width="33%" valign="top">
 {% trait_category "Derangements" %}
@@ -246,6 +259,8 @@
 <!-- trait_category "Boons" -->
 </td>
 </tr>
+{% endblock %}
+{% block seventhrow %}
 <tr>
     <td colspan="3">
         <table width="100%">
@@ -258,6 +273,8 @@
         </table>
     </td>
 </tr>
+{% endblock %}
+{% block eigthrow %}
 <tr>
     <td colspan="3">
         <table width="100%">
@@ -270,6 +287,9 @@
         </table>
     </td>
 </tr>
+{% endblock %}
+{% if options.want_notes %}
+{% block notes %}
 <tr>
     <td colspan="3">
         <span class="traitlist_header"><u><b>Notes:</b></u><br/></span>
@@ -278,6 +298,8 @@
         </div>
     </td>
 </tr>
+{% endblock %}
+{% endif %}
 </tbody>
 </table>
 {% endblock %}

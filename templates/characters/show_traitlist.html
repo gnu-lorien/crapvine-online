@@ -7,7 +7,11 @@
 <div class="traitlist">
 <table{% if printing %} width="100%"{% endif %}>
 {% for trait in traits %}
+{% if style == 'do_by_three' %}
+{% cycle '<tr>' '' '' as beginrow %}
+{% else %}
 <tr>
+{% endif %}
     {% if not printing %}
         <td><a href="{% url sheet_edit_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_edit.png"  height="16" width="16" alt="Edit Trait" title="Edit Trait"/></a></td>
         <td><a href="{% url sheet_delete_trait sheet.slug trait.id %}" rel="facebox"><img class="edit_image" src="{{ STATIC_URL }}pinax/img/silk/icons/shape_square_delete.png" height="16" width="16" alt="Delete Trait" title="Delete Trait"/></a></td>
@@ -25,7 +29,11 @@
         {% endif %}
     {% endif %}
 
+{% if style == 'do_by_three' %}
+{% cycle '' '' '</tr>' as endrow %}
+{% else %}
 </tr>
+{% endif %}
 {% endfor %}
 <tr>
     {% if not printing %}

@@ -39,3 +39,13 @@ class ExperienceEntryForm(forms.ModelForm):
 class NewSheetForm(forms.Form):
     name = forms.CharField()
     creature_type = forms.ChoiceField(choices=[("vampire","Vampire")])
+
+class PrintOptionsForm(forms.Form):
+    template = forms.ChoiceField(choices=[
+            ("default", "Default"),
+            ("extended_abilities", "Heavy Abilities"),
+            ("extended_abilities_and_disciplines", "Heavy Abilities and Disciplines"),
+            ("combat_front_page", "Combat Front Page"),
+            ("extended_rituals", " Heavy Rituals"),
+            ("compressed", "gnu_lorien's Compressed")])#["Default", 'Extended Abilities', 'Extended Rituals', 'Extended Backgrounds'])
+    want_notes = forms.BooleanField(required=False)

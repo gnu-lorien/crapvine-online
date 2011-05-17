@@ -1,0 +1,13 @@
+{% extends "characters/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Print Sheet{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Print Sheet" %}</h1>
+
+    <h2>{% trans "Options" %} {{form.instance}}</h2>
+
+    {% include "characters/print_sheet_options_form.html" %}
+{% endblock %}
