@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load ifsetting_tag %}
+{% load blog_tags %}
 
 {% block head_title %}{% trans "What Next?" %}{% endblock %}
 
@@ -55,4 +56,9 @@
                 {% endifsetting %}
             </p>
         {% endif %}
+    {% if blog %}
+        <h1>{% trans "Recent News" %}</h1>
+        {% show_blog_post blog %}
+    {% endif %}
+
 {% endblock %}
