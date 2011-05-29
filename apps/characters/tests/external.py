@@ -282,6 +282,35 @@ class Import(TestCase):
             datetime.strptime("05/01/2004", "%m/%d/%Y"))
         self.assertEqual(dt, translate_date(dt.strftime("%m/%d/%Y %I:%M:%S %p")))
 
+    def testIsraelLocale(self):
+        upload_sheet_for_username('israeli_datetime_xml.gex', 'Andre')
+        self.sheet = Sheet.objects.get(name__exact='Rand McDom')
+        expected_start_date = datetime(year=2008, month=10, day=29, hour=0, minute=26, second=48)
+        expected_last_modified_date = datetime(year=2010, month=6, day=17, hour=18, minute=6, second=11)
+        expected_experience_entries = (
+            (2008, 8, 8),
+            (2008, 10, 20),
+            (2008, 10, 31, 22, 15, 37),
+            (2008, 11, 19),
+            (2008, 11, 28, 18, 13, 1),
+            (2008, 12, 27),
+            (2009, 1, 3, 23, 46, 33),
+            (2009, 1, 6),
+            (2009, 2, 1, 12, 40, 40),
+            (2009, 2, 1, 15, 46, 58),
+            (2009, 3, 8, 8, 3, 55),
+            (2009, 3, 25),
+            (2009, 3, 31, 16, 45, 44),
+            (2009, 4, 27, 15, 31, 18),
+            (2009, 5, 1),
+            (2009, 5, 2, 17, 41, 26),
+            (2009, 5, 4, 16, 26, 27)
+        )
+        expected_experience_entries = [datetime(*a) for a in expected_experience_entries]
+        sheet_entries = [ee.date for ee in self.sheet.experience_entries.all()]
+        self.assertEqual(expected_experience_entries, sheet_entries)
+
+
     #def testChronicleInclude(self):
     #    upload_chronicle_for_username('chronicle_00.gex', 'Andre', include='Charles McMillan')
     #    self.assertSheetExists('Charles McMillan')

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<grapevine version="3">
+  <vampire name="Rand McDom" clan="Malkavian" sect="Camarilla" generation="12" blood="11" willpower="2" conscience="4" selfcontrol="3" courage="3" path="Humanity" pathtraits="3" physicalmax="10" player="Nobody" status="Inactive" startdate="29/10/2008 00:26:48" lastmodified="17/06/2010 18:06:11">
+    <experience unspent="11" earned="47">
+      <entry date="08/08/2008" change="5" type="0" reason="" earned="5" unspent="5"/>
+      <entry date="20/10/2008" change="1" type="0" reason="" earned="6" unspent="6"/>
+      <entry date="31/10/2008 22:15:37" change="4" type="0" reason="" earned="10" unspent="10"/>
+      <entry date="19/11/2008" change="4" type="3" reason="" earned="10" unspent="6"/>
+      <entry date="28/11/2008 18:13:01" change="4" type="0" reason="" earned="14" unspent="10"/>
+      <entry date="27/12/2008" change="2" type="0" reason="" earned="16" unspent="12"/>
+      <entry date="03/01/2009 23:46:33" change="4" type="0" reason="" earned="20" unspent="16"/>
+      <entry date="06/01/2009" change="3" type="3" reason="" earned="20" unspent="13"/>
+      <entry date="30/01/2009 12:40:40" change="4" type="0" reason="" earned="24" unspent="17"/>
+      <entry date="01/02/2009 15:46:58" change="4" type="0" reason="" earned="28" unspent="21"/>
+      <entry date="08/03/2009 08:03:55" change="4" type="0" reason="" earned="32" unspent="25"/>
+      <entry date="25/03/2009" change="25" type="3" reason="" earned="32" unspent="0"/>
+      <entry date="31/03/2009 16:45:44" change="4" type="0" reason="" earned="36" unspent="4"/>
+      <entry date="27/04/2009 15:31:18" change="3" type="0" reason="" earned="39" unspent="7"/>
+      <entry date="01/05/2009" change="4" type="3" reason="" earned="39" unspent="3"/>
+      <entry date="02/05/2009 17:41:26" change="4" type="0" reason="" earned="43" unspent="7"/>
+      <entry date="04/05/2009 16:26:27" change="4" type="0" reason="" earned="47" unspent="11"/>
+    </experience>
+    <traitlist name="Physical" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Social" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Mental" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Negative Physical" abc="yes" negative="yes" display="1">
+    </traitlist>
+    <traitlist name="Negative Social" abc="yes" negative="yes" display="1">
+    </traitlist>
+    <traitlist name="Negative Mental" abc="yes" negative="yes" display="1"/>
+    <traitlist name="Status" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Abilities" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Influences" abc="yes" display="1"/>
+    <traitlist name="Backgrounds" abc="yes" display="1">
+    </traitlist>
+    <traitlist name="Health Levels" abc="no" display="1">
+    </traitlist>
+    <traitlist name="Bonds" abc="yes" display="1"/>
+    <traitlist name="Miscellaneous" abc="no" display="1"/>
+    <traitlist name="Derangements" abc="yes" atomic="yes" negative="yes" display="5">
+    </traitlist>
+    <traitlist name="Disciplines" abc="no" atomic="yes" display="5">
+    </traitlist>
+    <traitlist name="Rituals" abc="no" atomic="yes" display="5"/>
+    <traitlist name="Merits" abc="yes" atomic="yes" display="4">
+    </traitlist>
+    <traitlist name="Flaws" abc="yes" atomic="yes" negative="yes" display="4">
+    </traitlist>
+    <traitlist name="Equipment" abc="yes" display="1"/>
+    <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
+  </vampire>
+</grapevine>
