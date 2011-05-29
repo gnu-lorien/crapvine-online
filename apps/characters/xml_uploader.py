@@ -1,6 +1,7 @@
 from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
+import xml.etree.ElementTree as ET
 from django.db import transaction
 from datetime import datetime
 from django.db import IntegrityError
@@ -335,16 +336,54 @@ class ChronicleLoader(ContentHandler):
         print 'Warning'
         raise exception
 
+def read_vampire(v, user):
+    vampire = {}
+    previous_entry = None
+    current_vampire = create_base_vampire(v.attrib, user)
+
+    for tl in v.findall('traitlist'):
+        read_traitlist_properties(tl.attrib, current_vampire)
+        order = 0
+        for t in tl.findall('trait'):
+            order += 1
+            read_trait(t.attrib, tl.attrib, current_vampire, order)
+
+    exp = v.find('experience')
+    for ee in exp.findall('entry'):
+        previous_entry = read_experience_entry(ee.attrib, current_vampire, previous_entry)
+
+    biography = v.find('biography')
+    if biography is not None:
+        current_vampire.biography = unescape(biography.text).strip()
+
+    notes = v.find('notes')
+    if notes is not None:
+        current_vampire.notes = unescape(notes.text).strip()
+
+    current_vampire.update_experience_total()
+    current_vampire.save()
+    current_vampire.add_default_traitlist_properties()
+    return current_vampire
+
+def base_read(f, user):
+    tree = ET.parse(f)
+    creatures = []
+    for v in tree.findall('vampire'):
+        creatures.append(read_vampire(v, user))
+
+    return creatures
+
+class UploadResponse(object):
+    pass
+
 #from crapvine.xml.chronicle_loader import ChronicleLoader
 @transaction.commit_on_success
 @revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
-    chronicle_loader = ChronicleLoader(user)
+    ret = UploadResponse()
+    ret.vampires = {}
+    creatures = base_read(uploaded_file, user)
+    for c in creatures:
+        ret.vampires[c.name] = c
 
-    parser = make_parser()
-    parser.setFeature(feature_namespaces, 0)
-    parser.setContentHandler(chronicle_loader)
-    parser.setProperty(property_lexical_handler, chronicle_loader)
-    parser.parse(uploaded_file)
-
-    return chronicle_loader
+    return ret
