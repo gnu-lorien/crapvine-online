@@ -2549,7 +2549,7 @@ Not being stupid, they chose the former.  They now serve the Justicar as her Arc
     <traitlist name="Equipment" abc="yes" display="1"/>
     <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
   </vampire>
-  <vampire name="Jake Tarver" nature="Conformist" demeanor="Defender" clan="Brujah" sect="Camarilla" generation="11" title="Scourge" blood="13" willpower="10" conscience="3" selfcontrol="4" courage="5" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="10/12/2002">
+  <vampire name="Jake Tarver" nature="Conformist" demeanor="Defender" clan="Brujah" sect="Camarilla" generation="11" title="Scourge" blood="13" willpower="10" conscience="3" selfcontrol="4" courage="5" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="5/29/2011 7:40:38 PM">
     <experience unspent="0" earned="0"/>
     <traitlist name="Physical" abc="yes" display="1">
       <trait name="Aggressive"/>
@@ -2663,8 +2663,7 @@ Not being stupid, they chose the former.  They now serve the Justicar as her Arc
       <![CDATA[2.3 Equipment:
 Chainmail (2 health levels) Heavy
 Ax (collapseable) dam: 2 lvls Clumsy
-SMG (+2) dam:2 lvls Loud
-]]>
+SMG (+2) dam:2 lvls Loud]]>
     </notes>
   </vampire>
   <vampire name="Jeff Straight (NPC)" nature="Survivor" demeanor="Child" clan="Gangrel" sect="Camarilla" generation="13" blood="10" willpower="2" conscience="3" selfcontrol="4" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="11/23/2000" narrator="Zoe Mora" npc="yes" lastmodified="12/23/2002 11:13:14 AM">
@@ -3242,7 +3241,7 @@ Burning Wrath]]>
     <traitlist name="Equipment" abc="yes" display="1"/>
     <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
   </vampire>
-  <vampire name="Nadine Carter" nature="Survivor" demeanor="Director" clan="Toreador" sect="Camarilla" generation="9" title="Seneschal" blood="14" willpower="10" conscience="2" selfcontrol="5" courage="4" path="Humanity" pathtraits="3" physicalmax="13" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="10/12/2002">
+  <vampire name="Nadine Carter" nature="Survivor" demeanor="Director" clan="Toreador" sect="Camarilla" generation="9" title="Seneschal" blood="14" willpower="10" conscience="2" selfcontrol="5" courage="4" path="Humanity" pathtraits="3" physicalmax="13" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="5/29/2011 7:41:05 PM">
     <experience unspent="0" earned="0"/>
     <traitlist name="Physical" abc="yes" display="1">
       <trait name="Aggressive"/>
@@ -3372,8 +3371,7 @@ Burning Wrath]]>
       <![CDATA[2.3 Equipment:
 SMG
 22mm pistol (2 Silver bullets) 
-Leg Holster
-]]>
+Leg Holster]]>
     </notes>
   </vampire>
   <vampire name="Nascha Wolf" nature="Follower" demeanor="Soldier" clan="Gangrel" sect="Camarilla" generation="11" blood="12" willpower="4" conscience="3" selfcontrol="3" courage="4" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="10/22/2002" narrator="Shuniqua Rodriguez" npc="yes" lastmodified="8/12/2003 8:17:04 AM">
@@ -3710,7 +3708,7 @@ Leg Holster
       <![CDATA[Linguistics Benton, Italian, Latin, French]]>
     </notes>
   </vampire>
-  <vampire name="Roberto Miguel (NPC)" nature="Critic" demeanor="Judge" clan="Toreador" sect="Camarilla" generation="12" blood="11" willpower="5" conscience="2" selfcontrol="4" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="11/22/2000" narrator="Zoe Mora" npc="yes" lastmodified="12/23/2002 11:13:14 AM">
+  <vampire name="Roberto Miguel (NPC)" nature="Critic" demeanor="Judge" clan="Toreador" sect="Camarilla" generation="12" blood="11" willpower="5" conscience="2" selfcontrol="4" courage="3" path="Humanity" pathtraits="3" physicalmax="11" status="Active" startdate="11/22/2000" narrator="Zoe Mora" npc="yes" lastmodified="5/29/2011 7:41:18 PM">
     <experience unspent="0" earned="0"/>
     <traitlist name="Physical" abc="yes" display="1">
       <trait name="Athletic" val="2"/>
@@ -3799,7 +3797,7 @@ Leg Holster
     <traitlist name="Equipment" abc="yes" display="1"/>
     <traitlist name="Locations" abc="yes" atomic="yes" display="5"/>
   </vampire>
-  <vampire name="Ronan" nature="Survivor" demeanor="Traditionalist" clan="Gangrel" sect="Camarilla" generation="11" blood="11" willpower="8" conscience="2" selfcontrol="5" courage="3" pathtraits="2" physicalmax="11" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="10/12/2002">
+  <vampire name="Ronan" nature="Survivor" demeanor="Traditionalist" clan="Gangrel" sect="Camarilla" generation="11" blood="11" willpower="8" conscience="2" selfcontrol="5" courage="3" pathtraits="2" physicalmax="11" status="Active" startdate="8/10/2002" narrator="Shawn Neilsen" npc="yes" lastmodified="5/29/2011 7:41:32 PM">
     <experience unspent="0" earned="0"/>
     <traitlist name="Physical" abc="yes" display="1">
       <trait name="Agile" val="2"/>
@@ -3894,8 +3892,7 @@ Leg Holster
     <notes>
       <![CDATA[2.3 Equipment:
 Collapsable Bow Bonus 6, Neg: Fragile, Clumsy, Concealment: Trenchcoat Dam: 2 lvls, armor-piercing ability
-Quiver of Arrows
-]]>
+Quiver of Arrows]]>
     </notes>
   </vampire>
   <vampire name="Scott Winthrop (NPC)" nature="Child" demeanor="Traditionalist" clan="Malkavian" sect="Camarilla" generation="11" blood="12" willpower="4" conscience="3" selfcontrol="4" courage="4" path="Humanity" pathtraits="2" physicalmax="11" status="Active" startdate="11/23/2000" narrator="Zoe Mora" npc="yes" lastmodified="12/23/2002 11:13:14 AM">
