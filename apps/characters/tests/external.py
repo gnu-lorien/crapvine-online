@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user, get_fixture_path_gen
+from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user,\
+    upload_sheet_for_username, get_fixture_path_gen
 from characters.models import Sheet, VampireSheet
 
 from ..xml_uploader import handle_sheet_upload, VampireExporter
@@ -267,7 +268,7 @@ class Import(TestCase):
         self.assertSheetExists('ValueForEverything')
 
     def testWeirdSandra(self):
-        upload_sheet_for_user('sandra_weird_dates', 'Andre')
+        upload_sheet_for_username('sandra_weird_dates.gex', 'Andre')
 
     def testPythonDatetimeBug(self):
         from ..uploader import translate_date
