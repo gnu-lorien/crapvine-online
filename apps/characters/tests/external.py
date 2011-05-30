@@ -107,6 +107,31 @@ class ChronicleUpload(TestCase):
         for xv, bv in izip(xlist, blist):
             compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
+    def uploadForUser(self, fn, username, password):
+        c = Client()
+        self.assertTrue(c.login(username=username, password=password))
+
+        loadfn = fn
+        for app_fixture in get_fixture_path_gen():
+            if os.path.exists(os.path.join(app_fixture, loadfn)):
+                with open(os.path.join(app_fixture, loadfn), 'r') as f:
+                    c.post("/characters/upload_sheet/",
+                           {'title': 'whocares',
+                            'file': f,
+                            'action': 'upload'})
+        return c
+
+    def testLotsOfSettings(self):
+        to_fill = (
+            ('chronicle_camarilla_five_xml_many_settings.gex', 'Carma', 'lorien'),
+            ('chronicle_camarilla_five_bin_many_settings.gex', 'Andre', 'lorien'),
+            ('chronicle_camarilla_five_xml_many_settings.gv2', 'Kritn', 'lorien'),
+            ('chronicle_camarilla_five_bin_many_settings.gv2', 'Abson', 'lorien'),
+        )
+        for the_args in to_fill:
+            self.uploadForUser(*the_args)
+
+
 class ChronicleCompare(TestCase):
     fixtures = ['players']
 

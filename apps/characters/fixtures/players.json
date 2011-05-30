@@ -52,5 +52,23 @@
             "email": "aoeu@aoeu.com", 
             "date_joined": "2010-02-21 20:26:10"
         }
+    },
+    {
+        "pk": 12, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "Abson", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-02-21 20:26:10", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a0760$5ac0e7206dd13d07a000e0637eae3473af105b9b", 
+            "email": "aoeu@aoeu.com", 
+            "date_joined": "2010-02-21 20:26:10"
+        }
     }
 ]
