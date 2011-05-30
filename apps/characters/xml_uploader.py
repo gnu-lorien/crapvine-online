@@ -2,6 +2,7 @@ from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
 import xml.etree.ElementTree as ET
+import codecs
 import re
 from django.db import transaction
 from datetime import datetime
@@ -172,11 +173,13 @@ def base_read(f, user):
                   (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
-    str_representation = f.read()
-    if isinstance(str_representation, unicode):
-        uni_representation = str_representation
-    else:
-        uni_representation = unicode(str_representation, 'utf-8')
+    uni_representation = codecs.EncodedFile(f, 'ascii', 'utf-8', errors='replace').read()
+    #str_representation = "".join(i for i in s if ord(i)<128)
+    #str_representation = codecs.getencoder('ascii')(str_representation, 'replace')[0]
+    #if isinstance(str_representation, unicode):
+    #    uni_representation = str_representation
+    #else:
+    #    uni_representation = unicode(str_representation, 'ascii')
     x = re.sub(RE_XML_ILLEGAL, "p", uni_representation)
     tree = ET.fromstring(x)
     creatures = []
