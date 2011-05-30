@@ -132,5 +132,8 @@
      <traitlist name="Status" display="1" abc="yes">
         <trait name="Admired" note="Justine Westshire"/>
      </traitlist>
+     <notes>
+      <![CDATA[]]>
+     </notes>
   </vampire>
 </grapevine>
