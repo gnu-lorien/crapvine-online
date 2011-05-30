@@ -128,9 +128,7 @@ def get_date_hint(tree):
 
             if ddt is None and mdt is None:
                 raise ValueError("Could not convert %s to a proper date" % date)
-        print results
 
-    print results
     if results['day'] > results['month']:
         return 'day'
     else:
@@ -167,21 +165,8 @@ def read_vampire(v, user, date_hint):
     return current_vampire
 
 def base_read(f, user):
-    RE_XML_ILLEGAL = u'([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' + \
-                 u'|\u0085|\u0092|\x92|\u0096|\x96|' + \
-                 u'([%s-%s][^%s-%s])|([^%s-%s][%s-%s])|([%s-%s]$)|(^[%s-%s])' % \
-                  (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
-                   unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
-                   unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
     uni_representation = codecs.EncodedFile(f, 'ascii', 'utf-8', errors='replace').read()
-    #str_representation = "".join(i for i in s if ord(i)<128)
-    #str_representation = codecs.getencoder('ascii')(str_representation, 'replace')[0]
-    #if isinstance(str_representation, unicode):
-    #    uni_representation = str_representation
-    #else:
-    #    uni_representation = unicode(str_representation, 'ascii')
-    x = re.sub(RE_XML_ILLEGAL, "p", uni_representation)
-    tree = ET.fromstring(x)
+    tree = ET.fromstring(uni_representation)
     creatures = []
     date_hint = get_date_hint(tree)
     for v in tree.findall('vampire'):
