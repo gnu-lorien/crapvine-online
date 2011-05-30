@@ -172,7 +172,12 @@ def base_read(f, user):
                   (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
-    x = re.sub(RE_XML_ILLEGAL, "p", unicode(f.read(), 'utf-8'))
+    str_representation = f.read()
+    if isinstance(str_representation, unicode):
+        uni_representation = str_representation
+    else:
+        uni_representation = unicode(str_representation, 'utf-8')
+    x = re.sub(RE_XML_ILLEGAL, "p", uni_representation)
     tree = ET.fromstring(x)
     creatures = []
     date_hint = get_date_hint(tree)
