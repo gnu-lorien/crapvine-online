@@ -1,8 +1,7 @@
 from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
-import xml.etree.ElementTree as etree
-from xml.dom.minidom import parse
+import xml.etree.ElementTree as ET
 from django.db import transaction
 from datetime import datetime
 from django.db import IntegrityError
@@ -87,21 +86,20 @@ class VampireExporter():
     def __str__(self):
         return "<?xml version=\"1.0\"?>\n<grapevine version=\"3\">\n%s\n</grapevine>" % (self.vampire.get_xml(indent='  '))
 
-def get_date_hint(dom):
+def get_date_hint(tree):
     date_strings = set()
     results = {'day':0, 'month':0}
-    for v in dom.getElementsByTagName('vampire'):
+    for v in tree.findall('vampire'):
         top_dates = 'startdate', 'lastmodified'
         for td in top_dates:
-            if v.attributes.has_key(td):
-                date_strings.add(v.getAttribute(td))
+            if td in v.attrib:
+                date_strings.add(v.attrib[td])
 
-        for v_child in v.childNodes:
-            if v_child.nodeName == 'experience':
-                for exp_child in v_child.childNodes:
-                    if exp_child.nodeName == 'entry':
-                        if exp_child.attributes.has_key('date'):
-                            date_strings.add(exp_child.getAttribute('date'))
+        exp = v.find('experience')
+        if exp is not None:
+            for ee in exp.findall('entry'):
+                if 'date' in ee.attrib:
+                    date_strings.add(ee.attrib['date'])
 
         from uploader import DAY_FIRST_TRANSLATIONS, MONTH_FIRST_TRANSLATIONS
 
@@ -140,18 +138,14 @@ def read_vampire(v, user, date_hint):
     vampire = {}
     previous_entry = None
 
-    current_vampire = create_base_vampire(v._attrs, user, date_hint=date_hint)
+    current_vampire = create_base_vampire(v.attrib, user, date_hint=date_hint)
 
-    for v_child in v.childNodes:
-        if v_child.nodeName == 'traitlist':
-            tl = v_child
-            read_traitlist_properties(tl._attrs, current_vampire)
-            order = 0
-            for tl_child in tl.childNodes:
-                if tl_child.nodeName == 'trait':
-                    t = tl_child
-                    order += 1
-                    read_trait(t._attrs, tl._attrs, current_vampire)
+    for tl in v.findall('traitlist'):
+        read_traitlist_properties(tl.attrib, current_vampire)
+        order = 0
+        for t in tl.findall('trait'):
+            order += 1
+            read_trait(t.attrib, tl.attrib, current_vampire, order)
 
     exp = v.find('experience')
     for ee in exp.findall('entry'):
@@ -171,10 +165,10 @@ def read_vampire(v, user, date_hint):
     return current_vampire
 
 def base_read(f, user):
-    dom = parse(f)
+    tree = ET.parse(f)
     creatures = []
-    date_hint = get_date_hint(dom)
-    for v in dom.getElementsByTagName('vampire'):
+    date_hint = get_date_hint(tree)
+    for v in tree.findall('vampire'):
         creatures.append(read_vampire(v, user, date_hint))
 
     return creatures
