@@ -167,12 +167,12 @@ def read_vampire(v, user, date_hint):
 
 def base_read(f, user):
     RE_XML_ILLEGAL = u'([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' + \
-                 u'|\u0085|\u0092|\u0096|' + \
+                 u'|\u0085|\u0092|\x92|\u0096|\x96|' + \
                  u'([%s-%s][^%s-%s])|([^%s-%s][%s-%s])|([%s-%s]$)|(^[%s-%s])' % \
                   (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
                    unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
-    x = re.sub(RE_XML_ILLEGAL, "?", f.read())
+    x = re.sub(RE_XML_ILLEGAL, "p", unicode(f.read(), 'utf-8'))
     tree = ET.fromstring(x)
     creatures = []
     date_hint = get_date_hint(tree)
