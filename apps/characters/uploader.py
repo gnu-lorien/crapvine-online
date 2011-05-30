@@ -11,6 +11,7 @@ MONTH_FIRST_TRANSLATIONS = [
     "%I:%M:%S %p",
     "%m/%d/%Y %H:%M:%S %p",
     "%m/%d/%Y %H:%M:%S",
+    "%H:%M:%S",
 ]
 
 DAY_FIRST_TRANSLATIONS = [
@@ -19,6 +20,7 @@ DAY_FIRST_TRANSLATIONS = [
     "%I:%M:%S %p",
     "%d/%m/%Y %H:%M:%S %p",
     "%d/%m/%Y %H:%M:%S",
+    "%H:%M:%S",
 ]
 
 def translate_date(date, date_hint=DEFAULT_DATE_HINT):
