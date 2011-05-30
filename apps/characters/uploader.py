@@ -4,14 +4,29 @@ from pprint import pprint
 from datetime import timedelta, datetime
 from django.db import IntegrityError
 
-def translate_date(date):
+DEFAULT_DATE_HINT = 'month'
+MONTH_FIRST_TRANSLATIONS = [
+    "%m/%d/%Y %I:%M:%S %p",
+    "%m/%d/%Y",
+    "%I:%M:%S %p",
+    "%m/%d/%Y %H:%M:%S %p",
+    "%m/%d/%Y %H:%M:%S",
+]
+
+DAY_FIRST_TRANSLATIONS = [
+    "%d/%m/%Y %I:%M:%S %p",
+    "%d/%m/%Y",
+    "%I:%M:%S %p",
+    "%d/%m/%Y %H:%M:%S %p",
+    "%d/%m/%Y %H:%M:%S",
+]
+
+def translate_date(date, date_hint=DEFAULT_DATE_HINT):
     if isinstance(date, basestring):
-        date_translation_strings = [
-            "%m/%d/%Y %I:%M:%S %p",
-            "%m/%d/%Y",
-            "%I:%M:%S %p",
-            "%m/%d/%Y %H:%M:%S %p",
-        ]
+        if date_hint == 'month':
+            date_translation_strings = MONTH_FIRST_TRANSLATIONS
+        else:
+            date_translation_strings = DAY_FIRST_TRANSLATIONS
         dt = None
         for format in date_translation_strings:
             try:
@@ -36,10 +51,10 @@ def map_attributes(attributes_map, attrs):
         if key in attrs:
             attrs[remap] = attrs.pop(key)
 
-def map_dates(dates, attrs):
+def map_dates(dates, attrs, date_hint=DEFAULT_DATE_HINT):
     for key in attrs.iterkeys():
         if key in dates:
-            attrs[key] = translate_date(attrs[key])
+            attrs[key] = translate_date(attrs[key], date_hint)
 
 
 VAMPIRE_TAG_RENAMES = {
@@ -71,12 +86,12 @@ TRAITLIST_TAG_RENAMES = {
     'display': 'display_preference',
 }
 
-def create_base_vampire(attrs, user):
-    if not attrs.has_key('name'):
+def create_base_vampire(attrs, user, date_hint=DEFAULT_DATE_HINT):
+    if not 'name' in attrs:
         raise RuntimeError("Can't create base vampire with no name in attrs")
     my_attrs = dict(attrs)
     map_attributes(VAMPIRE_TAG_RENAMES, my_attrs)
-    map_dates(VAMPIRE_TAG_DATES, my_attrs)
+    map_dates(VAMPIRE_TAG_DATES, my_attrs, date_hint=date_hint)
     for key, value in VAMPIRE_TAG_OVERRIDES.iteritems():
         if key in my_attrs:
             my_attrs[value] = my_attrs[key]
@@ -94,10 +109,10 @@ def create_base_vampire(attrs, user):
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     return VampireSheet.objects.create(**my_attrs)
 
-def read_experience_entry(attrs, current_vampire, previous_entry):
+def read_experience_entry(attrs, current_vampire, previous_entry, date_hint=DEFAULT_DATE_HINT):
     my_attrs = dict(attrs)
     map_attributes(ENTRY_TAG_RENAMES, my_attrs)
-    map_dates(ENTRY_TAG_DATES, my_attrs)
+    map_dates(ENTRY_TAG_DATES, my_attrs, date_hint)
     if previous_entry is not None:
         #print self.last_entry.date
         if previous_entry.date >= my_attrs['date']:

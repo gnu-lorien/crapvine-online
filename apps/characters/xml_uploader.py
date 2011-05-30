@@ -86,10 +86,59 @@ class VampireExporter():
     def __str__(self):
         return "<?xml version=\"1.0\"?>\n<grapevine version=\"3\">\n%s\n</grapevine>" % (self.vampire.get_xml(indent='  '))
 
-def read_vampire(v, user):
+def get_date_hint(tree):
+    date_strings = set()
+    results = {'day':0, 'month':0}
+    for v in tree.findall('vampire'):
+        top_dates = 'startdate', 'lastmodified'
+        for td in top_dates:
+            if td in v.attrib:
+                date_strings.add(v.attrib[td])
+
+        exp = v.find('experience')
+        if exp is not None:
+            for ee in exp.findall('entry'):
+                if 'date' in ee.attrib:
+                    date_strings.add(ee.attrib['date'])
+
+        from uploader import DAY_FIRST_TRANSLATIONS, MONTH_FIRST_TRANSLATIONS
+
+        for date in date_strings:
+            ddt = None
+            for format in DAY_FIRST_TRANSLATIONS:
+                try:
+                    ddt = datetime.strptime(date, format)
+                    break
+                except ValueError:
+                    pass
+            if ddt is not None:
+                results['day'] += 1
+
+            mdt = None
+            for format in MONTH_FIRST_TRANSLATIONS:
+                try:
+                    mdt = datetime.strptime(date, format)
+                    break
+                except ValueError:
+                    pass
+            if mdt is not None:
+                results['month'] += 1
+
+            if ddt is None and mdt is None:
+                raise ValueError("Could not convert %s to a proper date" % date)
+        print results
+
+    print results
+    if results['day'] > results['month']:
+        return 'day'
+    else:
+        return 'month'
+
+def read_vampire(v, user, date_hint):
     vampire = {}
     previous_entry = None
-    current_vampire = create_base_vampire(v.attrib, user)
+
+    current_vampire = create_base_vampire(v.attrib, user, date_hint=date_hint)
 
     for tl in v.findall('traitlist'):
         read_traitlist_properties(tl.attrib, current_vampire)
@@ -100,7 +149,7 @@ def read_vampire(v, user):
 
     exp = v.find('experience')
     for ee in exp.findall('entry'):
-        previous_entry = read_experience_entry(ee.attrib, current_vampire, previous_entry)
+        previous_entry = read_experience_entry(ee.attrib, current_vampire, previous_entry, date_hint=date_hint)
 
     biography = v.find('biography')
     if biography is not None:
@@ -118,8 +167,9 @@ def read_vampire(v, user):
 def base_read(f, user):
     tree = ET.parse(f)
     creatures = []
+    date_hint = get_date_hint(tree)
     for v in tree.findall('vampire'):
-        creatures.append(read_vampire(v, user))
+        creatures.append(read_vampire(v, user, date_hint))
 
     return creatures
 
