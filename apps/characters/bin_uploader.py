@@ -53,6 +53,45 @@ def read_int(f):
 def read_has(f):
     return read_length(f) >= 1
 
+def read_trait_list(f):
+    thisList =  {
+        'name': read_string(f),
+        'abc': read_boolean(f),
+        'atomic': read_boolean(f),
+        'negative': read_boolean(f),
+        'display': read_long(f),
+    }
+
+    n = read_length(f)
+    thisList['list'] = []
+    for i in xrange(n):
+        thisList['list'].append({
+            'name': read_string(f),
+            'val': read_string(f),
+            'note': read_string(f),
+        })
+    return thisList
+
+def read_experience_history(f):
+    retdict = {}
+    retdict['experience'] = {
+        'unspent': read_single(f),
+        'earned': read_single(f)
+    }
+    n = read_length(f)
+    experience_entries = []
+    for i in xrange(n):
+        experience_entries.append({
+            'date': read_date(f),
+            'change': read_single(f),
+            'type': read_long(f),
+            'reason': read_string(f),
+            'earned': read_single(f),
+            'unspent': read_single(f),
+        })
+    retdict['experience_entries'] = experience_entries
+    return retdict
+
 def read_vampire(f):
     vampire = {}
     vampire['attrs'] = {
@@ -94,23 +133,9 @@ def read_vampire(f):
     #print "Reading", vampire['attrs']['name']
 
     # Experience
-    vampire['experience'] = {
-        'unspent': read_single(f),
-        'earned': read_single(f)
-    }
-    n = read_length(f)
-    experience_entries = []
-    for i in xrange(n):
-        experience_entries.append({
-            'date': read_date(f),
-            'change': read_single(f),
-            'type': read_long(f),
-            'reason': read_string(f),
-            'earned': read_single(f),
-            'unspent': read_single(f),
-        })
-
-    vampire['experience_entries'] = experience_entries
+    experience_entries_dict = read_experience_history(f)
+    vampire['experience'] = experience_entries_dict['experience']
+    vampire['experience_entries'] = experience_entries_dict['experience_entries']
 
 #   for i in xrange(n):
 #       if experience_entries[i]['date'] != experience_entries[i]['reason']:
@@ -120,31 +145,21 @@ def read_vampire(f):
 
     trait_lists = []
     for i in xrange(20):
-        thisList =  {
-            'name': read_string(f),
-            'abc': read_boolean(f),
-            'atomic': read_boolean(f),
-            'negative': read_boolean(f),
-            'display': read_long(f),
-        }
-
-        n = read_length(f)
-        thisList['list'] = []
-        for i in xrange(n):
-            thisList['list'].append({
-                'name': read_string(f),
-                'val': read_string(f),
-                'note': read_string(f),
-            })
-        trait_lists.append(thisList)
+        trait_lists.append(read_trait_list(f))
 
     vampire['trait_lists'] = trait_lists
 
     # Boons
     n = read_length(f)
-    #boons = []
-    if n > 0:
-        raise RuntimeError("Can't parse and or skip boons")
+    boons = []
+    for i in range(n):
+        boons.append({
+            'type': read_string(f),
+            'partner': read_string(f),
+            'owed': read_boolean(f),
+            'date': read_date(f),
+            'description': read_string(f),
+        })
 
     vampire['biography'] = read_string(f)
     vampire['biography'] = vampire['biography'].replace('\r\n', '\n')
@@ -180,23 +195,73 @@ def base_read(f):
 
     has_calendar = read_has(f)
     if has_calendar:
-        raise RuntimeError("Can't yet parse or ignore the calendar")
+        last_modified = read_date(f)
+        calendar_entries_n = read_length(f)
+        calendar_entries = []
+        for i in xrange(calendar_entries_n):
+            calendar_entries.append({
+                'date': read_date(f),
+                'time': read_string(f),
+                'place': read_string(f),
+                'notes': read_string(f)
+            })
 
     has_apr_settings = read_has(f)
     if has_apr_settings:
-        raise RuntimeError("Can't yet parse or ignore apr settings")
+        apr_attrs = {
+            'personalactions': read_int(f),
+            'addcommon': read_boolean(f),
+            'carryunused': read_boolean(f),
+            'publicrumors': read_boolean(f),
+            'personalrumors': read_boolean(f),
+            'racerumors': read_boolean(f),
+            'grouprumors': read_boolean(f),
+            'subgrouprumors': read_boolean(f),
+            'influencerumors': read_boolean(f),
+            'previousrumors': read_boolean(f),
+            'copyprevious': read_boolean(f),
+        }
+        background_actions = read_trait_list(f)
+        actions_per_level = read_trait_list(f)
 
     xp_awards_n = read_length(f)
     if xp_awards_n != 0:
-        raise RuntimeError("Can't yet parse or ignore xp awards")
+        for i in range(xp_awards_n):
+            xp_award = {
+                'use': read_string(f),
+                'name': read_string(f),
+                'type': read_long(f),
+                'change': read_single(f),
+                'reason': read_string(f),
+            }
 
     template_settings_n = read_length(f)
     if template_settings_n != 0:
-        raise RuntimeError("Can't yet parse or ignore template settings")
+        for i in range(template_settings_n):
+            template_setting = {
+                'name': read_string(f),
+                'sheet': read_boolean(f),
+                'text': read_string(f),
+                'rtf': read_string(f),
+                'html': read_string(f),
+            }
 
-    unknown_n = read_length(f)
-    if unknown_n != 0:
-        raise RuntimeError("Can't parse or ignore unknown section")
+    players_n = read_length(f)
+    if players_n != 0:
+        players = []
+        for i in range(players_n):
+            player = {
+                'name': read_string(f),
+                'id': read_string(f),
+                'email': read_string(f),
+                'phone': read_string(f),
+                'position': read_string(f),
+                'status': read_string(f),
+                'lastmodified': read_date(f),
+            }
+            read_experience_history(f)
+            player['address'] = read_string(f)
+            player['notes'] = read_string(f)
 
     creature_count = read_int(f)
     creatures = []
@@ -204,6 +269,16 @@ def base_read(f):
         creature_type = read_int(f)
         if creature_type == 2:
             creatures.append(read_vampire(f))
+
+    """ We safely ignore the following sections since they come after the characters we care about:
+    queries
+    items
+    rotes
+    locations
+    actions
+    plots
+    rumors
+    """
 
     return creatures
 
