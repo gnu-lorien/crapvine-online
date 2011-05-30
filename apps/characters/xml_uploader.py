@@ -2,6 +2,7 @@ from xml.sax.saxutils import unescape
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces, property_lexical_handler
 import xml.etree.ElementTree as ET
+import re
 from django.db import transaction
 from datetime import datetime
 from django.db import IntegrityError
@@ -165,7 +166,14 @@ def read_vampire(v, user, date_hint):
     return current_vampire
 
 def base_read(f, user):
-    tree = ET.parse(f)
+    RE_XML_ILLEGAL = u'([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' + \
+                 u'|\u0085|\u0092|\u0096|' + \
+                 u'([%s-%s][^%s-%s])|([^%s-%s][%s-%s])|([%s-%s]$)|(^[%s-%s])' % \
+                  (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
+                   unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
+                   unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
+    x = re.sub(RE_XML_ILLEGAL, "?", f.read())
+    tree = ET.fromstring(x)
     creatures = []
     date_hint = get_date_hint(tree)
     for v in tree.findall('vampire'):
