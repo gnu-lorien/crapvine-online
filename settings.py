@@ -209,6 +209,8 @@ INSTALLED_APPS = [
     "reversion",
     "chronicles",
     "authority",
+
+    "south",
 ]
 
 FIXTURE_DIRS = [
