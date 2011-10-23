@@ -2,6 +2,7 @@ import unittest
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
+from compare import compare_vampire_sheets
 from upload_helpers import upload_chronicle_for_username, upload_sheet_for_user, upload_chronicle_for_user,\
     upload_sheet_for_username, get_fixture_path_gen
 from characters.models import Sheet, VampireSheet
@@ -14,61 +15,6 @@ from itertools import izip
 from datetime import datetime
 
 import os
-
-def compare_sheets(self, left, right):
-    # Vampire base attributes
-    self.assertEquals(left.nature, right.nature)
-    self.assertEquals(left.demeanor, right.demeanor)
-    self.assertEquals(left.blood, right.blood)
-    self.assertEquals(left.clan, right.clan)
-    self.assertEquals(left.conscience, right.conscience)
-    self.assertEquals(left.courage, right.courage)
-    self.assertEquals(left.generation, right.generation)
-    self.assertEquals(left.path, right.path)
-    self.assertEquals(left.pathtraits, right.pathtraits)
-    self.assertEquals(left.physicalmax, right.physicalmax)
-    self.assertEquals(left.sect, right.sect)
-    self.assertEquals(left.selfcontrol, right.selfcontrol)
-    self.assertEquals(left.willpower, right.willpower)
-    self.assertEquals(left.title, right.title)
-    self.assertEquals(left.aura, right.aura)
-    self.assertEquals(left.coterie, right.coterie)
-    self.assertEquals(left.id_text, right.id_text)
-    self.assertEquals(left.sire, right.sire)
-    self.assertEquals(left.tempcourage, right.tempcourage)
-    self.assertEquals(left.tempselfcontrol, right.tempselfcontrol)
-    self.assertEquals(left.tempwillpower, right.tempwillpower)
-    self.assertEquals(left.tempblood, right.tempblood)
-    self.assertEquals(left.tempconscience, right.tempconscience)
-    self.assertEquals(left.temppathtraits, right.temppathtraits)
-
-    # Sheet base attributes
-    self.assertEquals(left.home_chronicle, right.home_chronicle)
-    self.assertEquals(left.start_date, right.start_date)
-    self.assertEquals(left.last_modified, right.last_modified)
-    self.assertEquals(left.npc, right.npc)
-    self.assertEquals(left.notes, right.notes)
-    self.assertEquals(left.biography, right.biography)
-    self.assertEquals(left.status, right.status)
-    self.assertEquals(left.experience_unspent, right.experience_unspent)
-    self.assertEquals(left.experience_earned, right.experience_earned)
-
-    left_traits = left.traits.all().order_by('traitlistname__name', 'order')
-    right_traits = right.traits.all().order_by('traitlistname__name', 'order')
-    for l, r in zip(left_traits, right_traits):
-        self.assertEquals(l.value, r.value)
-        self.assertEquals(l.note,  r.note)
-        self.assertEquals(l.name,  r.name)
-
-    left_entries = left.experience_entries.all()
-    right_entries = right.experience_entries.all()
-    for l, r in zip(left_entries, right_entries):
-        self.assertEquals(l.reason,      r.reason)
-        self.assertEquals(l.change,      r.change)
-        self.assertEquals(l.change_type, r.change_type)
-        self.assertEquals(l.earned,      r.earned)
-        self.assertEquals(l.unspent,     r.unspent)
-        self.assertEquals(l.date,        r.date)
 
 class ChronicleUpload(TestCase):
     fixtures = ['players']
@@ -106,7 +52,7 @@ class ChronicleUpload(TestCase):
         self.assertNotEqual(len(xlist), 0)
         self.assertNotEqual(len(blist), 0)
         for xv, bv in izip(xlist, blist):
-            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
+            compare_vampire_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
     def uploadForUser(self, fn, username, password):
         c = Client()
@@ -166,7 +112,7 @@ class ChronicleCompare(TestCase):
         self.assertNotEqual(len(blist), 0)
         for xv, bv in izip(self.userx.personal_characters.order_by('name'), self.userb.personal_characters.order_by('name')):
             print "Comparing", xv.name
-            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
+            compare_vampire_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
     def testEquivalenceFive(self):
         self.loadChrons('chronicle_camarilla_five_xml.gex', 'chronicle_camarilla_five_bin.gex')
@@ -175,7 +121,7 @@ class ChronicleCompare(TestCase):
         self.assertNotEqual(len(xlist), 0)
         self.assertNotEqual(len(blist), 0)
         for xv, bv in izip(self.userx.personal_characters.order_by('name'), self.userb.personal_characters.order_by('name')):
-            compare_sheets(self, xv.vampiresheet, bv.vampiresheet)
+            compare_vampire_sheets(self, xv.vampiresheet, bv.vampiresheet)
 
 
 class Export(TestCase):
@@ -203,7 +149,7 @@ class Export(TestCase):
 
         new_sheet = VampireSheet.objects.get(name__exact='Suckon Deez Nuts')
 
-        compare_sheets(self, new_sheet, vampire_sheet)
+        compare_vampire_sheets(self, new_sheet, vampire_sheet)
 
     def testChronicle(self):
         pass
