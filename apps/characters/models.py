@@ -387,17 +387,31 @@ class Sheet(models.Model):
         self.content_type = None
         self.save()
 
-    def copy(self, save=True):
+    def copy(self):
         from copy import deepcopy
         copied_obj = deepcopy(self)
 
         from datetime import datetime
         copied_obj.name = copied_obj.name + "||snapshot" + unicode(datetime.now())
+        copied_obj.pk = None
         copied_obj.id = None
         copied_obj.object_id = None
         copied_obj.content_type = None
-        if save:
-            copied_obj.save()
+        copied_obj.save()
+        for t in self.traits.all():
+            t.sheet_id = copied_obj.id
+            t.pk = None
+            t.id = None
+            t.save()
+        for ee in self.experience_entries.all():
+            add_ee = ExperienceEntry()
+            add_ee.reason =      ee.reason
+            add_ee.change =      ee.change
+            add_ee.change_type = ee.change_type
+            add_ee.earned =      ee.earned
+            add_ee.unspent =     ee.unspent
+            add_ee.date =        ee.date
+            copied_obj.add_experience_entry(add_ee)
         return copied_obj
 
     def save(self, *args, **kwargs):
