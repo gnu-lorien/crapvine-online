@@ -394,6 +394,14 @@ class Sheet(models.Model):
             pass
         return self
 
+    @staticmethod
+    def filter_out_snapshots(qs):
+        return qs.filter(am_i_a_snapshot__snapshot_sheet__name__isnull=True)
+
+    @staticmethod
+    def filter_only_snapshots(qs):
+        return qs.filter(am_i_a_snapshot__snapshot_sheet__name__isnull=False)
+
     def snapshot(self):
         from copy import deepcopy
         self = self.get_specialization()

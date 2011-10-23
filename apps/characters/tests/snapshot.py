@@ -85,6 +85,7 @@ class SnapshotTest(TestCase):
         self.assertEqual(len(Sheet.objects.all()), 6)
         Sheet.objects.all()[0].snapshot()
         self.assertEqual(len(Sheet.objects.all()), 7)
-        # Find a quick way to filter out ones with snapshots
-        f = Sheet.objects.all().filter(am_i_a_snapshot__snapshot_sheet__name__isnull=False)
+        f = Sheet.filter_only_snapshots(Sheet.objects.all())
         self.assertEqual(len(f), 1)
+        f = Sheet.filter_out_snapshots(Sheet.objects.all())
+        self.assertEqual(len(f), 6)
