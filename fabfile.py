@@ -7,12 +7,16 @@ def prepare_deploy():
 def post_deploy():
     local("git stash pop")
 
+
+def restart_app():
+    run('./uwsgi.sh restart')
+
 def deploy_helper(deploy_dirs, scp_port, scp_server, dest_dir):
     prepare_deploy()
     for deploy_dir in deploy_dirs:
         local("scp -rp -P {} {dd}/* {}:{dest_dir}/{dd}".format(scp_port, scp_server, dd=deploy_dir, dest_dir=dest_dir))
 
-    run('./uwsgi.sh restart')
+    restart_app()
     post_deploy()
 
 def deploy(scp_port, scp_server, dest_dir):
