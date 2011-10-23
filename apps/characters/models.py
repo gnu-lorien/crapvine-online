@@ -387,6 +387,19 @@ class Sheet(models.Model):
         self.content_type = None
         self.save()
 
+    def copy(self, save=True):
+        from copy import deepcopy
+        copied_obj = deepcopy(self)
+
+        from datetime import datetime
+        copied_obj.name = copied_obj.name + "||snapshot" + unicode(datetime.now())
+        copied_obj.id = None
+        copied_obj.object_id = None
+        copied_obj.content_type = None
+        if save:
+            copied_obj.save()
+        return copied_obj
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self._get_slug())
         super(Sheet, self).save(*args, **kwargs)
