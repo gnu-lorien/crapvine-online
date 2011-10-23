@@ -387,8 +387,16 @@ class Sheet(models.Model):
         self.content_type = None
         self.save()
 
+    def get_specialization(self):
+        try:
+            return self.vampiresheet
+        except:
+            pass
+        return self
+
     def snapshot(self):
         from copy import deepcopy
+        self = self.get_specialization()
         copied_obj = deepcopy(self)
 
         from datetime import datetime
