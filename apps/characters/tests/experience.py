@@ -199,6 +199,24 @@ class RecentExpenditures(TestCase):
         dt.delete()
         self.assertEE(u'Purchased Energdouchous (misc). Removed Dexterous x3 (dex). Renamed Energetic x3 (misc) to Energdouchous x4 (misc).', 2, 4)
 
+    def testDoubleToTheSameNameChanges(self):
+        dt = self.sheet.traits.get(name='Dexterous')
+        dt.name = 'Cockles'
+        dt.save()
+        self.assertEE(u'Renamed Dexterous x3 (dex) to Cockles x3 (dex).', 0, 6)
+
+        et = self.sheet.traits.get(name='Energetic')
+        et.name = "Cockles"
+        et.save()
+        self.assertEE(u'Renamed Dexterous x3 (dex) to Cockles x3 (dex), Energetic x3 (misc) to Cockles x3 (misc).', 0, 6)
+
+        et.value = 4
+        et.save()
+        self.assertEE(u'Purchased Cockles (misc). Renamed Dexterous x3 (dex) to Cockles x3 (dex), Energetic x3 (misc) to Cockles x4 (misc).', 1, 3)
+
+        dt.delete()
+        self.assertEE(u'Purchased Cockles (misc). Removed Dexterous x3 (dex). Renamed Energetic x3 (misc) to Cockles x4 (misc).', 2, 4)
+
     def testNameAndNoteChanges(self):
         dt = self.sheet.traits.get(name='Dexterous')
         dt.note = 'reallydex'

@@ -176,7 +176,8 @@ def is_binary(f):
     if binary_header_n > 0:
         binary_header = f.read(binary_header_n)
         binary_header = struct.unpack("<%ds" % binary_header_n, binary_header)[0]
-        if binary_header != 'GVBE':
+        binary_headers = ['GVBE', 'GVBG']
+        if binary_header not in binary_headers:
             return False
     return True
 

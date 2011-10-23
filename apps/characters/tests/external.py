@@ -1,3 +1,4 @@
+import unittest
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
@@ -126,6 +127,13 @@ class ChronicleUpload(TestCase):
             ('chronicle_camarilla_five_xml_many_settings.gex', 'Carma', 'lorien'),
             ('chronicle_camarilla_five_bin_many_settings.gex', 'Andre', 'lorien'),
             ('chronicle_camarilla_five_xml_many_settings.gv2', 'Kritn', 'lorien'),
+        )
+        for the_args in to_fill:
+            self.uploadForUser(*the_args)
+
+    @unittest.expectedFailure
+    def testBVBG(self):
+        to_fill = (
             ('chronicle_camarilla_five_bin_many_settings.gv2', 'Abson', 'lorien'),
         )
         for the_args in to_fill:
