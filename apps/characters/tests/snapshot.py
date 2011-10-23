@@ -89,3 +89,6 @@ class SnapshotTest(TestCase):
         self.assertEqual(len(f), 1)
         f = Sheet.filter_out_snapshots(Sheet.objects.all())
         self.assertEqual(len(f), 6)
+
+    def testSnapshotRecentExpenditures(self):
+        pass
