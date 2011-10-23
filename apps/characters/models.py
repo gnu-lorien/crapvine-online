@@ -373,10 +373,10 @@ class Sheet(models.Model):
             self.experience_unspent = self.experience_earned = 0
 
     def add_default_traitlist_properties(self):
-        try:
-            self.vampiresheet.add_default_traitlist_properties()
-        except VampireSheet.DoesNotExist:
-            pass
+        s = self.get_specialization()
+        if s == self:
+            return
+        s.add_default_traitlist_properties()
 
     def safe_delete(self):
         delete_storage_user = User.objects.get(username__startswith='deleted_character_sheets')
