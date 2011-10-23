@@ -38,3 +38,15 @@ class SnapshotTest(TestCase):
         ee.reason = "Carlsbad"
         ee.save()
         self.assertRaises(AssertionError, lambda:compare_experience_entries(self, self.sheet, self.sheet2))
+
+    def testSnapshotMapping(self):
+        snapnum = 2
+        snapshots = [self.sheet.snapshot() for i in xrange(snapnum)]
+        print "Orig sheet"
+        print self.sheet.snapshots.all()
+        self.assertEqual(len(self.sheet.snapshots.all()), snapnum)
+        print self.sheet.am_i_a_snapshot.all()
+        self.assertEqual(len(self.sheet.am_i_a_snapshot.all()), 0)
+        for s in snapshots:
+            self.assertEqual(len(s.snapshots.all()), 0)
+            self.assertEqual(len(s.am_i_a_snapshot.all()), 1)
