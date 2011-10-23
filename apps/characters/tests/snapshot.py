@@ -4,7 +4,7 @@ from compare import compare_vampire_sheets, compare_traits, compare_sheet_base_a
     compare_experience_entries
 from upload_helpers import upload_sheet_for_username
 
-class Snapshot(TestCase):
+class SnapshotTest(TestCase):
     fixtures = ['players']
 
     def setUp(self):
@@ -13,8 +13,8 @@ class Snapshot(TestCase):
         self.sheet.uploading = False
         self.sheet.save()
 
-    def testCopy(self):
-        self.sheet2 = self.sheet.copy()
+    def testSnapshot(self):
+        self.sheet2 = self.sheet.snapshot()
         compare_vampire_sheets(self, self.sheet, self.sheet2)
 
         self.assertNotEqual(self.sheet.biography, "Rcenn")

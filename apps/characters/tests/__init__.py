@@ -5,7 +5,7 @@ from apps.characters.tests.upload_helpers import upload_sheet_for_username
 from apps.crapvine.xml.trait import TraitList
 from experience import ExperienceEntriesTestCase, RecentExpenditures
 from external import Export, Import, ChronicleCompare, ChronicleUpload
-from snapshot import Snapshot
+from snapshot import SnapshotTest
 
 from django.test import TestCase
 from django.test.client import Client

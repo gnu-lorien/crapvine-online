@@ -387,7 +387,7 @@ class Sheet(models.Model):
         self.content_type = None
         self.save()
 
-    def copy(self):
+    def snapshot(self):
         from copy import deepcopy
         copied_obj = deepcopy(self)
 
@@ -398,6 +398,10 @@ class Sheet(models.Model):
         copied_obj.object_id = None
         copied_obj.content_type = None
         copied_obj.save()
+        snapshot = Snapshot.objects.create(
+            original_sheet = self,
+            snapshot_sheet = copied_obj)
+
         for t in self.traits.all():
             t.sheet_id = copied_obj.id
             t.pk = None
@@ -994,3 +998,8 @@ class FailedUpload(models.Model):
     exception = models.TextField()
     traceback = models.TextField()
     verified = models.BooleanField(default=False)
+
+class Snapshot(models.Model):
+    original_sheet = models.ForeignKey(Sheet, related_name="snapshots")
+    snapshot_sheet = models.ForeignKey(Sheet, related_name="am_i_a_snapshot")
+    datetime = models.DateTimeField(auto_now_add=True)
