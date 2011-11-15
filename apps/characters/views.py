@@ -1281,3 +1281,13 @@ def show_recent_expenditures(request, sheet_slug,
     return render_to_response(
         'characters/sheet_show_recent_purchases.html',
         RequestContext(request, ctx))
+
+@login_required
+def show_snapshots(request, sheet_slug,
+                   form_class=None, **kwargs):
+    group, bridge = group_and_bridge(request)
+
+    if group:
+        sheet = get_object_or_404(group.content_objects(Sheet), slug=sheet_slug)
+    else:
+        sheet = get_object_or_404(Sheet, slug=sheet_slug)
