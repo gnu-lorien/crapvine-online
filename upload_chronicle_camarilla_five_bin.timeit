@@ -1,0 +1,10 @@
+s = """\
+from characters.models import Sheet
+from characters.tests import upload_sheet_for_username
+c = upload_sheet_for_username('chronicle_camarilla_five_bin.gex', 'lorien')
+for s in Sheet.objects.all():
+    s.safe_delete()
+"""
+
+import timeit
+print timeit.timeit(s, number=2)

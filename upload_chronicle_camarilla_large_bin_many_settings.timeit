@@ -1,0 +1,7 @@
+s = """\
+from characters.tests import upload_sheet_for_username
+upload_sheet_for_username('chronicle_camarilla_large_bin_many_settings.gex', 'lorien')
+"""
+
+import timeit
+print timeit.timeit(s, number=1)
