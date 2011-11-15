@@ -19,18 +19,19 @@ def upload_sheet_for_user(sheet_file, user):
                 binary = is_binary(fp)
             if binary:
                 with open(sheet_file_fp, 'rb') as fp:
-                    bin_handle_sheet_upload(fp, user)
+                    return bin_handle_sheet_upload(fp, user)
             else:
                 with open(sheet_file_fp, 'r') as fp:
-                    handle_sheet_upload(fp, user)
+                    return handle_sheet_upload(fp, user)
     if not handled:
         raise RuntimeError("Could not open file {}".format(sheet_file))
+    return None
 
 def upload_sheet_for_username(sheet_file, username):
-    upload_sheet_for_user(sheet_file, User.objects.get(username__exact=username))
+    return upload_sheet_for_user(sheet_file, User.objects.get(username__exact=username))
 
 def upload_chronicle_for_user(chron_file, user):
-    upload_sheet_for_user(chron_file, user)
+    return upload_sheet_for_user(chron_file, user)
 
 def upload_chronicle_for_username(chron_file, username):
-    upload_chronicle_for_user(chron_file, User.objects.get(username__exact=username))
+    return upload_chronicle_for_user(chron_file, User.objects.get(username__exact=username))
