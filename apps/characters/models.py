@@ -8,6 +8,7 @@ from pprint import pformat
 from django.core.urlresolvers import reverse
 
 from django.db import models
+from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
@@ -224,10 +225,15 @@ class Sheet(models.Model):
         return self.traits.filter(traitlistname=traitlist_name_obj)
 
     def _get_traitlist_name_obj(self, traitlist_name):
+        k = 'traitlist_names:' + traitlist_name
+        c = cache.get(k)
+        if c is not None:
+            return c
         try:
             traitlist_name_obj = TraitListName.objects.get(name=traitlist_name)
         except TraitListName.DoesNotExist:
             traitlist_name_obj = TraitListName.objects.create(name=traitlist_name, slug=slugify(traitlist_name))
+        cache.set(k, traitlist_name_obj, 30)
         return traitlist_name_obj
 
     def add_trait(self, traitlist_name, trait_attrs):
