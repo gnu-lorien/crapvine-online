@@ -22,6 +22,8 @@ from django.template.defaultfilters import slugify
 
 import collections
 
+from simple_history.models import HistoricalRecords
+
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
 else:
@@ -166,6 +168,8 @@ class Sheet(models.Model):
     group = generic.GenericForeignKey("content_type", "object_id")
 
     uploading = models.BooleanField(default=False)
+
+    history = HistoricalRecords()
 
     class Meta:
         unique_together = (("player", "name"))
@@ -572,6 +576,8 @@ class VampireSheet(Sheet):
     tempconscience = models.PositiveSmallIntegerField(default=0, blank=True)
     temppathtraits = models.PositiveSmallIntegerField(default=0, blank=True)
 
+    history = HistoricalRecords()
+
     def add_default_traitlist_properties(self):
         self.add_traitlist_properties(overwrite=False, name="Physical", sorted=True, display_preference=1)
         self.add_traitlist_properties(overwrite=False, name="Social", sorted=True, display_preference=1)
@@ -713,6 +719,8 @@ class Trait(models.Model):
     order = models.PositiveSmallIntegerField()
     sheet = models.ForeignKey(Sheet, related_name='traits')
     traitlistname = models.ForeignKey(TraitListName)
+
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ['order']
