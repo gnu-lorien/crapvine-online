@@ -1,5 +1,6 @@
 from django.test import TestCase
-from characters.models import Sheet, Trait, ChangedTrait
+from django.db import IntegrityError
+from characters.models import Sheet
 from upload_helpers import upload_sheet_for_username
 
 from pprint import pprint
@@ -102,22 +103,22 @@ class RecentExpenditures(TestCase):
 
     def testDotCharacterChange(self):
         self.sheet.add_trait('Social', {'name': 'Cockles', 'value':3, 'dot_character':'OOO'})
-        a = [ct for ct in ChangedTrait.objects.all()]
+        #a = [ct for ct in ChangedTrait.objects.all()]
 
         self.assertEE(u'Purchased Cockles x3.', 3, 3)
         t = self.sheet.traits.get(name='Cockles')
         t.dot_character = 'OOOO'
         t.save()
-        a = [ct for ct in ChangedTrait.objects.all()]
+        #a = [ct for ct in ChangedTrait.objects.all()]
 
         self.assertEE(u'Purchased Cockles x3.', 3, 3)
         t.value = 4
         t.save()
-        a = [ct for ct in ChangedTrait.objects.all()]
+        #a = [ct for ct in ChangedTrait.objects.all()]
 
         self.assertEE(u'Purchased Cockles x4.', 4, 3)
         t.delete()
-        a = [ct for ct in ChangedTrait.objects.all()]
+        #a = [ct for ct in ChangedTrait.objects.all()]
 
         self.assertEE(u'')
 
@@ -207,15 +208,7 @@ class RecentExpenditures(TestCase):
 
         et = self.sheet.traits.get(name='Energetic')
         et.name = "Cockles"
-        et.save()
-        self.assertEE(u'Renamed Dexterous x3 (dex) to Cockles x3 (dex), Energetic x3 (misc) to Cockles x3 (misc).', 0, 6)
-
-        et.value = 4
-        et.save()
-        self.assertEE(u'Purchased Cockles (misc). Renamed Dexterous x3 (dex) to Cockles x3 (dex), Energetic x3 (misc) to Cockles x4 (misc).', 1, 3)
-
-        dt.delete()
-        self.assertEE(u'Purchased Cockles (misc). Removed Dexterous x3 (dex). Renamed Energetic x3 (misc) to Cockles x4 (misc).', 2, 4)
+        self.assertRaises(IntegrityError, et.save)
 
     def testNameAndNoteChanges(self):
         dt = self.sheet.traits.get(name='Dexterous')
@@ -250,7 +243,7 @@ class ExperienceEntriesTestCase(TestCase):
         prev_unspent = last_entry.unspent
         prev_earned = last_entry.earned
         adding = 10
-        last_entry.change = last_entry.change + adding
+        last_entry.change += adding
         last_entry.save()
         self.sheet.edit_experience_entry(last_entry)
         last_entry = self.sheet.experience_entries.order_by('-date')[0]
@@ -298,7 +291,7 @@ class ExperienceEntriesTestCase(TestCase):
 
         print target_entry
         adding = 10
-        target_entry.change = target_entry.change + adding
+        target_entry.change += adding
         target_entry.save()
         self.sheet.edit_experience_entry(target_entry)
 
