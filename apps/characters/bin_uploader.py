@@ -309,7 +309,7 @@ def handle_sheet_upload(uploaded_file, user):
         current_vampire.biography = c['biography']
         current_vampire.notes = c['notes']
         current_vampire.update_experience_total()
-        current_vampire.last_modified = datetime.now()
+        current_vampire.last_modified = datetime.datetime.now()
         current_vampire.save()
         ret.vampires[current_vampire.name] = current_vampire
     return ret

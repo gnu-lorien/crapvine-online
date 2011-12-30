@@ -20,7 +20,7 @@ from characters.forms import SheetUploadForm, VampireSheetAttributesForm, TraitF
     DisplayOrderForm, ExperienceEntryForm, NewSheetForm, PrintOptionsForm
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
-from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem, ChangedTrait
+from characters.models import Sheet, VampireSheet, TraitListName, Trait, TraitListProperty, ExperienceEntry, Menu, MenuItem
 from chronicles.models import Chronicle, ChronicleMember
 
 from reversion.models import Version

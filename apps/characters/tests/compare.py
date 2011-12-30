@@ -27,7 +27,6 @@ def compare_vampire_base_attributes(self, left, right):
 def compare_sheet_base_attributes(self, left, right):
     self.assertEquals(left.home_chronicle, right.home_chronicle)
     self.assertEquals(left.start_date, right.start_date)
-    self.assertEquals(left.last_modified, right.last_modified)
     self.assertEquals(left.npc, right.npc)
     self.assertEquals(left.notes, right.notes)
     self.assertEquals(left.biography, right.biography)
