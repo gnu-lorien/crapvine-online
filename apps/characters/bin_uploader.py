@@ -1,5 +1,6 @@
 import struct
 from reversion import revision
+from django.db import transaction
 
 from uploader import create_base_vampire, read_experience_entry, read_traitlist_properties, read_trait
 
@@ -283,6 +284,7 @@ def base_read(f):
 
     return creatures
 
+@transaction.commit_on_success
 @revision.create_on_success
 def handle_sheet_upload(uploaded_file, user):
     creatures = base_read(uploaded_file)
