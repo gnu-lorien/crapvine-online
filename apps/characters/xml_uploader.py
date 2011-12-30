@@ -185,6 +185,8 @@ def handle_sheet_upload(uploaded_file, user):
     ret.vampires = {}
     creatures = base_read(uploaded_file, user)
     for c in creatures:
+        c.last_modified = datetime.now()
+        c.save()
         ret.vampires[c.name] = c
 
     return ret

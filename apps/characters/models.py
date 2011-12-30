@@ -168,8 +168,6 @@ class Sheet(models.Model):
     content_type = models.ForeignKey(ContentType, null=True)
     group = generic.GenericForeignKey("content_type", "object_id")
 
-    uploading = models.BooleanField(default=False)
-
     history = HistoricalRecords()
 
     class Meta:
@@ -458,19 +456,40 @@ class Sheet(models.Model):
 
     def get_recent_expenditures_entry(self):
         entry = ExperienceEntry()
-        changed_traits = self.changed_traits.all()#ChangedTrait.objects.filter(sheet=self)
+        recent_forward_date = self.last_modified
+        try:
+            last_entry_date = self.experience_entries.order_by('-date')[0].date
+            if last_entry_date > recent_forward_date:
+                recent_forward_date = last_entry_date
+        except IndexError:
+            pass
+        changed_traits = Trait.history.filter(sheet_id=self.id)
+        changed_traits = changed_traits.filter(history_date__gte=recent_forward_date)
+        changed_traits = changed_traits.order_by('-history_date')
+
         logging.debug('get_recent_expenditures top %s' % pformat(changed_traits))
         final_reason_str = u''
+
+
+        matched_ids = set()
+        for ct in changed_traits:
+            if ct.id in matched_ids:
+                continue
+            matched_ids.add(ct.id)
+            if u'+' == ct.history_type:
+                added.append(ct)
+            elif u'~' == ct.history_type:
+                changed.append(ct)
+            elif u'-' == ct.history_type:
+                removed.append(ct)
+            else:
+                raise RuntimeError("Unknown history_type {}".format(ct.history_type))
+
         changed = []
         removed = []
+        added = []
         noted = []
         renamed = []
-        for ct in changed_traits:
-            try:
-                Trait.objects.get(id=ct.newer_trait_form)
-                changed.append(ct)
-            except Trait.DoesNotExist:
-                removed.append(ct)
 
         entry.change = 0
         def get_trait_change_display(trait, display_val):
@@ -478,26 +497,36 @@ class Sheet(models.Model):
             trait_u = u' (' + trait.note + u')' if trait.show_note() else u''
             return trait.name + value_u + trait_u
 
+        def get_real_trait_from_historical(t):
+            return Trait.objects.get(id=t.id)
+
         strs = []
+        while len(added) > 0:
+            t = get_real_trait_from_historical(added.pop(0))
+            change_val = t.value
+            entry.change += change_val
+            strs.append(get_trait_change_display(t, change_val))
+
         while len(changed) > 0:
-            t = changed.pop(0)
-            ntf = Trait.objects.get(id=t.newer_trait_form)
-            if t.added:
-                change_val = ntf.value
-            else:
+            original_historical_trait = changed.pop(0)
+            ntf = get_real_trait_from_historical(original_historical_trait)
+            try:
+                t = Trait.history.filter(id=ntf.id, history_date__lt=recent_forward_date).order_by('-history_date')[0]
                 change_val = ntf.value - t.value
-                non_val_differences = False
-                if ntf.note != t.note:
-                    noted.append((t, ntf))
-                    non_val_differences = True
-                if ntf.name != t.name:
-                    renamed.append((t, ntf))
-                    non_val_differences = True
-                if non_val_differences and change_val == 0:
-                    continue
-                if change_val < 0:
-                    removed.append(t)
-                    continue
+            except IndexError:
+                change_val = ntf.value
+            non_val_differences = False
+            if ntf.note != t.note:
+                noted.append((t, ntf))
+                non_val_differences = True
+            if ntf.name != t.name:
+                renamed.append((t, ntf))
+                non_val_differences = True
+            if non_val_differences or change_val == 0:
+                continue
+            if change_val < 0:
+                removed.append(original_historical_trait)
+                continue
             entry.change += change_val
             strs.append(get_trait_change_display(ntf, change_val))
         if len(strs) > 0:
@@ -508,13 +537,14 @@ class Sheet(models.Model):
         if len(removed) > 0:
             strs = []
             for t in removed:
+                last_value_before_editing = Trait.history.filter(id=ntf.id, history_date__lt=recent_forward_date).order_by('-history_date')[0]
                 try:
-                    ntf = Trait.objects.get(id=t.newer_trait_form)
-                    change_val = ntf.value - t.value
+                    ntf = get_real_trait_from_historical(t)
+                    change_val = ntf.value - last_value_before_editing.value
                 except Trait.DoesNotExist:
-                    change_val = t.value * -1
+                    change_val = last_value_before_editing.value * -1
                 entry.change += change_val
-                strs.append(get_trait_change_display(t, abs(change_val)))
+                strs.append(get_trait_change_display(get_real_trait_from_historical(t), abs(change_val)))
             final_reason_str += u'Removed '
             final_reason_str += u', '.join(strs)
             final_reason_str += u'. '

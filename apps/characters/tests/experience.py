@@ -11,7 +11,6 @@ class RecentExpenditures(TestCase):
     def setUp(self):
         upload_sheet_for_username('mcmillan.gex', 'Andre')
         self.sheet = Sheet.objects.get(name__exact='Charles McMillan')
-        self.sheet.uploading = False
         self.sheet.save()
 
     def _assertREName(self, words):
@@ -49,6 +48,7 @@ class RecentExpenditures(TestCase):
         self.assertEqual(2, t.value)
         t.value = 3
         t.save()
+        self.assertEE(u'Purchased Law x1.', 1, 3)
         t.delete()
         self.assertEE(u'Removed Law x2.', 2, 4)
 

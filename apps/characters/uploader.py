@@ -107,7 +107,6 @@ def create_base_vampire(attrs, user, date_hint=DEFAULT_DATE_HINT):
                 my_attrs[key] = my_attrs[value]
 
     my_attrs['player'] = user
-    my_attrs['uploading'] = True
     my_attrs = dict([(str(k), v) for k,v in my_attrs.iteritems()])
     return VampireSheet.objects.create(**my_attrs)
 
