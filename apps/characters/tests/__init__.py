@@ -66,7 +66,7 @@ class PageViewPermissionsTestCase(TestCase):
 
     def setUp(self):
         upload_sheet_for_username('mcmillan.gex', 'lorien')
-        upload_sheet_for_username('valueforeverything.gex', 'perpet')
+        upload_sheet_for_username('value_for_everything.gex', 'perpet')
 
     def testProperView(self):
         logged_in = self.client.login(username='lorien', password='lorien')
@@ -119,9 +119,9 @@ class SheetTestCase(CharactersTestCase):
     fixtures = ['players']
 
     def _assertNamedTraitInList(self, trait_name, traitlist_name):
-        self.failIf(trait_name not in [trait.name for trait in self.sheet.get_traitlist(traitlist_name)])
+        self.assertIn(trait_name, [trait.name for trait in self.sheet.get_traitlist(traitlist_name)])
     def _assertNamedTraitNotInList(self, trait_name, traitlist_name):
-        self.failIf(trait_name in [trait.name for trait in self.sheet.get_traitlist(traitlist_name)])
+        self.assertNotIn(trait_name, [trait.name for trait in self.sheet.get_traitlist(traitlist_name)])
 
     def setUp(self):
         self.user = User.objects.get(username__exact='Andre')
@@ -146,10 +146,13 @@ class SheetTestCase(CharactersTestCase):
     def testAddingTraits(self):
         self.sheet.add_trait('Mental', {'name': 'Fuckness'})
         self._assertNamedTraitInList('Fuckness', 'Mental')
+        self.assertEqual(1, len(self.sheet.get_traitlist('Mental')))
 
     def testInsertTraits(self):
         self.sheet.add_trait('Mental', {'name':'Fuckness'})
+        self._assertNamedTraitInList('Fuckness', 'Mental')
         self.sheet.insert_trait('Mental', {'name':'Preloaded'}, 0)
+        self._assertNamedTraitInList('Preloaded', 'Mental')
         self.assertEquals('Preloaded', self.sheet.get_traitlist('Mental')[0].name)
         self.assertEquals('Fuckness', self.sheet.get_traitlist('Mental')[1].name)
 
@@ -238,42 +241,42 @@ class TraitTestCase(CharactersTestCase):
                     '8' : 'OOO',
                     '9' : '3'
                 },
-            self._build_trait('Example', 3, '') :
+            self._build_trait('Dalample', 3, '') :
                 {
-                    '0' : 'Example',
-                    '1' : 'Example x3',
-                    '2' : 'Example x3 OOO',
-                    '3' : 'Example OOO',
-                    '4' : 'Example (3)',
-                    '5' : 'Example',
-                    '6' : 'Example (3)',
-                    '7' : 'ExampleOExampleOExample',
+                    '0' : 'Dalample',
+                    '1' : 'Dalample x3',
+                    '2' : 'Dalample x3 OOO',
+                    '3' : 'Dalample OOO',
+                    '4' : 'Dalample (3)',
+                    '5' : 'Dalample',
+                    '6' : 'Dalample (3)',
+                    '7' : 'DalampleODalampleODalample',
                     '8' : 'OOO',
                     '9' : '3',
                 },
-            self._build_trait('Example', 0, '') :
+            self._build_trait('Crizzle', 0, '') :
                 {
-                    '0' : 'Example',
-                    '1' : 'Example',
-                    '2' : 'Example',
-                    '3' : 'Example',
-                    '4' : 'Example',
-                    '5' : 'Example',
-                    '6' : 'Example',
-                    '7' : 'Example',
+                    '0' : 'Crizzle',
+                    '1' : 'Crizzle',
+                    '2' : 'Crizzle',
+                    '3' : 'Crizzle',
+                    '4' : 'Crizzle',
+                    '5' : 'Crizzle',
+                    '6' : 'Crizzle',
+                    '7' : 'Crizzle',
                     '8' : '',
                     '9' : '',
                 },
-            self._build_trait('Example', 0, 'Carlsbad') :
+            self._build_trait('Licke', 0, 'Carlsbad') :
                 {
-                    '0' : 'Example',
-                    '1' : 'Example (Carlsbad)',
-                    '2' : 'Example (Carlsbad)',
-                    '3' : 'Example (Carlsbad)',
-                    '4' : 'Example (Carlsbad)',
-                    '5' : 'Example (Carlsbad)',
-                    '6' : 'Example',
-                    '7' : 'Example (Carlsbad)',
+                    '0' : 'Licke',
+                    '1' : 'Licke (Carlsbad)',
+                    '2' : 'Licke (Carlsbad)',
+                    '3' : 'Licke (Carlsbad)',
+                    '4' : 'Licke (Carlsbad)',
+                    '5' : 'Licke (Carlsbad)',
+                    '6' : 'Licke',
+                    '7' : 'Licke (Carlsbad)',
                     '8' : '',
                     '9' : '',
                 }

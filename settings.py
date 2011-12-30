@@ -7,6 +7,9 @@ import os.path
 import posixpath
 import pinax
 
+SOUTH_TESTS_MIGRATE = False
+SKIP_SOUTH_TESTS=True
+
 PINAX_ROOT = os.path.abspath(os.path.dirname(pinax.__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 

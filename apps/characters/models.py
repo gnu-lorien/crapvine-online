@@ -4,7 +4,7 @@ import logging
 # Only need this when debugging
 #import sys
 #logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
-from pprint import pformat
+from pprint import pformat, pprint
 from django.core.urlresolvers import reverse
 
 from django.db import models
@@ -248,10 +248,10 @@ class Sheet(models.Model):
 
     def insert_trait(self, traitlist_name, trait_attrs, order):
         for trait in self.traits.filter(order__gte=order):
-            trait.order = trait.order + 1
+            trait.order += 1
             trait.save()
         trait_attrs['order'] = order
-        self.traits.create(traitlistname=self._get_traitlist_name_obj(traitlist_name), **trait_attrs)
+        self.add_trait(traitlist_name, trait_attrs)
 
     def reorder_traits(self, traitlist_name, trait_names):
         """Reorders a traitlist to match the order given
