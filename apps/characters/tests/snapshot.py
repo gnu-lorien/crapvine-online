@@ -1,5 +1,5 @@
 from django.test import TestCase
-from characters.models import Sheet, VampireSheet, Trait, ChangedTrait
+from characters.models import Sheet, VampireSheet, Trait
 from compare import compare_vampire_sheets, compare_traits, compare_sheet_base_attributes, compare_vampire_base_attributes,\
     compare_experience_entries, compare_sheets
 from upload_helpers import upload_sheet_for_username
