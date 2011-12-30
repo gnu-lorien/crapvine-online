@@ -470,24 +470,46 @@ class Sheet(models.Model):
         logging.debug('get_recent_expenditures top %s' % pformat(changed_traits))
         final_reason_str = u''
 
-
+        changed = []
+        removed = []
+        added = []
         matched_ids = set()
         for ct in changed_traits:
             if ct.id in matched_ids:
                 continue
             matched_ids.add(ct.id)
+
+            most_recent_historical_trait = ct
+            try:
+                older_historical_trait_to_compare = Trait.history.filter(
+                    id=most_recent_historical_trait.id,
+                    history_date__lt=recent_forward_date).order_by('-history_date')[0]
+            except IndexError:
+                older_historical_trait_to_compare = None
+
             if u'+' == ct.history_type:
-                added.append(ct)
+                added.append({'most_recent_historical_trait': most_recent_historical_trait})
             elif u'~' == ct.history_type:
-                changed.append(ct)
+                if older_historical_trait_to_compare is None:
+                    added.append({'most_recent_historical_trait': most_recent_historical_trait})
+                else:
+                    change_val = most_recent_historical_trait.value - older_historical_trait_to_compare.value
+                    if 0 <= change_val:
+                        changed.append({'most_recent_historical_trait': most_recent_historical_trait,
+                                        'older_historical_trait_to_compare': older_historical_trait_to_compare})
+                    elif 0 > change_val:
+                        removed.append({'most_recent_historical_trait': most_recent_historical_trait,
+                                        'older_historical_trait_to_compare': older_historical_trait_to_compare})
             elif u'-' == ct.history_type:
-                removed.append(ct)
+                if older_historical_trait_to_compare is not None:
+                    removed.append({'most_recent_historical_trait': most_recent_historical_trait,
+                                    'older_historical_trait_to_compare': older_historical_trait_to_compare})
             else:
                 raise RuntimeError("Unknown history_type {}".format(ct.history_type))
 
-        changed = []
-        removed = []
-        added = []
+        added.reverse()
+        changed.reverse()
+        removed.reverse()
         noted = []
         renamed = []
 
@@ -498,37 +520,45 @@ class Sheet(models.Model):
             return trait.name + value_u + trait_u
 
         def get_real_trait_from_historical(t):
-            return Trait.objects.get(id=t.id)
+            try:
+                return Trait.objects.get(id=t.id)
+            except Trait.DoesNotExist:
+                return Trait(name=t.name,
+                             note=t.note,
+                             value=t.value,
+                             display_preference=t.display_preference)
 
         strs = []
         while len(added) > 0:
-            t = get_real_trait_from_historical(added.pop(0))
+            t = get_real_trait_from_historical(added.pop(0)['most_recent_historical_trait'])
             change_val = t.value
             entry.change += change_val
             strs.append(get_trait_change_display(t, change_val))
 
         while len(changed) > 0:
-            original_historical_trait = changed.pop(0)
-            ntf = get_real_trait_from_historical(original_historical_trait)
-            try:
-                t = Trait.history.filter(id=ntf.id, history_date__lt=recent_forward_date).order_by('-history_date')[0]
-                change_val = ntf.value - t.value
-            except IndexError:
-                change_val = ntf.value
+            changed_row_dict = changed.pop(0)
+            most_recent_historical_trait = changed_row_dict['most_recent_historical_trait']
+            most_recent_trait = get_real_trait_from_historical(most_recent_historical_trait)
+            older_historical_trait_to_compare = changed_row_dict['older_historical_trait_to_compare']
             non_val_differences = False
-            if ntf.note != t.note:
-                noted.append((t, ntf))
-                non_val_differences = True
-            if ntf.name != t.name:
-                renamed.append((t, ntf))
-                non_val_differences = True
-            if non_val_differences or change_val == 0:
+            if older_historical_trait_to_compare is None:
+                change_val = most_recent_trait.value
+            else:
+                change_val = most_recent_trait.value - older_historical_trait_to_compare.value
+                if most_recent_trait.note != older_historical_trait_to_compare.note:
+                    noted.append((older_historical_trait_to_compare,
+                                  get_real_trait_from_historical(most_recent_historical_trait)))
+                    non_val_differences = True
+                if most_recent_historical_trait.name != older_historical_trait_to_compare.name:
+                    renamed.append((older_historical_trait_to_compare,
+                                    get_real_trait_from_historical(most_recent_historical_trait)))
+                    non_val_differences = True
+            if non_val_differences and 0 == change_val:
                 continue
-            if change_val < 0:
-                removed.append(original_historical_trait)
+            if 0 == change_val:
                 continue
             entry.change += change_val
-            strs.append(get_trait_change_display(ntf, change_val))
+            strs.append(get_trait_change_display(most_recent_trait, change_val))
         if len(strs) > 0:
             final_reason_str += u'Purchased '
             final_reason_str += u', '.join(strs)
@@ -536,15 +566,20 @@ class Sheet(models.Model):
 
         if len(removed) > 0:
             strs = []
-            for t in removed:
-                last_value_before_editing = Trait.history.filter(id=ntf.id, history_date__lt=recent_forward_date).order_by('-history_date')[0]
+            for removed_row_dict in removed:
+                older_historical_trait_to_compare = removed_row_dict['older_historical_trait_to_compare']
                 try:
-                    ntf = get_real_trait_from_historical(t)
-                    change_val = ntf.value - last_value_before_editing.value
+                    most_recent_trait = Trait.objects.get(id=removed_row_dict['most_recent_historical_trait'].id)
+                    change_val = most_recent_trait.value - older_historical_trait_to_compare.value
+                    display_trait = most_recent_trait
                 except Trait.DoesNotExist:
-                    change_val = last_value_before_editing.value * -1
+                    change_val = older_historical_trait_to_compare.value * -1
+                    display_trait = older_historical_trait_to_compare
                 entry.change += change_val
-                strs.append(get_trait_change_display(get_real_trait_from_historical(t), abs(change_val)))
+                strs.append(
+                    get_trait_change_display(
+                        get_real_trait_from_historical(display_trait),
+                        abs(change_val)))
             final_reason_str += u'Removed '
             final_reason_str += u', '.join(strs)
             final_reason_str += u'. '

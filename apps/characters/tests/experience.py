@@ -43,12 +43,22 @@ class RecentExpenditures(TestCase):
         t.save()
         self.assertEE(u'Removed Law.', 1, 4)
 
+    def testAddMany(self):
+        self.sheet.add_trait('Social', {'name': 'Cockles'})
+        self.assertEE(u'Purchased Cockles.', 1, 3)
+
+        self.sheet.add_trait('Social', {'name': 'Below'})
+        self.sheet.add_trait('Social', {'name': 'Above'})
+        self.sheet.add_trait('Social', {'name': 'Zerrn'})
+        self.sheet.add_trait('Social', {'name': 'Aberrn'})
+
+        self.assertEE(u'Purchased Cockles, Below, Above, Zerrn, Aberrn.', 5, 3)
+
     def testRemove(self):
         t = self.sheet.traits.get(name='Law')
         self.assertEqual(2, t.value)
         t.value = 3
         t.save()
-        self.assertEE(u'Purchased Law x1.', 1, 3)
         t.delete()
         self.assertEE(u'Removed Law x2.', 2, 4)
 
